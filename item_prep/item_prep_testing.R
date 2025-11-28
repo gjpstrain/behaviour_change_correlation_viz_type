@@ -3,6 +3,8 @@
 library(tidyverse)
 library(MASS)
 library(Hmisc)
+library(gridExtra)
+library(kableExtra)
 
 # pre data for visualised conditions
 
@@ -107,6 +109,22 @@ quantile_reduce <- function(df, n) {
   bins <- cut(df$V1, breaks = breaks, include.lowest = TRUE, labels = FALSE)
   agg <- aggregate(cbind(V1, V2) ~ bins, data = cbind(df, bins = bins), FUN = mean)
   agg[, c("V1", "V2")]
+}
+
+# Loop to create and render tables
+
+counter = 1
+
+for (value in my_rs) {
+  
+  slopes <- slope_function(value)
+  
+  table_df <- quantile_reduce(slopes, n = 10)
+  
+  kable(table_df) %>%
+    save_kable()
+  
+
 }
 
 
