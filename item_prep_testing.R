@@ -8,6 +8,7 @@ library(kableExtra)
 library(webshot2)
 library(magick)
 library(glue)
+library(gtools)
 
 # pre data for visualised conditions
 
@@ -149,4 +150,52 @@ for (value in my_rs) {
   file.remove(html_file)
 }
 
+## Part 2: Creating Experimental csv
 
+# grab images and add directory for psychopy exp
+
+images_alt <- mixedsort(list.files(path = "all_plots/", pattern = "Alt", full.names = T)) %>%
+  paste0("exp_resources/", .)
+
+images_standard <- mixedsort(list.files(path = "all_plots/", pattern = "Norm", full.names = T)) %>%
+  paste0("exp_resources/", .)
+
+images_tables <- mixedsort(list.files(path = "all_plots/", pattern = "table", full.names = T)) %>%
+  paste0("exp_resources/", .)
+
+# shuffle images for pseudorandomisation
+
+left_images <- c(images_alt[1:15], images_standard[16:30], images_tables[31:45])
+
+middle_images <- c(images_tables[1:15], images_alt[16:30], images_standard[31:45])
+
+right_images <- c(images_standard[1:15], images_tables[16:30], images_alt[31:45])
+
+# create other vectors
+
+colour <- rep("black", times = 45)
+
+instructions <- rep("Please complete the charity assignment. Make sure you use all your cash.",
+                    times = 45)
+
+trial_no <- 1:45
+
+# cbind exp dataframe together
+
+exp_data <- cbind(trial_no, left_images, middle_images, right_images,
+                  colour, instructions) %>% as_data_frame() %>%
+  mutate(trial_no = as.numeric(trial_no))
+
+# use exp df to create and append AC df
+
+exp_data <- exp_data %>%
+  bind_rows(
+    exp_data %>%
+      slice_tail(n = 4) %>%
+      mutate(
+        colour = "red",
+        trial_no = trial_no + 4
+      )
+  )
+
+write_csv(exp_data, "behaviour_change_donation_exp_data.csv")
