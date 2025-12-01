@@ -5,6 +5,9 @@ library(MASS)
 library(Hmisc)
 library(gridExtra)
 library(kableExtra)
+library(webshot2)
+library(magick)
+library(glue)
 
 # pre data for visualised conditions
 
@@ -116,15 +119,34 @@ quantile_reduce <- function(df, n) {
 counter = 1
 
 for (value in my_rs) {
+  slopes   <- slope_function(value)
+  table_df <- quantile_reduce(slopes, n = 10) %>%
+    mutate(across(where(is.numeric), ~ round(.x, 2) ))
+    
+  tab <- knitr::kable(table_df, format = "html",
+                      table.attr = "style='width:100%; height:100%; border-collapse: collapse;'") %>%
+    kable_styling(bootstrap_options = c("basic", "bordered", "striped"),
+                  full_width = TRUE,
+                  font_size = 30)
   
-  slopes <- slope_function(value)
+  html_file <- glue("all_plots/temp_table_{value}.html")
+  save_kable(tab, html_file, self_contained = TRUE)
   
-  table_df <- quantile_reduce(slopes, n = 10)
+  png_file <- glue("all_plots/table_{counter}.png")
   
-  kable(table_df) %>%
-    save_kable()
+  webshot2::webshot(
+    url      = html_file,
+    file     = png_file,
+    vwidth   = 1000,
+    vheight  = 1000,
+    cliprect = "viewport"
+  )
   
-
+  if (counter > 0) {
+    counter = counter + 1
+  }
+  
+  file.remove(html_file)
 }
 
 
