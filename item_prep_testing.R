@@ -194,7 +194,8 @@ exp_data <- exp_data %>%
       slice_tail(n = 4) %>%
       mutate(
         colour = "red",
-        trial_no = trial_no + 4
+        trial_no = trial_no + 4,
+        instructions = "Please ignore the plots and assign all money to the central charity."
       )
   )
 
