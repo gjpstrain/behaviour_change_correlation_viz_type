@@ -9,14 +9,15 @@ library(webshot2)
 library(magick)
 library(glue)
 library(gtools)
+library(grid)
 
 # pre data for visualised conditions
 
 set.seed(1234)
 
-my_rs <- seq(0.2, 0.99, length.out = 45)
+my_rs <- seq(0.2, 0.99, length.out = 10)
 
-plot_no <- 1:45
+plot_no <- 1:10
 
 correlations <- tibble(plot_no, my_rs)
 
@@ -56,31 +57,49 @@ slope_function <- function(my_desired_r) {
   return(slopes)
 }
 
-# define plotting function for alt and standard scatter conditions
-
 plot_function <- function(slopes, my_desired_r, letter, size_value, opacity_value) {
+  
+  text_coords <- list(
+    list(label = "Less plain Diet", x = -0.1, y = -0.1, hjust = 0, vjust = 0, rot = 0, size = 11),
+    list(label = "More plain Diet", x = 0.95, y = -0.1, hjust = 1, vjust = 0, rot = 0, size = 11),
+    list(label = "Fewer Cancer\nDiagnoses", x = -0.05, y = 0, hjust = 0, vjust = 0.5, rot = 90, size = 11),
+    list(label = "More Cancer\nDiagnoses", x = -0.05, y = 0.6, hjust = 0, vjust = 0.5, rot = 90, size = 11)
+  )
+  
+  text_grobs <- do.call(gList, lapply(text_coords, function(tc) {
+    textGrob(tc$label, 
+             x = tc$x, y = tc$y, 
+             hjust = tc$hjust, vjust = tc$vjust,
+             rot = tc$rot,
+             gp = gpar(fontsize = tc$size))
+  }))
+  
+  # Wrap in gTree
+  text_grob <- gTree(children = text_grobs)
   
   p <- ggplot(slopes, aes(x = V1, y = V2)) +
     scale_size_identity() +
     scale_alpha_identity() +
-    geom_point(aes(size =  4*(size_value+0.2), alpha = opacity_value), shape = 16) +  
+    geom_point(aes(size = 4*(size_value+0.2), alpha = opacity_value), shape = 16) +  
     labs(x = "", y = "") +
-    theme_classic() +
-    theme(axis.text = element_blank()) +
-    theme(plot.margin = unit(c(0,0,0,0), "cm")) +
-    theme(legend.position = "None")
+    theme_void() +
+    theme(plot.margin = unit(c(0, 0, 1, 1), "cm"),
+          plot.background = element_rect(colour = "black", fill = NA, size = 1)) +
+    annotation_custom(
+      grob = text_grob,
+      xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
+    ) +
+    coord_cartesian(clip = "off")
   
-  ggsave(p,filename=paste0(counter, letter, ".png"),
+  ggsave(p, filename = paste0(counter, letter, ".png"),
          device = "png",
          bg = "white",
-         path = "all_plots",
+         path = "stimuli/raw_plots",
          units = "px",
          width = 1000,
-         height = 1000,
-  )
+         height = 1000)
   
   return(p)
-  
 }
 
 # Create plots
@@ -104,63 +123,14 @@ for(value in my_rs) {
   }
 }
 
-# function to reduce correlation dataframes for use in tabular condition
-
-quantile_reduce <- function(df, n) {
-  probs <- seq(0, 1, length.out = n + 1)
-  breaks <- unique(quantile(df$V1, probs = probs, na.rm = TRUE))
-  
-  bins <- cut(df$V1, breaks = breaks, include.lowest = TRUE, labels = FALSE)
-  agg <- aggregate(cbind(V1, V2) ~ bins, data = cbind(df, bins = bins), FUN = mean)
-  agg[, c("V1", "V2")]
-}
-
-# Loop to create and render tables
-
-counter = 1
-
-for (value in my_rs) {
-  slopes   <- slope_function(value)
-  table_df <- quantile_reduce(slopes, n = 10) %>%
-    mutate(across(where(is.numeric), ~ round(.x, 2) ))
-    
-  tab <- knitr::kable(table_df, format = "html",
-                      table.attr = "style='width:100%; height:100%; border-collapse: collapse;'") %>%
-    kable_styling(bootstrap_options = c("basic", "bordered", "striped"),
-                  full_width = TRUE,
-                  font_size = 30)
-  
-  html_file <- glue("all_plots/temp_table_{value}.html")
-  save_kable(tab, html_file, self_contained = TRUE)
-  
-  png_file <- glue("all_plots/table_{counter}.png")
-  
-  webshot2::webshot(
-    url      = html_file,
-    file     = png_file,
-    vwidth   = 1000,
-    vheight  = 1000,
-    cliprect = "viewport"
-  )
-  
-  if (counter > 0) {
-    counter = counter + 1
-  }
-  
-  file.remove(html_file)
-}
-
 ## Part 2: Creating Experimental csv
 
 # grab images and add directory for psychopy exp
 
-images_alt <- mixedsort(list.files(path = "all_plots/", pattern = "Alt", full.names = T)) %>%
+raw_plots_alt <- mixedsort(list.files(path = "stimuli/raw_plots", pattern = "Alt", full.names = T)) %>%
   paste0("exp_resources/", .)
 
-images_standard <- mixedsort(list.files(path = "all_plots/", pattern = "Norm", full.names = T)) %>%
-  paste0("exp_resources/", .)
-
-images_tables <- mixedsort(list.files(path = "all_plots/", pattern = "table", full.names = T)) %>%
+raw_plots_standard <- mixedsort(list.files(path = "stimuli/raw_plots", pattern = "Norm", full.names = T)) %>%
   paste0("exp_resources/", .)
 
 # shuffle images for pseudorandomisation
