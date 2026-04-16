@@ -57,13 +57,13 @@ slope_function <- function(my_desired_r) {
   return(slopes)
 }
 
-plot_function <- function(slopes, my_desired_r, letter, size_value, opacity_value) {
+plot_function <- function(slopes, my_desired_r, letter, size_value, opacity_value,
+                          label_y, topic) {
   
   text_coords <- list(
-    list(label = "Less plain Diet", x = -0.1, y = -0.1, hjust = 0, vjust = 0, rot = 0, size = 11),
-    list(label = "More plain Diet", x = 0.95, y = -0.1, hjust = 1, vjust = 0, rot = 0, size = 11),
-    list(label = "Fewer Cancer\nDiagnoses", x = -0.05, y = 0, hjust = 0, vjust = 0.5, rot = 90, size = 11),
-    list(label = "More Cancer\nDiagnoses", x = -0.05, y = 0.6, hjust = 0, vjust = 0.5, rot = 90, size = 11)
+    list(label = "Lower Donation", x = -0.1, y = -0.1, hjust = -0.2, vjust = 0, rot = 0, size = 11),
+    list(label = "Higher Donation", x = 0.95, y = -0.1, hjust = 1, vjust = 0, rot = 0, size = 11),
+    list(label = label_y, x = -0.1, y = 0.25, hjust = 0, vjust = 0.5, rot = 90, size = 11)
   )
   
   text_grobs <- do.call(gList, lapply(text_coords, function(tc) {
@@ -74,8 +74,21 @@ plot_function <- function(slopes, my_desired_r, letter, size_value, opacity_valu
              gp = gpar(fontsize = tc$size))
   }))
   
-  # Wrap in gTree
   text_grob <- gTree(children = text_grobs)
+  
+  arrow <- segmentsGrob(
+    x0 = unit(-0.05, "npc"), y0 = unit(0, "npc"),
+    x1 = unit(-0.05, "npc"), y1 = unit(0.95, "npc"),
+    arrow = arrow(length = unit(2, "mm")),
+    gp = gpar(col = "black")
+  )
+  
+  arrow2 <- segmentsGrob(
+    x0 = unit(-0.05, "npc"), y0 = unit(0, "npc"),
+    x1 = unit(0.95, "npc"), y1 = unit(0, "npc"),
+    arrow = arrow(length = unit(2, "mm")),
+    gp = gpar(col = "black")
+  )
   
   p <- ggplot(slopes, aes(x = V1, y = V2)) +
     scale_size_identity() +
@@ -85,13 +98,21 @@ plot_function <- function(slopes, my_desired_r, letter, size_value, opacity_valu
     theme_void() +
     theme(plot.margin = unit(c(0, 0, 1, 1), "cm"),
           plot.background = element_rect(colour = "black", fill = NA, size = 1)) +
+    annotation_custom(grob = text_grob,  xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+    annotation_custom(grob = arrow, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
+    annotation_custom(grob = arrow2, xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf) +
     annotation_custom(
       grob = text_grob,
       xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf
     ) +
     coord_cartesian(clip = "off")
   
-  ggsave(p, filename = paste0(counter, letter, ".png"),
+  ggsave(p, filename = paste0(counter,
+                              "_",
+                              letter,
+                              "_",
+                              topic,
+                              ".png"),
          device = "png",
          bg = "white",
          path = "stimuli/raw_plots",
@@ -115,8 +136,40 @@ for(value in my_rs) {
   typical <- (slopes$typical)
   standard_alpha <- (slopes$standard_alpha)
   
-  plot_function(slopes, value, "Alt", slopeI, slopeI_floored)
-  plot_function(slopes, value, "Norm", typical, standard_alpha)
+  # Great British Dog Foundation
+  
+  plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+                "Dogs Rescued", "dogs")
+  plot_function(slopes, value, "Norm", typical, standard_alpha,
+                "Dogs Rescued", "dogs")
+  
+  # UpLift - education in disadvantaged communities
+
+  plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+                "Teaching Assistants Employed", "education")
+  plot_function(slopes, value, "Norm", typical, standard_alpha,
+                "Teaching Assistants Employed", "education")
+
+  # # Action for a Greener World
+  # 
+  # plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+  #               "Fewer Dogs Rescued")
+  # plot_function(slopes, value, "Norm", typical, standard_alpha,
+  #               "Fewer Dogs Rescued")
+  # 
+  # # Good Samaritans - mental health helpline
+  # 
+  # plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+  #               "Fewer Dogs Rescued")
+  # plot_function(slopes, value, "Norm", typical, standard_alpha,
+  #               "Fewer Dogs Rescued")
+  # 
+  # # Street Guardians
+  # 
+  # plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+  #               "Fewer Dogs Rescued")
+  # plot_function(slopes, value, "Norm", typical, standard_alpha,
+  #               "Fewer Dogs Rescued")
   
   if (counter > 0) {
     counter = counter + 1
