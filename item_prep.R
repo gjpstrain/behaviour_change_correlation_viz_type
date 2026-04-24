@@ -139,37 +139,37 @@ for(value in my_rs) {
   # Great British Dog Foundation
   
   plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-                "Dogs Rescued", "dogs")
+                "Dogs Rescued", "dog_rescue")
   plot_function(slopes, value, "Norm", typical, standard_alpha,
-                "Dogs Rescued", "dogs")
+                "Dogs Rescued", "dog_rescue")
   
   # UpLift - education in disadvantaged communities
 
   plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-                "Teaching Assistants Employed", "education")
+                "Teaching Assistants Employed", "uplift_education")
   plot_function(slopes, value, "Norm", typical, standard_alpha,
-                "Teaching Assistants Employed", "education")
+                "Teaching Assistants Employed", "uplift_education")
 
-  # # Action for a Greener World
-  # 
-  # plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-  #               "Fewer Dogs Rescued")
-  # plot_function(slopes, value, "Norm", typical, standard_alpha,
-  #               "Fewer Dogs Rescued")
-  # 
-  # # Good Samaritans - mental health helpline
-  # 
-  # plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-  #               "Fewer Dogs Rescued")
-  # plot_function(slopes, value, "Norm", typical, standard_alpha,
-  #               "Fewer Dogs Rescued")
-  # 
-  # # Street Guardians
-  # 
-  # plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-  #               "Fewer Dogs Rescued")
-  # plot_function(slopes, value, "Norm", typical, standard_alpha,
-  #               "Fewer Dogs Rescued")
+  # Action for a Greener World
+
+  plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+                "Trees Planted", "greener_world")
+  plot_function(slopes, value, "Norm", typical, standard_alpha,
+                "Trees Planted", "greener_world")
+
+  # Good Samaritans - mental health helpline
+
+  plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+                "Phone Operators", "helpline")
+  plot_function(slopes, value, "Norm", typical, standard_alpha,
+                "Phone Operators", "helpline")
+
+  # Street Guardians
+
+  plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
+                "Street Workers", "street_guardians")
+  plot_function(slopes, value, "Norm", typical, standard_alpha,
+                "Street Workers", "street_guardians")
   
   if (counter > 0) {
     counter = counter + 1
