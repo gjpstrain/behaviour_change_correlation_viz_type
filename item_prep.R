@@ -153,9 +153,9 @@ for(value in my_rs) {
   # Good Samaritans - mental health helpline
 
   plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-                "Phone Operators", "helpline")
+                "Phone Operators", "samaritans")
   plot_function(slopes, value, "Norm", typical, standard_alpha,
-                "Phone Operators", "helpline")
+                "Phone Operators", "samaritans")
   
   if (counter > 0) {
     counter = counter + 1
@@ -165,41 +165,54 @@ for(value in my_rs) {
 # =============================================================================
 # Generate 108 cross-charity trial pairs from a directory of plots
 # =============================================================================
-# Expected filename format: CHARITY_PLOTTYPE.png
-# e.g. charity_a_bar.png, charity_b_scatter.png
-# Charities: a, b, c | Plot types: any 6 consistent labels
+# Expected filename format: CHARITY_PLOTTYPE_CORRELATION.png
+# e.g. charity_a_bar_positive.png, charity_b_scatter_negative.png
+#
+# Structure:
+#   3 charities  x  2 plot types  x  3 correlations  =  18 infographics
+#   108 cross-charity pairs total
 # =============================================================================
+
+library(tidyverse)
 
 # --- CONFIG ------------------------------------------------------------------
 
-plot_dir <- "stimuli/final_plots"   # <-- change this to your directory
-output_csv <- "exp_data.csv"
+plot_dir   <- "path/to/your/plots"    # <-- change this
+output_csv <- "trials.csv"
 
-# Define your 3 charity identifiers as they appear in filenames
+# 3 charity identifiers as they appear in filenames
 charities <- c("dog_rescue", "greener_world", "samaritans")
 
-# Define your 6 plot type identifiers as they appear in filenames
-plot_types <- c("1_Alt", "1_Norm",
-                "2_Alt", "2_Norm",
-                "3_Alt", "3_Norm")  # <-- update to match your filenames
+# 2 plot type identifiers as they appear in filenames
+plot_types <- c("Norm", "Alt")     # <-- update to match your filenames
+
+# 3 correlation identifiers as they appear in filenames
+correlations <- c("1", "2", "3")   # <-- update to match your filenames
 
 # File extension
-ext <- ".png"   # <-- change if needed (e.g. ".jpg", ".svg")
+ext <- ".png"    # <-- change if needed
 
 # -----------------------------------------------------------------------------
 
 # Build a dataframe of all 18 infographics with their paths
 infographics <- expand_grid(
-  charity    = charities,
-  plot_type  = plot_types
+  charity     = charities,
+  plot_type   = plot_types,
+  correlation = correlations
 ) %>%
   mutate(
-    filename = paste0(charity, "_", plot_type, ext),
+    filename = paste0(charity, "_", plot_type, "_", correlation, ext),
     filepath = file.path(plot_dir, filename)
   )
 
+# Optional: verify all files exist and warn if any are missing
+missing_files <- infographics %>% filter(!file.exists(filepath))
+if (nrow(missing_files) > 0) {
+  warning("The following expected files were not found:\n",
+          paste(missing_files$filename, collapse = "\n"))
+}
+
 # Generate all cross-charity pairs (108 trials)
-# Get all combinations of row indices, then filter to different-charity pairs
 pairs <- combn(nrow(infographics), 2, simplify = FALSE) %>%
   map_dfr(~ tibble(left_idx = .x[1], right_idx = .x[2])) %>%
   mutate(
@@ -208,18 +221,21 @@ pairs <- combn(nrow(infographics), 2, simplify = FALSE) %>%
   ) %>%
   filter(left_charity != right_charity) %>%    # remove same-charity pairs
   mutate(
-    left_path      = infographics$filepath[left_idx],
-    right_path     = infographics$filepath[right_idx],
-    left_plot_type = infographics$plot_type[left_idx],
-    right_plot_type = infographics$plot_type[right_idx],
-    same_plot_type = left_plot_type == right_plot_type,
-    trial_id       = row_number()
+    left_path         = infographics$filepath[left_idx],
+    right_path        = infographics$filepath[right_idx],
+    left_plot_type    = infographics$plot_type[left_idx],
+    right_plot_type   = infographics$plot_type[right_idx],
+    left_correlation  = infographics$correlation[left_idx],
+    right_correlation = infographics$correlation[right_idx],
+    same_plot_type    = left_plot_type   == right_plot_type,
+    same_correlation  = left_correlation == right_correlation,
+    trial_id          = row_number()
   ) %>%
   select(
     trial_id,
-    left_charity, left_plot_type, left_path,
-    right_charity, right_plot_type, right_path,
-    same_plot_type
+    left_charity,  left_plot_type,  left_correlation,  left_path,
+    right_charity, right_plot_type, right_correlation, right_path,
+    same_plot_type, same_correlation
   )
 
 # Sanity check
@@ -228,15 +244,21 @@ message("✓ 108 trials generated successfully.")
 
 # Breakdown summary
 pairs %>%
-  count(same_plot_type) %>%
-  mutate(type = if_else(same_plot_type, "Same plot type (18)", "Different plot type (90)")) %>%
-  select(type, n) %>%
+  count(same_plot_type, same_correlation) %>%
+  mutate(
+    description = case_when(
+      same_plot_type  &  same_correlation ~ "Same plot type,  same correlation",
+      same_plot_type  & !same_correlation ~ "Same plot type,  different correlation",
+      !same_plot_type &  same_correlation ~ "Different plot type,  same correlation",
+      !same_plot_type & !same_correlation ~ "Different plot type,  different correlation"
+    )
+  ) %>%
+  select(description, n) %>%
   print()
 
 # Write to CSV
 write_csv(pairs, output_csv)
 message("✓ Written to: ", output_csv)
-
 ##################################################################################
 
 ## Part 2: Creating Experimental csv
