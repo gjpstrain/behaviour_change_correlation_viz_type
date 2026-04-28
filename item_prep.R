@@ -15,9 +15,9 @@ library(grid)
 
 set.seed(1234)
 
-my_rs <- seq(0.2, 0.99, length.out = 10)
+my_rs <- c(0.2, 0.5, 0.8)
 
-plot_no <- 1:10
+plot_no <- 1:3
 
 correlations <- tibble(plot_no, my_rs)
 
@@ -143,13 +143,6 @@ for(value in my_rs) {
   plot_function(slopes, value, "Norm", typical, standard_alpha,
                 "Dogs Rescued", "dog_rescue")
   
-  # UpLift - education in disadvantaged communities
-
-  plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-                "Teaching Assistants Employed", "uplift_education")
-  plot_function(slopes, value, "Norm", typical, standard_alpha,
-                "Teaching Assistants Employed", "uplift_education")
-
   # Action for a Greener World
 
   plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
@@ -163,18 +156,88 @@ for(value in my_rs) {
                 "Phone Operators", "helpline")
   plot_function(slopes, value, "Norm", typical, standard_alpha,
                 "Phone Operators", "helpline")
-
-  # Street Guardians
-
-  plot_function(slopes, value, "Alt", slopeI, slopeI_floored,
-                "Street Workers", "street_guardians")
-  plot_function(slopes, value, "Norm", typical, standard_alpha,
-                "Street Workers", "street_guardians")
   
   if (counter > 0) {
     counter = counter + 1
   }
 }
+
+# =============================================================================
+# Generate 108 cross-charity trial pairs from a directory of plots
+# =============================================================================
+# Expected filename format: CHARITY_PLOTTYPE.png
+# e.g. charity_a_bar.png, charity_b_scatter.png
+# Charities: a, b, c | Plot types: any 6 consistent labels
+# =============================================================================
+
+# --- CONFIG ------------------------------------------------------------------
+
+plot_dir <- "stimuli/final_plots"   # <-- change this to your directory
+output_csv <- "exp_data.csv"
+
+# Define your 3 charity identifiers as they appear in filenames
+charities <- c("dog_rescue", "greener_world", "samaritans")
+
+# Define your 6 plot type identifiers as they appear in filenames
+plot_types <- c("1_Alt", "1_Norm",
+                "2_Alt", "2_Norm",
+                "3_Alt", "3_Norm")  # <-- update to match your filenames
+
+# File extension
+ext <- ".png"   # <-- change if needed (e.g. ".jpg", ".svg")
+
+# -----------------------------------------------------------------------------
+
+# Build a dataframe of all 18 infographics with their paths
+infographics <- expand_grid(
+  charity    = charities,
+  plot_type  = plot_types
+) %>%
+  mutate(
+    filename = paste0(charity, "_", plot_type, ext),
+    filepath = file.path(plot_dir, filename)
+  )
+
+# Generate all cross-charity pairs (108 trials)
+# Get all combinations of row indices, then filter to different-charity pairs
+pairs <- combn(nrow(infographics), 2, simplify = FALSE) %>%
+  map_dfr(~ tibble(left_idx = .x[1], right_idx = .x[2])) %>%
+  mutate(
+    left_charity  = infographics$charity[left_idx],
+    right_charity = infographics$charity[right_idx]
+  ) %>%
+  filter(left_charity != right_charity) %>%    # remove same-charity pairs
+  mutate(
+    left_path      = infographics$filepath[left_idx],
+    right_path     = infographics$filepath[right_idx],
+    left_plot_type = infographics$plot_type[left_idx],
+    right_plot_type = infographics$plot_type[right_idx],
+    same_plot_type = left_plot_type == right_plot_type,
+    trial_id       = row_number()
+  ) %>%
+  select(
+    trial_id,
+    left_charity, left_plot_type, left_path,
+    right_charity, right_plot_type, right_path,
+    same_plot_type
+  )
+
+# Sanity check
+stopifnot(nrow(pairs) == 108)
+message("✓ 108 trials generated successfully.")
+
+# Breakdown summary
+pairs %>%
+  count(same_plot_type) %>%
+  mutate(type = if_else(same_plot_type, "Same plot type (18)", "Different plot type (90)")) %>%
+  select(type, n) %>%
+  print()
+
+# Write to CSV
+write_csv(pairs, output_csv)
+message("✓ Written to: ", output_csv)
+
+##################################################################################
 
 ## Part 2: Creating Experimental csv
 
