@@ -259,56 +259,28 @@ pairs <- pairs %>%
   mutate(
     left_path  = gsub("stimuli/final_plots", "exp_resources/stimuli", left_path,  fixed = TRUE),
     right_path = gsub("stimuli/final_plots", "exp_resources/stimuli", right_path, fixed = TRUE)
-  )
-
-write_csv(pairs, output_csv)
-
-##################################################################################
-
-## Part 2: Creating Experimental csv
-
-# grab images and add directory for psychopy exp
-
-raw_plots_alt <- mixedsort(list.files(path = "stimuli/raw_plots", pattern = "Alt", full.names = T)) %>%
-  paste0("exp_resources/", .)
-
-raw_plots_standard <- mixedsort(list.files(path = "stimuli/raw_plots", pattern = "Norm", full.names = T)) %>%
-  paste0("exp_resources/", .)
-
-# shuffle images for pseudorandomisation
-
-left_images <- c(images_alt[1:15], images_standard[16:30], images_tables[31:45])
-
-middle_images <- c(images_tables[1:15], images_alt[16:30], images_standard[31:45])
-
-right_images <- c(images_standard[1:15], images_tables[16:30], images_alt[31:45])
-
-# create other vectors
-
-colour <- rep("black", times = 45)
+  ) # replace with final path for psychopy experiment
 
 instructions <- rep("Please complete the charity assignment. Make sure you use all your cash.",
-                    times = 45)
+                    times = 108) # instructions
 
-trial_no <- 1:45
+colour <- rep("black", times = 108) # instruction text colour
 
-# cbind exp dataframe together
+exp_data <- cbind(pairs, instructions, colour)
 
-exp_data <- cbind(trial_no, left_images, middle_images, right_images,
-                  colour, instructions) %>% as_data_frame() %>%
-  mutate(trial_no = as.numeric(trial_no))
-
-# use exp df to create and append AC df
+# make AC part of final csv
 
 exp_data <- exp_data %>%
   bind_rows(
     exp_data %>%
-      slice_tail(n = 4) %>%
+      slice_tail(n = 6) %>%
       mutate(
         colour = "red",
-        trial_no = trial_no + 4,
-        instructions = "Please ignore the plots and assign all money to the central charity."
+        trial_id = trial_id + 6,
+        instructions = "Please ignore the plots and assign all money to the right hand charity."
       )
   )
 
-write_csv(exp_data, "behaviour_change_donation_exp_data.csv")
+write_csv(exp_data, output_csv)    # write csv to file
+
+##################################################################################
