@@ -1,3 +1,5 @@
+################################################################################
+
 # load packages
 
 library(tidyverse)
@@ -10,6 +12,9 @@ library(magick)
 library(glue)
 library(gtools)
 library(grid)
+library(magick)
+
+################################################################################
 
 # pre data for visualised conditions
 
@@ -20,6 +25,8 @@ my_rs <- c(0.2, 0.5, 0.8)
 plot_no <- 1:3
 
 correlations <- tibble(plot_no, my_rs)
+
+################################################################################
 
 # define function for creating slopes for alt condition
 
@@ -123,6 +130,8 @@ plot_function <- function(slopes, my_desired_r, letter, size_value, opacity_valu
   return(p)
 }
 
+################################################################################
+
 # Create plots
 
 counter = 1
@@ -162,64 +171,72 @@ for(value in my_rs) {
   }
 }
 
-# =============================================================================
-# Generate 108 cross-charity trial pairs from a directory of plots
-# =============================================================================
-# Expected filename format: CHARITY_PLOTTYPE_CORRELATION.png
-# e.g. charity_a_bar_positive.png, charity_b_scatter_negative.png
-#
-# Structure:
-#   3 charities  x  2 plot types  x  3 correlations  =  18 infographics
-#   108 cross-charity pairs total
-# =============================================================================
+################################################################################
 
-library(tidyverse)
+# insert created plots onto template backgrounds
 
-# --- CONFIG ------------------------------------------------------------------
+box <- list(x = 270, y = 860, w = 1070, h = 1070)
 
-plot_dir   <- "path/to/your/plots"    # <-- change this
-output_csv <- "trials.csv"
+numbers   <- c("1", "2", "3")
+versions  <- c("Alt", "Norm")
+charities <- c("greener_world", "samaritans", "dog_rescue")
 
-# 3 charity identifiers as they appear in filenames
+output_dir <- "stimuli/final_plots/"
+
+for (charity in charities) {
+  template_path <- file.path("stimuli", "charity_templates", paste0(charity, ".png"))
+  
+  
+  template <- image_read(template_path)
+  
+  for (version in versions) {
+    for (number in numbers) {
+      
+      graph_path  <- file.path("stimuli", "raw_plots", paste0(number, "_", version, "_", charity, ".png"))
+      output_path <- file.path(output_dir, paste0(number, "_", version, "_", charity, ".png"))
+      
+      graph         <- image_read(graph_path)
+      graph_resized <- image_resize(graph, geometry_size_pixels(box$w, box$h,
+                                                                preserve_aspect = FALSE))
+      result        <- image_composite(template, graph_resized,
+                                       offset = geometry_point(box$x, box$y))
+      image_write(result, path = output_path, format = "png")
+    }
+  }
+}
+
+################################################################################
+
+# create final experimental csv
+
+plot_dir   <- "stimuli/final_plots"
+output_csv <- "exp_trials.csv"
+
 charities <- c("dog_rescue", "greener_world", "samaritans")
 
-# 2 plot type identifiers as they appear in filenames
-plot_types <- c("Norm", "Alt")     # <-- update to match your filenames
+plot_types <- c("Norm", "Alt")
 
-# 3 correlation identifiers as they appear in filenames
-correlations <- c("1", "2", "3")   # <-- update to match your filenames
+correlations <- c("1", "2", "3")
 
-# File extension
-ext <- ".png"    # <-- change if needed
+ext <- ".png"
 
-# -----------------------------------------------------------------------------
-
-# Build a dataframe of all 18 infographics with their paths
 infographics <- expand_grid(
   charity     = charities,
   plot_type   = plot_types,
   correlation = correlations
 ) %>%
   mutate(
-    filename = paste0(charity, "_", plot_type, "_", correlation, ext),
+    filename = paste0(correlation, "_", plot_type, "_", charity, ext),
     filepath = file.path(plot_dir, filename)
   )
 
-# Optional: verify all files exist and warn if any are missing
-missing_files <- infographics %>% filter(!file.exists(filepath))
-if (nrow(missing_files) > 0) {
-  warning("The following expected files were not found:\n",
-          paste(missing_files$filename, collapse = "\n"))
-}
-
-# Generate all cross-charity pairs (108 trials)
 pairs <- combn(nrow(infographics), 2, simplify = FALSE) %>%
   map_dfr(~ tibble(left_idx = .x[1], right_idx = .x[2])) %>%
   mutate(
     left_charity  = infographics$charity[left_idx],
     right_charity = infographics$charity[right_idx]
   ) %>%
-  filter(left_charity != right_charity) %>%    # remove same-charity pairs
+  filter(left_charity != right_charity) %>% 
   mutate(
     left_path         = infographics$filepath[left_idx],
     right_path        = infographics$filepath[right_idx],
@@ -231,34 +248,21 @@ pairs <- combn(nrow(infographics), 2, simplify = FALSE) %>%
     same_correlation  = left_correlation == right_correlation,
     trial_id          = row_number()
   ) %>%
-  select(
+  dplyr::select(
     trial_id,
     left_charity,  left_plot_type,  left_correlation,  left_path,
     right_charity, right_plot_type, right_correlation, right_path,
     same_plot_type, same_correlation
   )
 
-# Sanity check
-stopifnot(nrow(pairs) == 108)
-message("✓ 108 trials generated successfully.")
-
-# Breakdown summary
-pairs %>%
-  count(same_plot_type, same_correlation) %>%
+pairs <- pairs %>%
   mutate(
-    description = case_when(
-      same_plot_type  &  same_correlation ~ "Same plot type,  same correlation",
-      same_plot_type  & !same_correlation ~ "Same plot type,  different correlation",
-      !same_plot_type &  same_correlation ~ "Different plot type,  same correlation",
-      !same_plot_type & !same_correlation ~ "Different plot type,  different correlation"
-    )
-  ) %>%
-  select(description, n) %>%
-  print()
+    left_path  = gsub("stimuli/final_plots", "exp_resources/stimuli", left_path,  fixed = TRUE),
+    right_path = gsub("stimuli/final_plots", "exp_resources/stimuli", right_path, fixed = TRUE)
+  )
 
-# Write to CSV
 write_csv(pairs, output_csv)
-message("✓ Written to: ", output_csv)
+
 ##################################################################################
 
 ## Part 2: Creating Experimental csv
