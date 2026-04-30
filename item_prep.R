@@ -210,7 +210,7 @@ for (charity in charities) {
 # create final experimental csv
 
 plot_dir   <- "stimuli/final_plots"
-output_csv <- "exp_trials.csv"
+output_csv <- "data/exp_trials.csv"
 
 charities <- c("dog_rescue", "greener_world", "samaritans")
 
