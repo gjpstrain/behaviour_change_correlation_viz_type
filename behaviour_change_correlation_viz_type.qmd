@@ -188,8 +188,8 @@ main_exp_S <- read_csv("data/pav_exp_data.csv") %>% select(-"__participant")
 
 # Results {#sec-results}
 
+# Discussion {#sec-discussions}
 
-
-
+# Conclusion {#sec-cocnlusion}
 
 # References {.unnumbered}
