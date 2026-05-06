@@ -277,7 +277,8 @@ exp_data <- exp_data %>%
       mutate(
         colour = "red",
         trial_id = trial_id + 6,
-        instructions = "Please ignore the plots and assign all money to the right hand charity."
+        instructions = rep(c("Please ignore the plots and assign all money to the right hand charity.",
+                             "Please ignore the plots and assign all money to the left hand charity."), each = 3)
       )
   )
 
