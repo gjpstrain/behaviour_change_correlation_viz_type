@@ -152,7 +152,7 @@ if (!params$eval_models){ lazyload_cache_dir("donation_behaviour_cache/pdf") }
 #| label: load-data
 # load in data csv for main experiment, remove the "__participant" column now 
 
-main_exp_S <- read_csv("data/pav_exp_data.csv") %>% select(-"__participant")
+anon_file <- read_csv("data/pav_exp_data.csv") %>% select(-"__participant")
 ```
 
 ```{r}
@@ -160,6 +160,79 @@ main_exp_S <- read_csv("data/pav_exp_data.csv") %>% select(-"__participant")
 ## NB: With the exception of anonymization, data are provided as-is from 
 ## pavlovia (survey tool). Wrangling functions *must* be run first to make
 ## the data sets usable
+
+# extract demographic information
+
+wrangle <- function(anon_file) {
+  
+demographics <- anon_file %>%
+  filter(!is.na(age_textbox.text)) %>%
+  select(matches(c("participant",
+                   "age_textbox.text",
+                   "gender_slider.response")))
+
+# extract time taken information
+
+time_taken <- anon_file %>%
+  filter(!is.na(final.stopped)) %>%
+  select(c("participant", "final.stopped"))
+
+# extract charity Likert ratings
+
+charity_opinions <- anon_file %>%
+  select(c("participant",
+           "c1_slider.response",
+           "c2_slider.response",
+           "c3_slider.response")) %>%
+  filter(!is.na(c1_slider.response)) %>%
+  rename("dog_rescue_likert"  = "c1_slider.response",
+         "environment_likert" = "c2_slider.response",
+         "helpline_likert"    = "c3_slider.response")
+
+# extract charity rankings
+
+charity_rankings <- anon_file %>%
+  select(c("participant",
+           "donation_behaviour_survey.block_1/question1")) %>%
+  rename("ranking" = "donation_behaviour_survey.block_1/question1") %>%
+  filter(!is.na(ranking)) %>%
+    mutate(
+    ranking_list = ranking %>%
+      str_remove_all('\\[|\\]|"') %>%
+      str_squish() %>%
+      str_split(",\\s*"),
+    dog_rescue_rank  = map_int(ranking_list, ~ which(.x == "Item 1")),
+    helpline_rank    = map_int(ranking_list, ~ which(.x == "Item 2")),
+    environment_rank = map_int(ranking_list, ~ which(.x == "Item 3"))
+  ) %>%
+  select(-c("ranking", "ranking_list"))
+  
+# get main experiment data, join other dataframes
+
+anon_file %>%
+  select(c("participant",
+           "trial_id",
+           "left_charity",
+           "right_charity",
+           "left_plot_type",
+           "right_plot_type",
+           "left_correlation",
+           "right_correlation",
+           "same_plot_type",
+           "same_correlation",
+           "tb1.text",
+           "tb3.text")) %>%
+  rename("left_amount"  = "tb1.text",
+         "right_amount" = "tb3.text") %>%
+  filter(trial_id < 109) %>%
+  full_join(demographics,     by = "participant") %>%
+  full_join(time_taken,       by = "participant") %>%
+  full_join(charity_opinions, by = "participant") %>%
+  full_join(charity_rankings, by = "participant") %>%
+  assign(paste0(unique(anon_file$expName), "_tidy"),
+           value = ., envir = .GlobalEnv)
+}
+
 ```
 
 # Introduction {#sec-intro}
@@ -174,17 +247,41 @@ main_exp_S <- read_csv("data/pav_exp_data.csv") %>% select(-"__participant")
 
 # Hypotheses {#sec-hypotheses}
 
-# Methods {#sec-methods}
+# Methodology {#sec-methods}
 
-## Open Reearch {#sec-open-research}
+In this section we begin by discussing our research methods, including the open 
+and reproducible research practices we used, the crowdsourcing methodology used
+to recruit the research participants, and the modelling paradigms utilised in
+our analyses. We then detail our experimental procedure, participant recruitment
+and characteristics, and experimental design. This section concludes by discussing
+the stimuli used in the experiment.
+
+## Open Research {#sec-open-research}
+
+The experiment was conducted according the principles of open and reproducible
+research [@ayris_2018]. Hypotheses and analysis plans were pre-registered with
+the Open Science Framework (OSF)[^1]. All data and analysis code are included
+in a GitHub repository[^2], which also contains instructions for building a 
+Docker container [@merkel_2014] that reproduces the computational environment
+in which the paper was written. By capturing package versions and dependencies
+using the `renv` package [@ushey_2026] in R, this container allows for full replication
+of all stimuli, figures, analyses, and the paper itself. Ethical approval
+was granted by *removed for anon*.
+
+[^1]: https://osf.io/kywt9/overview?view_only=1f677775eb80467dae61c7502bc3305f
+[^2]: removed for anon
 
 ## Crowdsourcing {#sec-crowdsourcing}
+
+## Modelling {#sec-modelling}
+
+## Procedure {#sec-procedure}
 
 ## Participants {#sec-participants}
 
 ## Design {#sec-design}
 
-## Procedure {#sec-procedure}
+## Stimuli {#sec-stimuli}
 
 # Results {#sec-results}
 
