@@ -30,6 +30,15 @@ author:
       city: Manchester
       country: United Kingdom
       postal-code: M13 9PL
+  - name: Aaditya Mehrotra
+    email: aadityaa.mehrotra@manchester.ac.uk
+    orcid: XX
+    affiliation:
+      name: Department of Computer Science, Faculty of Science and Engineering, University of Manchester
+      address: Oxford Road
+      city: Manchester
+      country: United Kingdom
+      postal-code: M13 9PL
   - name: Caroline Jay
     affiliation:
       name: Department of Computer Science, Faculty of Science and Engineering, University of Manchester
