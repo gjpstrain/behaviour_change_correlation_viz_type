@@ -224,6 +224,10 @@ anon_file %>%
            "tb3.text")) %>%
   rename("left_amount"  = "tb1.text",
          "right_amount" = "tb3.text") %>%
+  mutate(left_amount = as.numeric(left_amount),
+         right_amount = as.numeric(right_amount)) %>%
+  mutate(across(c(left_amount, right_amount), ~replace_na(., 0))) %>%
+  mutate(ratio = (right_amount - left_amount)/100) %>%
   filter(trial_id < 109) %>%
   full_join(demographics,     by = "participant") %>%
   full_join(time_taken,       by = "participant") %>%
@@ -232,6 +236,8 @@ anon_file %>%
   assign(paste0(unique(anon_file$expName), "_tidy"),
            value = ., envir = .GlobalEnv)
 }
+
+wrangle(anon_file)
 
 ```
 
@@ -284,6 +290,7 @@ was granted by *removed for anon*.
 ## Stimuli {#sec-stimuli}
 
 # Results {#sec-results}
+
 
 # Discussion {#sec-discussions}
 
