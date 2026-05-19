@@ -16,6 +16,7 @@ final_data <- just_passed %>%
 final_data$participant <- NULL
 
 final_data <- final_data %>%
-  rename(participant = ID)
+  rename(participant = ID) %>%
+  select(-c("__participant"))
 
 write_csv(final_data, "data/exp_data_final.csv") 

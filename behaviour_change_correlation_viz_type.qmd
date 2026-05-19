@@ -162,7 +162,7 @@ if (!params$eval_models){ lazyload_cache_dir("donation_behaviour_cache/pdf") }
 #| label: load-data
 # load in data csv for main experiment, remove the "__participant" column now 
 
-anon_file <- read_csv("data/exp_data_final.csv") %>% select(-"__participant")
+anon_file <- read_csv("data/exp_data_final.csv")
 ```
 
 ```{r}
@@ -231,7 +231,8 @@ anon_file %>%
            "same_plot_type",
            "same_correlation",
            "tb1.text",
-           "tb3.text")) %>%
+           "tb3.text",
+           "passed")) %>%
   rename("left_amount"  = "tb1.text",
          "right_amount" = "tb3.text") %>%
   mutate(
@@ -336,6 +337,8 @@ was granted by *removed for anon*.
 
 ## Participants {#sec-participants}
 
+
+
 ## Design {#sec-design}
 
 ## Stimuli {#sec-stimuli}
@@ -344,7 +347,7 @@ was granted by *removed for anon*.
 
 
 ```{r}
-model_preference <- buildmer(amount ~ likert +
+model_preference <- buildmer(amount ~ likert + passed
                                (1 | participant) + (1 | charity),
                              data = donation_behaviour_tidy)
 
@@ -356,7 +359,7 @@ donation_behaviour_tidy %>%
   ggplot(aes(x = likert, y = amount)) +
   geom_col()
 
-model_corr <- buildmer(amount ~ correlation +
+model_corr <- buildmer(amount ~ correlation + passed
                                (1 | participant) + (1 | charity),
                              data = donation_behaviour_tidy)
 
@@ -369,6 +372,10 @@ donation_behaviour_tidy %>%
 model_type <- lmer(amount ~ likert + correlation + plot_type
                                + (1 | trial_id),
                              data = donation_behaviour_tidy)
+
+model_type_passed <- lmer(amount ~ likert + correlation + plot_type
+                               + (1 | trial_id),
+                             data = passed_df)
 
 summary(model_type)
 

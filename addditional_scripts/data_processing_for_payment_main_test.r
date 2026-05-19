@@ -13,6 +13,9 @@ check_responses <- function(anon) {
     select(c("participant",
              "trial_id",
              "tb3.text")) %>%
+    mutate(
+      tb3.text = as.numeric(gsub("[^0-9.-]", "", tb3.text))) %>%
+    mutate(across(c(tb3.text), ~replace_na(., 0))) %>%
     filter(trial_id %in% c(109, 110, 111,       # assign 100 to right
                            112, 113, 114)) %>%  # assign 100 to left (0 to right)
     mutate_all(~replace(., is.na(.), 0))        # replace non-responses with zero, as blank values are zero
@@ -39,7 +42,7 @@ check_responses <- function(anon) {
     summarise(total_correct = sum(correct)) %>%
     arrange(-total_correct)
   
-  new_df$passed <- new_df$total_correct >= 2
+  new_df$passed <- new_df$total_correct >= 3
   
   write_csv(new_df,file.path("data", paste0(unique(anon$expName), "_passed.csv")))
 
