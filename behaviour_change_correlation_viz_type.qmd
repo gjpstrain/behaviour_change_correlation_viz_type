@@ -162,7 +162,7 @@ if (!params$eval_models){ lazyload_cache_dir("donation_behaviour_cache/pdf") }
 #| label: load-data
 # load in data csv for main experiment, remove the "__participant" column now 
 
-anon_file <- read_csv("data/exp_data_final.csv")
+anon_file <- read_csv("data/exp_data_final.csv", guess_max = 17000)
 ```
 
 ```{r}
@@ -232,7 +232,8 @@ anon_file %>%
            "same_correlation",
            "tb1.text",
            "tb3.text",
-           "passed")) %>%
+          # "passed"
+           )) %>%
   rename("left_amount"  = "tb1.text",
          "right_amount" = "tb3.text") %>%
   mutate(
@@ -291,6 +292,25 @@ anon_file %>%
 }
 
 wrangle(anon_file)
+
+# extract demographics and time taken info for rendering in text
+
+gender <- distinct(donation_behaviour_tidy, participant,
+                   .keep_all = TRUE) %>%
+  group_by(gender_slider.response) %>%
+  summarise(sum = n()) %>%
+  pivot_wider(names_from = gender_slider.response,
+              values_from = sum)
+
+age <- distinct(donation_behaviour_tidy, participant,
+                .keep_all = TRUE) %>%
+  summarise(mean = mean(age_textbox.text, na.rm = TRUE),
+            sd = sd(age_textbox.text, na.rm = TRUE))
+
+time_taken <- distinct(donation_behaviour_tidy, participant,
+                .keep_all = TRUE) %>%
+  summarise(mean = mean(final.stopped/60, na.rm = TRUE),
+            sd = sd(final.stopped/60, na.rm = TRUE))
 ```
 
 # Introduction {#sec-intro}
@@ -308,8 +328,7 @@ wrangle(anon_file)
 # Methodology {#sec-methods}
 
 In this section we begin by discussing our research methods, including the open 
-and reproducible research practices we used, the crowdsourcing methodology used
-to recruit the research participants, and the modelling paradigms utilised in
+and reproducible research practices we used and the modelling paradigms utilised in
 our analyses. We then detail our experimental procedure, participant recruitment
 and characteristics, and experimental design. This section concludes by discussing
 the stimuli used in the experiment.
@@ -329,17 +348,36 @@ was granted by *removed for anon*.
 [^1]: https://osf.io/kywt9/overview?view_only=1f677775eb80467dae61c7502bc3305f
 [^2]: removed for anon
 
-## Crowdsourcing {#sec-crowdsourcing}
-
 ## Modelling {#sec-modelling}
 
 ## Procedure {#sec-procedure}
 
 ## Participants {#sec-participants}
 
+Participants were recruited using Prolific [@prolific]. English fluency and normal
+or corrected-to-normal vision were required, as well as having not previously taken
+part in any of the research team's previous studies into scatterplot visualisations
+(references withheld for anon). In an effort to improve data quality, strict 
+pre-screening criteria were also employed [@peer_2021]; participants were required
+to have previously completed at least 100 studies on the platform, and were 
+required to have been accepted on at least 99% of them. Data were collected
+from 174 participants. 10 failed more than 3 out of 6 attention checks, meaning their
+submissions were rejected in accordance with our pre-registration [1^]. Data
+from the remaining 164 participants were included in the full analysis 
+(`r printnum(gender$Male, digits = 2)` male, `r printnum(gender$Female, digits = 2)`
+female, and `r printnum(gender$'Non-binary', digits = 2)` non-binary).
+Participants' mean age was `r printnum(age$mean, digits = 1)`
+(SD = `r printnum(age$sd, digits = 1)`). Participants took a mean of 
+`r printnum(time_taken_main$mean, digits = 1)` minutes to complete the 
+experiment (SD = `r printnum(time_taken_main$sd)`).
 
+[1^]: The pre-registration states that 150 participants would be recruited. Additional participants were recruited due to an oversight, however all conclusions and statistical results are identical when run with 164 or 150 participants.
 
 ## Design {#sec-design}
+
+We employed a fully within-subjects design. Each participant saw all side-by-side
+
+
 
 ## Stimuli {#sec-stimuli}
 
