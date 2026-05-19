@@ -167,7 +167,7 @@ if (!params$eval_models){ lazyload_cache_dir("donation_behaviour_cache/pdf") }
 #| label: load-data
 # load in data csv for main experiment, remove the "__participant" column now 
 
-anon_file <- read_csv("data/exp_data_final.csv", guess_max = 17000)
+anon_file <- read_csv("data/exp_data_final.csv", guess_max = 17000) # we need a higher guess_max for read_csv to correctly interpret column data types
 ```
 
 ```{r}
@@ -321,23 +321,67 @@ time_taken <- distinct(donation_behaviour_tidy, participant,
 
 # Introduction {#sec-intro}
 
+ - some justification for only using scatterplots
+ - motivate the study of data visualisation and behaviour change
+ - motivate the use of novel visualisation techniques
+ - 
+
 # Related Work {#sec-related-work}
 
 ## Donation Behaviour {#sec-donation-behaviour}
 
+ - factors influencing charitable donations
+ - specifically regarding online infographics/donation campaigns
+ - do people donate more to things they like more?
+ - do they donate more to things that show better outcomes?
+
 ## Behaviour and Data Visualisation {#sec-behaviour-data-viz}
+
+ - how can data visualisation change people's behaviours?
+ - the persuasive power of data visualisation and how can this extend to driving behaviour change
+ - data visualisation and belief change
+ - then, can this meaningfully be extended to modify behaviour?
 
 ## Correlation Perception & Modified Scatterplots {#sec-corr-percept}
 
+ - factors influencing correlation perception, including what we have found
+ - how have scatterplots been modified to induce changes in correlation perception
+ - then, how this has been shown to extend to belief change
+ - motivate the study of behaviour change as a result of visualisation viewing
+ - particularly, highlight the potential moral benefit of motivating better behaviour
+ 
+## Using Visualisation Techniques to Drive Behaviour Modification
+
+ - has anything like this been tested before? (I am assuming not)
+ - hat are the potential implications of this?
+
 # Hypotheses {#sec-hypotheses}
+
+We formulate the first hypothesis based on previous evidence that people will donate
+more money to charitable concerns that they prefer:
+
+ - H~1~: participants will donate more money to charities that they prefer, as tested by Likert scales and a charity ranking.
+ 
+Owing to evidence that strong relationships portrayed in scatterplots can induce
+belief change in viewers, and that, featured in data visualisations can have 
+effects on viewers' thoughts and attitudes, we formulate the second hypothesis:
+
+ - H~2~: participants will donate more money to charities whose infographics feature scatterplots with higher *r* values.
+ 
+Finally, in light of evidence that scatterplots whose points have been modified in
+such a way that correlation is perceived as higher and is able to induce belief
+change to a greater degree, we formulate the third hypothesis. This hypothesis
+is non-directional due to small effects sizes reported in a previous study
+that utilised these techniques:
+
+ - H~3~: participants' donation amounts will be affected (non-directionally) by the type (standard or alternative) of scatterplot displayed.
 
 # Methodology {#sec-methods}
 
 In this section we begin by discussing our research methods, including the open 
 and reproducible research practices we used and the modelling paradigms utilised in
 our analyses. We then detail the design of our stimuli, the design of the experiment,
-the experimental procedure, and participant recruitment
-and characteristics.
+the experimental procedure, and participant recruitment and characteristics.
 
 ## Open Research {#sec-open-research}
 
