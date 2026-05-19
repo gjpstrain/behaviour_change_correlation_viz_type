@@ -1,5 +1,9 @@
 ---
-format: acm-pdf
+format:
+  acm-pdf:
+    include-in-header:
+      text: |
+        \usepackage{tcolorbox}
 # use keep-tex to cause quarto to generate a .tex file
 # which you can eventually use with TAPS
 keep-tex: true
@@ -79,7 +83,7 @@ acm-metadata:
   conference-acronym: "CHI'27"
   conference-name: CHI Conference on Human Factors in Computing Systems
     
-  conference-date: April 26-May 1, 2025
+  conference-date: April 26-May 1, 2027
   conference-location: Pittsburgh, USA
   isbn: 
   # if present, replaces the list of authors in the page header.
@@ -146,6 +150,7 @@ library(conflicted)
 library(ggtext)
 library(Matrix)
 library(ordinal)
+library(janitor)
 
 # fix conflicts now using the conflicted package
 
@@ -300,7 +305,8 @@ gender <- distinct(donation_behaviour_tidy, participant,
   group_by(gender_slider.response) %>%
   summarise(sum = n()) %>%
   pivot_wider(names_from = gender_slider.response,
-              values_from = sum)
+              values_from = sum) %>%
+  clean_names()
 
 age <- distinct(donation_behaviour_tidy, participant,
                 .keep_all = TRUE) %>%
@@ -329,9 +335,9 @@ time_taken <- distinct(donation_behaviour_tidy, participant,
 
 In this section we begin by discussing our research methods, including the open 
 and reproducible research practices we used and the modelling paradigms utilised in
-our analyses. We then detail our experimental procedure, participant recruitment
-and characteristics, and experimental design. This section concludes by discussing
-the stimuli used in the experiment.
+our analyses. We then detail the design of our stimuli, the design of the experiment,
+the experimental procedure, and participant recruitment
+and characteristics.
 
 ## Open Research {#sec-open-research}
 
@@ -350,28 +356,9 @@ was granted by *removed for anon*.
 
 ## Modelling {#sec-modelling}
 
-## Procedure {#sec-procedure}
+## Stimuli {#sec-stimuli}
 
-## Participants {#sec-participants}
 
-Participants were recruited using Prolific [@prolific]. English fluency and normal
-or corrected-to-normal vision were required, as well as having not previously taken
-part in any of the research team's previous studies into scatterplot visualisations
-(references withheld for anon). In an effort to improve data quality, strict 
-pre-screening criteria were also employed [@peer_2021]; participants were required
-to have previously completed at least 100 studies on the platform, and were 
-required to have been accepted on at least 99% of them. Data were collected
-from 174 participants. 10 failed more than 3 out of 6 attention checks, meaning their
-submissions were rejected in accordance with our pre-registration [1^]. Data
-from the remaining 164 participants were included in the full analysis 
-(`r printnum(gender$Male, digits = 2)` male, `r printnum(gender$Female, digits = 2)`
-female, and `r printnum(gender$'Non-binary', digits = 2)` non-binary).
-Participants' mean age was `r printnum(age$mean, digits = 1)`
-(SD = `r printnum(age$sd, digits = 1)`). Participants took a mean of 
-`r printnum(time_taken_main$mean, digits = 1)` minutes to complete the 
-experiment (SD = `r printnum(time_taken_main$sd)`).
-
-[1^]: The pre-registration states that 150 participants would be recruited. Additional participants were recruited due to an oversight, however all conclusions and statistical results are identical when run with 164 or 150 participants.
 
 ## Design {#sec-design}
 
@@ -387,50 +374,82 @@ instructions, are hosted on GitLab [1^].
 
 [1^]: removed for anon.
 
-## Stimuli {#sec-stimuli}
+## Procedure {#sec-procedure}
 
-# Results {#sec-results}
+The experiment was built using PsychoPy [@pierce_2019] and is hosted on Pavlovia.org.
+Participants were instructed to only complete the experiment on desktop or laptop
+computers. Each participants first viewed the participant information sheet and provided
+consent by checking boxes next to consent statements. Consent was required in order
+to progress through the experiment. They were asked to provide their age in a
+free text box, followed by their gender identity. Using Likert scales, participants
+were then asked to indicate how important the three chosen charitable concerns were
+to them (Dog Rescue and Re-Housing, Environmental Protection, and Mental Health
+Helpline). Each Likert scale featured seven points, and was anchored at points 1 
+and 7 with "Not at all important" and "Extremely important". Participants then
+used a drag-and-drop interface to rank the three charitable concerns. Following 
+the pre-experimental tests, participants were then asked to complete eight rounds
+of the Remote Associated Test (RAT), which acted as a filler task to prevent 
+carryover effects [@she_2023]. Participants were given 15 seconds for each round
+of the RAT, and were not required to answer. Participants were given instructions, 
+including the following:
 
+```{=latex}
+\hspace{0pt}
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, boxrule=0.5pt]
+...
+\newline
+  5. We encourage you to make assignments as if it were your own money.
+  \newline
+  6. To help you get into this mindset, the research team have decided to donate money to real-life charities based on the totals donated by all participants over the course of the experiment.
+  \newline
+  7. Once the experiment has concluded, you will receive an email detailing how the research team have split the money and which charities have been donated to.
+  \newline
+  ...
+\end{tcolorbox}
+\hspace{0pt}
+```
+
+Participants were informed that this was a deception at the conclusion of the
+experiment. Following instructions, the experiment began. In a series of 108 experimental
+trials, participants were asked to split 100 dollars between two charity infographics.
+Presentation order was randomised, including 6 attention check trials which
+explicitly asked participants to assign 100 dollars to either the left (n = 3) or the
+right (n = 3) charity infographic. An example of an experimental trial can be seen
+in @fig-example-trial. After completing all trials, participants were debriefed
+regarding the deception employed and thanked for their participation.
 
 ```{r}
-model_preference <- buildmer(amount ~ likert + passed
-                               (1 | participant) + (1 | charity),
-                             data = donation_behaviour_tidy)
+#| label: fig-example-trial
+#| fig-env: "figure*"
+#| include: true
+#| out-width: "100%"
+#| fig-cap: "An example of an experimental trial. Illustrated are the reminder to use all available money (A), the display of the current total (B), the trial counter (C), the left infographic and allocation box (D), and the right infographic and allocation box (E)"
 
-summary(model_preference)
-
-anova(model_preference)
-
-donation_behaviour_tidy %>%
-  ggplot(aes(x = likert, y = amount)) +
-  geom_col()
-
-model_corr <- buildmer(amount ~ correlation + passed
-                               (1 | participant) + (1 | charity),
-                             data = donation_behaviour_tidy)
-
-summary(model_corr)
-
-donation_behaviour_tidy %>%
-  ggplot(aes(x = correlation, y = amount)) +
-  geom_col()
-
-model_type <- lmer(amount ~ likert + correlation + plot_type
-                               + (1 | trial_id),
-                             data = donation_behaviour_tidy)
-
-model_type_passed <- lmer(amount ~ likert + correlation + plot_type
-                               + (1 | trial_id),
-                             data = passed_df)
-
-summary(model_type)
-
-donation_behaviour_tidy %>%
-  ggplot(aes(x = plot_type, y = amount)) +
-  geom_col()
-
-anova(model_type)
+knitr::include_graphics("graphics/example_trial.png")
 ```
+
+## Participants {#sec-participants}
+
+Participants were recruited using Prolific [@prolific]. English fluency and normal
+or corrected-to-normal vision were required, as well as having not previously taken
+part in any of the research team's previous studies into scatterplot visualisations
+(references withheld for anon). In an effort to improve data quality, strict 
+pre-screening criteria were also employed [@peer_2021]; participants were required
+to have previously completed at least 100 studies on the platform, and were 
+required to have been accepted on at least 99% of them. Data were collected
+from 174 participants. 10 failed more than 3 out of 6 attention checks, meaning their
+submissions were rejected in accordance with our pre-registration [1^]. Data
+from the remaining 164 participants were included in the full analysis 
+(`r printnum(gender$male, digits = 2)` male, `r printnum(gender$female, digits = 2)`
+female, and `r printnum(gender$non_binary, digits = 2)` non-binary).
+Participants' mean age was `r printnum(age$mean, digits = 1)`
+(SD = `r printnum(age$sd, digits = 1)`). Participants took a mean of 
+`r printnum(time_taken$mean, digits = 1)` minutes to complete the 
+experiment (SD = `r printnum(time_taken$sd)`).
+
+[1^]: The pre-registration states that 150 participants would be recruited. Additional participants were recruited due to an oversight, however all conclusions and statistical results are identical when run with 164 or 150 participants.
+
+# Results {#sec-results}
 
 
 # Discussion {#sec-discussions}
