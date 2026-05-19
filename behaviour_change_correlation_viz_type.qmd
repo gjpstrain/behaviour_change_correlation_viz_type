@@ -375,9 +375,17 @@ experiment (SD = `r printnum(time_taken_main$sd)`).
 
 ## Design {#sec-design}
 
-We employed a fully within-subjects design. Each participant saw all side-by-side
+We employed a fully within-subjects design. With 18 unique plots (3 charities
+$\times$ 3 correlation values $\times$ 2 plot types), all unique combinations would
+result in $\binom{18}{2} = 153$ pairs. To decrease the task load on participants, we
+removed the 45 trials which featured the same charity for a final total of 108
+experimental trials. Participants viewed all 108 experimental trials along with
+6 attention check trials, in a fully-randomised order. Our dependent variable was
+the amount of money participants assigned to the left and right charity infographics
+on a per-trial basis. The experiment, including all stimuli, materials, and 
+instructions, are hosted on GitLab [1^].
 
-
+[1^]: removed for anon.
 
 ## Stimuli {#sec-stimuli}
 
