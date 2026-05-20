@@ -402,7 +402,37 @@ was granted by *removed for anon*.
 
 ## Stimuli {#sec-stimuli}
 
+Three charitable concerns were chosen for the experiment. Initially, we intended 
+to use the five charitable concerns outline in She and Sanfey, 2023 [@she_2023]. 
+These were:
 
+ 1. Dog Rescue/Re-housing.
+ 2. Environmental Protection.
+ 3. Mental Health Helpline.
+ 4. Education in Disadvantaged Communities.
+ 5. Support for Homeless Individuals.
+ 
+ Due to our inclusion of different correlations and scatterplot types, the use
+ of five charity categories would have resulted in an unfeasibly large number of
+ experimental trials. Concerns about participant fatigue and experimental length
+ led us to use only the first three charity categories for the present experiment.
+ After deciding on the three charity categories, one author created candidate
+ fictional charities for each. Two authors then decided on a single fictional
+ charity for each category. @tbl-candidate-charities shows the candidate charities
+ for each charity category. The final chosen charity is highlighted in each case.
+ 
+ 
+```{r}
+#| label: tbl-candidate-charities
+#| include: true
+#| tbl-cap: placeholder
+
+
+```
+ 
+ 
+ 
+ 
 
 ## Design {#sec-design}
 
