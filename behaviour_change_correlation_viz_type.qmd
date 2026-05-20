@@ -402,6 +402,8 @@ was granted by *removed for anon*.
 
 ## Stimuli {#sec-stimuli}
 
+### Charities {#sec-stimuli-charities}
+
 Three charitable concerns were chosen for the experiment. Initially, we intended 
 to use the five charitable concerns outline in She and Sanfey, 2023 [@she_2023]. 
 These were:
@@ -425,14 +427,18 @@ These were:
 ```{r}
 #| label: tbl-candidate-charities
 #| include: true
-#| tbl-cap: placeholder
+#| tbl-cap: The three chosen charity categories, along with the candidate fictional charities for each. The final chosen charity for each category is marked in bold and with an asterisk in each case.
 
+table_df <- read_csv("data/candidate_charities.csv")
+
+kbl(table_df, booktabs = TRUE, escape = F)
 
 ```
- 
- 
- 
- 
+
+### Charity Templates {#sec-stimuli-charity-templates}
+
+### Scatterplot Visualisations {#sec-stimuli-visualisations}
+
 
 ## Design {#sec-design}
 

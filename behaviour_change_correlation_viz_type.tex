@@ -194,7 +194,7 @@
 
 %% These commands are for a PROCEEDINGS abstract or paper.
 \acmConference[CHI'27]{CHI Conference on Human Factors in Computing
-Systems}{April 26-May 1, 2025}{Pittsburgh, USA}
+Systems}{April 26-May 1, 2027}{Pittsburgh, USA}
 \acmPrice{}
 %%
 %%  Uncomment \acmBooktitle if the title of the proceedings is different
@@ -369,17 +369,118 @@ abstract goes here.
 
 \section{Introduction}\label{sec-intro}
 
+\begin{itemize}
+\tightlist
+\item
+  some justification for only using scatterplots
+\item
+  motivate the study of data visualisation and behaviour change
+\item
+  motivate the use of novel visualisation techniques
+\item
+\end{itemize}
+
 \section{Related Work}\label{sec-related-work}
 
 \subsection{Donation Behaviour}\label{sec-donation-behaviour}
 
+\begin{itemize}
+\tightlist
+\item
+  factors influencing charitable donations
+\item
+  specifically regarding online infographics/donation campaigns
+\item
+  do people donate more to things they like more?
+\item
+  do they donate more to things that show better outcomes?
+\end{itemize}
+
 \subsection{Behaviour and Data
 Visualisation}\label{sec-behaviour-data-viz}
+
+\begin{itemize}
+\tightlist
+\item
+  how can data visualisation change people's behaviours?
+\item
+  the persuasive power of data visualisation and how can this extend to
+  driving behaviour change
+\item
+  data visualisation and belief change
+\item
+  then, can this meaningfully be extended to modify behaviour?
+\end{itemize}
 
 \subsection{Correlation Perception \& Modified
 Scatterplots}\label{sec-corr-percept}
 
+\begin{itemize}
+\tightlist
+\item
+  factors influencing correlation perception, including what we have
+  found
+\item
+  how have scatterplots been modified to induce changes in correlation
+  perception
+\item
+  then, how this has been shown to extend to belief change
+\item
+  motivate the study of behaviour change as a result of visualisation
+  viewing
+\item
+  particularly, highlight the potential moral benefit of motivating
+  better behaviour
+\end{itemize}
+
+\subsection{Using Visualisation Techniques to Drive Behaviour
+Modification}\label{using-visualisation-techniques-to-drive-behaviour-modification}
+
+\begin{itemize}
+\tightlist
+\item
+  has anything like this been tested before? (I am assuming not)
+\item
+  hat are the potential implications of this?
+\end{itemize}
+
 \section{Hypotheses}\label{sec-hypotheses}
+
+We formulate the first hypothesis based on previous evidence that people
+will donate more money to charitable concerns that they prefer:
+
+\begin{itemize}
+\tightlist
+\item
+  H\textsubscript{1}: participants will donate more money to charities
+  that they prefer, as tested by Likert scales and a charity ranking.
+\end{itemize}
+
+Owing to evidence that strong relationships portrayed in scatterplots
+can induce belief change in viewers, and that, featured in data
+visualisations can have effects on viewers' thoughts and attitudes, we
+formulate the second hypothesis:
+
+\begin{itemize}
+\tightlist
+\item
+  H\textsubscript{2}: participants will donate more money to charities
+  whose infographics feature scatterplots with higher \emph{r} values.
+\end{itemize}
+
+Finally, in light of evidence that scatterplots whose points have been
+modified in such a way that correlation is perceived as higher and is
+able to induce belief change to a greater degree, we formulate the third
+hypothesis. This hypothesis is non-directional due to small effects
+sizes reported in a previous study that utilised these techniques:
+
+\begin{itemize}
+\tightlist
+\item
+  H\textsubscript{3}: participants' donation amounts will be affected
+  (non-directionally) by the type (standard or alternative) of
+  scatterplot displayed.
+\end{itemize}
 
 \section{Methodology}\label{sec-methods}
 
@@ -406,6 +507,66 @@ was granted by \emph{removed for anon}.
 \subsection{Modelling}\label{sec-modelling}
 
 \subsection{Stimuli}\label{sec-stimuli}
+
+\subsubsection{Charities}\label{sec-stimuli-charities}
+
+Three charitable concerns were chosen for the experiment. Initially, we
+intended to use the five charitable concerns outline in She and Sanfey,
+2023 \citep{she_2023}. These were:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Dog Rescue/Re-housing.
+\item
+  Environmental Protection.
+\item
+  Mental Health Helpline.
+\item
+  Education in Disadvantaged Communities.
+\item
+  Support for Homeless Individuals.
+\end{enumerate}
+
+Due to our inclusion of different correlations and scatterplot types,
+the use of five charity categories would have resulted in an unfeasibly
+large number of experimental trials. Concerns about participant fatigue
+and experimental length led us to use only the first three charity
+categories for the present experiment. After deciding on the three
+charity categories, one author created candidate fictional charities for
+each. Two authors then decided on a single fictional charity for each
+category. Table~\ref{tbl-candidate-charities} shows the candidate
+charities for each charity category. The final chosen charity is
+highlighted in each case.
+
+\begin{table}
+
+\caption{\label{tbl-candidate-charities}The three chosen charity
+categories, along with the candidate fictional charities for each. The
+final chosen charity for each category is marked in bold and with an
+asterisk in each case.}
+
+\centering{
+
+\begin{tabular}[t]{lll}
+\toprule
+Dog Rescue \& Re-housing & Environmental Protection & Mental Health Helpline\\
+\midrule
+West England Dog Re-Homing Centre & Welsh River Cleanup & SpeakUp\\
+\textbf{Great British Dog Foundation*} & \textbf{Action for a Greener World*} & \textbf{Good Samaritans*}\\
+London Dog’s Trust & British Bird’s Trust & Listen UK\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+\subsubsection{Charity Templates}\label{sec-stimuli-charity-templates}
+
+\subsubsection{Scatterplot
+Visualisations}\label{sec-stimuli-visualisations}
 
 \subsection{Design}\label{sec-design}
 
