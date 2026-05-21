@@ -414,25 +414,42 @@ These were:
  4. Education in Disadvantaged Communities.
  5. Support for Homeless Individuals.
  
- Due to our inclusion of different correlations and scatterplot types, the use
- of five charity categories would have resulted in an unfeasibly large number of
- experimental trials. Concerns about participant fatigue and experimental length
- led us to use only the first three charity categories for the present experiment.
- After deciding on the three charity categories, one author created candidate
- fictional charities for each. Two authors then decided on a single fictional
- charity for each category. @tbl-candidate-charities shows the candidate charities
- for each charity category. The final chosen charity is highlighted in each case.
- 
- 
+Due to our inclusion of different correlations and scatterplot types, the use
+of five charity categories would have resulted in an unfeasibly large number of
+experimental trials. Concerns about participant fatigue and experimental length
+led us to use only the first three charity categories for the present experiment.
+After deciding on the three charity categories, one author created candidate
+fictional charities for each. Two authors then decided on a single fictional
+charity for each category. @tbl-candidate-charities shows the candidate charities
+for each charity category. The final chosen charity is highlighted in each case.
+
 ```{r}
-#| label: tbl-candidate-charities
+#| results: asis
 #| include: true
-#| tbl-cap: The three chosen charity categories, along with the candidate fictional charities for each. The final chosen charity for each category is marked in bold and with an asterisk in each case.
 
 table_df <- read_csv("data/candidate_charities.csv")
 
-kbl(table_df, booktabs = TRUE, escape = F)
+x <- kbl(
+  table_df,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = "\\label{tbl-candidate-charities}The three chosen charity categories, along with the candidate fictional charities for each. The final chosen charity for each category is marked in bold and with an asterisk in each case."
+) |>
+  as.character()
 
+x <- gsub(
+  "\\\\begin\\{table\\}",
+  "\\\\begin{table*}",
+  x
+)
+
+x <- gsub(
+  "\\\\end\\{table\\}",
+  "\\\\end{table*}",
+  x
+)
+
+cat(x)
 ```
 
 ### Charity Templates {#sec-stimuli-charity-templates}
