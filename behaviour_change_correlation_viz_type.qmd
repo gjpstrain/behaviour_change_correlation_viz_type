@@ -456,6 +456,23 @@ cat(x)
 
 ### Scatterplot Visualisations {#sec-stimuli-visualisations}
 
+Previous work has shown that changes to the opacities and sizes of scatterplot points
+can induce changes in perceptions of correlation in viewers 
+[@strain_2023; @strain_2023b; @strain_2024]. In particular, lowering the opacity
+and size of points as a function of residual magnitude is able to bias estimates
+of correlation upwards and partially correct for an observed underestimation bias
+in positively correlated scatterplots. The same techniques have also been shown
+to be able to induce greater levels of belief change in viewers of scatterplots
+contextualised as part of news items [@strain_2025] when compared to traditional
+plots. To test whether such effects can be extended to change behaviours, we use the same technique here. In the 
+*alternative* scatterplot condition, point opacity and size is reduced as a function
+of residual magnitude using equation 1:
+
+\begin{equation}
+  point_{size/opacity} = 1 - 0.25^{residual}
+\end{equation}
+
+
 
 ## Design {#sec-design}
 
