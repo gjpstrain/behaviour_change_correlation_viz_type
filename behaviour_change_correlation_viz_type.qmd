@@ -472,6 +472,25 @@ of residual magnitude using equation 1:
   point_{size/opacity} = 1 - 0.25^{residual}
 \end{equation}
 
+We chose to use three Pearson's *r* values. If participants are engaging with the
+visualisations and using them to inform their donation decisions, then plots
+featuring higher *r* values should attract greater proportions of donated money.
+If the effects on perception and belief change seen previously with scatterplots
+of the type featured in the *alternative* condition can be extended to change behaviour,
+then *alternative* scatterplots should elicit greater donations.
+
+Examples of *standard* and *alternative* scatterplots for each *r* value used
+can be seen in @fig-raw-example-plots.
+
+```{r}
+#| label: fig-raw-example-plots
+#| include: true
+#| fig-env: "figure*"
+#| fig-cap: placeholder
+
+
+```
+
 
 
 ## Design {#sec-design}
