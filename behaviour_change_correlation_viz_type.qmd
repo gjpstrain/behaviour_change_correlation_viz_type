@@ -34,9 +34,9 @@ author:
       city: Manchester
       country: United Kingdom
       postal-code: M13 9PL
-  - name: Aaditya Mehrotra
-    email: aadityaa.mehrotra@manchester.ac.uk
-    orcid: XX
+  - name: Aadityaa Mehrotra
+    email: aadityaa.mehrotra@student.manchester.ac.uk
+    orcid: 0009-0003-9344-6000
     affiliation:
       name: Department of Computer Science, Faculty of Science and Engineering, University of Manchester
       address: Oxford Road
@@ -44,6 +44,8 @@ author:
       country: United Kingdom
       postal-code: M13 9PL
   - name: Caroline Jay
+    email: caroline.jay@manchester.ac.uk
+    orcid: 0000-0002-6080-1382
     affiliation:
       name: Department of Computer Science, Faculty of Science and Engineering, University of Manchester
       address: Oxford Road
@@ -52,6 +54,7 @@ author:
       postal-code: M13 9PL
   - name: Paul A. Warren
     email: paul.warren@manchester.ac.uk
+    orcid: 0000-0002-4071-7650
     affiliation:
       name: Division of Psychology, Communication and Human Neuroscience, School of Health Sciences, Faculty of Biology, Medicine, and Health, University of Manchester
       address: Oxford Road
@@ -60,6 +63,7 @@ author:
       postal-code: M13 9PL
   - name: Andrew J. Stewart
     email: andrew.j.stewart@manchester.ac.uk
+    orcid: 0000-0002-9795-4104
     affiliation:
       name: Department of Computer Science, Faculty of Science and Engineering, University of Manchester
       address: Oxford Road
@@ -317,6 +321,74 @@ time_taken <- distinct(donation_behaviour_tidy, participant,
                 .keep_all = TRUE) %>%
   summarise(mean = mean(final.stopped/60, na.rm = TRUE),
             sd = sd(final.stopped/60, na.rm = TRUE))
+
+# define functions used throughout
+
+## example scatterplot function
+
+plot_example_function <- function (df, t = NULL, o, s, title_size) {
+  
+  p <- ggplot(df, aes(x = V1, y = V2)) +
+    scale_alpha_identity() +
+    scale_size_identity() +
+    geom_point(aes(size = (s + 0.7),
+                   alpha = o), shape = 16)  +
+    theme_classic() +
+    theme(axis.text = element_blank(),
+          plot.margin = unit(c(0,0,0.4,0), "cm"),
+          legend.position = "none",
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.line = element_line(linewidth = 0.25))
+  
+  if (!is.null(t)) {
+    p <- p +
+      labs(title = t) +
+      theme(plot.title = element_markdown(size = title_size, vjust = -0.1, hjust = 0.5),
+            plot.margin = unit(c(0.4, 0, 0.4, 0), "cm"))
+  }
+  
+  p
+}
+
+## slopes function to create df for plot example function
+
+prepare_slopes <- function (my_desired_r) {
+  
+  set.seed(1234)
+  
+  my_sample_size = 128
+  
+  mean_variable_1 = 0
+  sd_variable_1 = 1
+  
+  mean_variable_2 = 0
+  sd_variable_2 = 1
+  
+  mu <- c(mean_variable_1, mean_variable_2) 
+  
+  myr <- my_desired_r * sqrt(sd_variable_1) * sqrt(sd_variable_2)
+  
+  mysigma <- matrix(c(sd_variable_1, myr, myr, sd_variable_2), 2, 2) 
+  
+  corr_data = as_tibble(mvrnorm(my_sample_size, mu, mysigma, empirical = TRUE))
+  
+  corr_model <- lm(V2 ~ V1, data = corr_data)
+  
+  my_residuals <- abs(residuals(corr_model))
+  
+  data_with_resid <- round(cbind(corr_data, my_residuals), 2)
+  
+  slopes <- data_with_resid %>%
+    mutate(slope_linear = my_residuals/3.2) %>%
+    mutate(slope_0.25 = 1-(0.25)^my_residuals) %>%
+    mutate(slope_inverted = (1 + (0.25)^ my_residuals)-1) %>%
+    mutate(slope_inverted_floored = pmax(0.1,(1+(0.25)^my_residuals)-1)) 
+  
+  return(slopes)
+}
+
+
 ```
 
 # Introduction {#sec-intro}
@@ -420,7 +492,7 @@ experimental trials. Concerns about participant fatigue and experimental length
 led us to use only the first three charity categories for the present experiment.
 After deciding on the three charity categories, one author created candidate
 fictional charities for each. Two authors then decided on a single fictional
-charity for each category. @tbl-candidate-charities shows the candidate charities
+charity for each category. \ref{tbl-candidate-charities} shows the candidate charities
 for each charity category. The final chosen charity is highlighted in each case.
 
 ```{r}
@@ -454,6 +526,45 @@ cat(x)
 
 ### Charity Templates {#sec-stimuli-charity-templates}
 
+For each of the three selected charities, we developed a corresponding 
+infographic to be presented during the experimental trials. These infographics
+were designed to appear realistic and included fictional charity-specific details,
+such as taglines, email addresses, website links, physical addresses, and 
+impact metrics (e.g., "5000+ Dog Lives Impacted"). In addition, the infographics
+contained secondary background graphics that corresponded to the theme of the 
+charity being represented. Each charity template was designed by a single author using
+Canva (www.canva.com) and checked by co-authors. Each template featured a blank
+central space into which the scatterplot visualisations (see @fig-raw-example-plots)
+were later inserted. \ref{fig-templates} shows the charity templates used.
+
+```{=latex}
+
+\begin{figure*}
+  \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/dog_rescue.png}
+      \caption{Dog Rescue and Re-housing Charity}
+    \end{subfigure}
+\hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/greener_world.png}
+      \caption{Environmental Protection Charity}
+    \end{subfigure}
+\hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/samaritans.png}
+      \caption{Mental Health Helpline Charity}
+    \end{subfigure}
+  \caption{Charity templates based on the three selected fictional charities}
+  \label{fig-templates}
+\end{figure*}
+
+```
+
+
+Each infographic featured a scatterplot visualisation
+positioned centrally, which served as the primary visual element and the main focus of the experimental stimulus.
+
 ### Scatterplot Visualisations {#sec-stimuli-visualisations}
 
 Previous work has shown that changes to the opacities and sizes of scatterplot points
@@ -486,12 +597,55 @@ can be seen in @fig-raw-example-plots.
 #| label: fig-raw-example-plots
 #| include: true
 #| fig-env: "figure*"
-#| fig-cap: placeholder
+#| fig-cap: "Scatterplots for each of the three \\textit{r} values. Separate rows are provided for the alternative (top) and standard (bottom) conditions."
+#| fig-asp: 0.7
 
+## manually prepare slopes for example plots
+
+slopes_02 <- prepare_slopes(0.2)
+slopes_05 <- prepare_slopes(0.5)
+slopes_08 <- prepare_slopes(0.8)
+
+# prepare plotted rows
+
+row_1 <- ggarrange(plot_example_function(slopes_02,
+                                         "*r* = 0.2",
+                                         (1-slopes_02$slope_0.25),
+                                         (1-slopes_02$slope_0.25), 10),
+                   plot_example_function(slopes_05,
+                                         "*r* = 0.5",
+                                         (1-slopes_05$slope_0.25),
+                                         (1-slopes_05$slope_0.25), 10),
+                   plot_example_function(slopes_08,
+                                         "*r* = 0.8",
+                                         (1-slopes_08$slope_0.25),
+                                         (1-slopes_08$slope_0.25), 10),
+                   
+                   nrow = 1) %>%
+  annotate_figure(left = gridtext::richtext_grob("Alternative Plots", rot = 90,
+                                                 gp = grid::gpar(fontsize = 12)))
+
+row_2 <- ggarrange(plot_example_function(slopes_02,
+                                         NULL,
+                                         1,
+                                         0.2, 7),
+                   plot_example_function(slopes_05,
+                                         NULL,
+                                         1,
+                                         0.2, 7),
+                   plot_example_function(slopes_08,
+                                         NULL,
+                                         1,
+                                         0.2, 7),
+                   
+                   nrow = 1) %>%
+  annotate_figure(left = gridtext::richtext_grob("Standard Plots", rot = 90,
+                                                 gp = grid::gpar(fontsize = 12)))
+
+
+ggarrange(row_1, row_2, ncol = 1, heights = c(1.2, 1)) # put rows together
 
 ```
-
-
 
 ## Design {#sec-design}
 
@@ -503,7 +657,7 @@ experimental trials. Participants viewed all 108 experimental trials along with
 6 attention check trials, in a fully-randomised order. Our dependent variable was
 the amount of money participants assigned to the left and right charity infographics
 on a per-trial basis. The experiment, including all stimuli, materials, and 
-instructions, are hosted on GitLab [1^].
+instructions, are hosted on GitLab[^1].
 
 [1^]: removed for anon.
 
@@ -571,7 +725,7 @@ pre-screening criteria were also employed [@peer_2021]; participants were requir
 to have previously completed at least 100 studies on the platform, and were 
 required to have been accepted on at least 99% of them. Data were collected
 from 174 participants. 10 failed more than 3 out of 6 attention checks, meaning their
-submissions were rejected in accordance with our pre-registration [1^]. Data
+submissions were rejected in accordance with our pre-registration [^2]. Data
 from the remaining 164 participants were included in the full analysis 
 (`r printnum(gender$male, digits = 2)` male, `r printnum(gender$female, digits = 2)`
 female, and `r printnum(gender$non_binary, digits = 2)` non-binary).
@@ -580,7 +734,7 @@ Participants' mean age was `r printnum(age$mean, digits = 1)`
 `r printnum(time_taken$mean, digits = 1)` minutes to complete the 
 experiment (SD = `r printnum(time_taken$sd)`).
 
-[1^]: The pre-registration states that 150 participants would be recruited. Additional participants were recruited due to an oversight, however all conclusions and statistical results are identical when run with 164 or 150 participants.
+[^2]: The pre-registration states that 150 participants would be recruited. Additional participants were recruited due to an oversight, however all conclusions and statistical results are identical when run with 164 or 150 participants.
 
 # Results {#sec-results}
 

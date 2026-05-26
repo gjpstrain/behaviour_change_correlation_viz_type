@@ -169,7 +169,7 @@
 
 \hypersetup{
   pdftitle={Donation Behaviour in an Online Visualisation Experiment},
-  pdfauthor={Gabriel Strain; Aaditya Mehrotra; Caroline Jay; Paul A. Warren; Andrew J. Stewart},
+  pdfauthor={Gabriel Strain; Aadityaa Mehrotra; Caroline Jay; Paul A. Warren; Andrew J. Stewart},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
@@ -263,8 +263,8 @@ of Science and Engineering, University of Manchester}
                                   \country{United Kingdom}
                           \postcode{M13 9PL}
               }
-        \author{Aaditya Mehrotra}
-  \orcid{XX}
+        \author{Aadityaa Mehrotra}
+  \orcid{0009-0003-9344-6000}
             \affiliation{%
                   \institution{Department of Computer Science, Faculty
 of Science and Engineering, University of Manchester}
@@ -274,7 +274,7 @@ of Science and Engineering, University of Manchester}
                           \postcode{M13 9PL}
               }
         \author{Caroline Jay}
-  
+  \orcid{0000-0002-6080-1382}
             \affiliation{%
                   \institution{Department of Computer Science, Faculty
 of Science and Engineering, University of Manchester}
@@ -284,7 +284,7 @@ of Science and Engineering, University of Manchester}
                           \postcode{M13 9PL}
               }
         \author{Paul A. Warren}
-  
+  \orcid{0000-0002-4071-7650}
             \affiliation{%
                   \institution{Division of Psychology, Communication and
 Human Neuroscience, School of Health Sciences, Faculty of Biology,
@@ -295,7 +295,7 @@ Medicine, and Health, University of Manchester}
                           \postcode{M13 9PL}
               }
         \author{Andrew J. Stewart}
-  
+  \orcid{0000-0002-9795-4104}
             \affiliation{%
                   \institution{Department of Computer Science, Faculty
 of Science and Engineering, University of Manchester}
@@ -496,13 +496,16 @@ The experiment was conducted according the principles of open and
 reproducible research \citep{ayris_2018}. Hypotheses and analysis plans
 were pre-registered with the Open Science Framework (OSF)\footnote{https://osf.io/kywt9/overview?view\_only=1f677775eb80467dae61c7502bc3305f}.
 All data and analysis code are included in a GitHub
-repository\footnote{removed for anon}, which also contains instructions
-for building a Docker container \citep{merkel_2014} that reproduces the
-computational environment in which the paper was written. By capturing
-package versions and dependencies using the \texttt{renv} package
-\citep{ushey_2026} in R, this container allows for full replication of
-all stimuli, figures, analyses, and the paper itself. Ethical approval
-was granted by \emph{removed for anon}.
+repository\footnote{The pre-registration states that 150 participants
+  would be recruited. Additional participants were recruited due to an
+  oversight, however all conclusions and statistical results are
+  identical when run with 164 or 150 participants.}, which also contains
+instructions for building a Docker container \citep{merkel_2014} that
+reproduces the computational environment in which the paper was written.
+By capturing package versions and dependencies using the \texttt{renv}
+package \citep{ushey_2026} in R, this container allows for full
+replication of all stimuli, figures, analyses, and the paper itself.
+Ethical approval was granted by \emph{removed for anon}.
 
 \subsection{Modelling}\label{sec-modelling}
 
@@ -536,9 +539,9 @@ and experimental length led us to use only the first three charity
 categories for the present experiment. After deciding on the three
 charity categories, one author created candidate fictional charities for
 each. Two authors then decided on a single fictional charity for each
-category. \textbf{?@tbl-candidate-charities} shows the candidate
-charities for each charity category. The final chosen charity is
-highlighted in each case.
+category. \ref{tbl-candidate-charities} shows the candidate charities
+for each charity category. The final chosen charity is highlighted in
+each case.
 
 \begin{table*}
 
@@ -557,8 +560,88 @@ London Dog’s Trust & British Bird’s Trust & Listen UK\\
 
 \subsubsection{Charity Templates}\label{sec-stimuli-charity-templates}
 
+For each of the three selected charities, we developed a corresponding
+infographic to be presented during the experimental trials. These
+infographics were designed to appear realistic and included fictional
+charity-specific details, such as taglines, email addresses, website
+links, physical addresses, and impact metrics (e.g., ``5000+ Dog Lives
+Impacted''). In addition, the infographics contained secondary
+background graphics that corresponded to the theme of the charity being
+represented. Each charity template was designed by a single author using
+Canva (www.canva.com) and checked by co-authors. Each template featured
+a blank central space into which the scatterplot visualisations (see
+Figure~\ref{fig-raw-example-plots}) were later inserted.
+\ref{fig-templates} shows the charity templates used.
+
+\begin{figure*}
+  \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/dog_rescue.png}
+      \caption{Dog Rescue and Re-housing Charity}
+    \end{subfigure}
+\hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/greener_world.png}
+      \caption{Environmental Protection Charity}
+    \end{subfigure}
+\hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/samaritans.png}
+      \caption{Mental Health Helpline Charity}
+    \end{subfigure}
+  \caption{Charity templates based on the three selected fictional charities}
+  \label{fig-templates}
+\end{figure*}
+
+Each infographic featured a scatterplot visualisation positioned
+centrally, which served as the primary visual element and the main focus
+of the experimental stimulus.
+
 \subsubsection{Scatterplot
 Visualisations}\label{sec-stimuli-visualisations}
+
+Previous work has shown that changes to the opacities and sizes of
+scatterplot points can induce changes in perceptions of correlation in
+viewers \citep{strain_2023, strain_2023b, strain_2024}. In particular,
+lowering the opacity and size of points as a function of residual
+magnitude is able to bias estimates of correlation upwards and partially
+correct for an observed underestimation bias in positively correlated
+scatterplots. The same techniques have also been shown to be able to
+induce greater levels of belief change in viewers of scatterplots
+contextualised as part of news items \citep{strain_2025} when compared
+to traditional plots. To test whether such effects can be extended to
+change behaviours, we use the same technique here. In the
+\emph{alternative} scatterplot condition, point opacity and size is
+reduced as a function of residual magnitude using equation 1:
+
+\begin{equation}
+  point_{size/opacity} = 1 - 0.25^{residual}
+\end{equation}
+
+We chose to use three Pearson's \emph{r} values. If participants are
+engaging with the visualisations and using them to inform their donation
+decisions, then plots featuring higher \emph{r} values should attract
+greater proportions of donated money. If the effects on perception and
+belief change seen previously with scatterplots of the type featured in
+the \emph{alternative} condition can be extended to change behaviour,
+then \emph{alternative} scatterplots should elicit greater donations.
+
+Examples of \emph{standard} and \emph{alternative} scatterplots for each
+\emph{r} value used can be seen in Figure~\ref{fig-raw-example-plots}.
+
+\begin{figure*}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-raw-example-plots-1.pdf}}
+
+}
+
+\caption{\label{fig-raw-example-plots}Scatterplots for each of the three
+\textit{r} values. Separate rows are provided for the alternative (top)
+and standard (bottom) conditions.}
+
+\end{figure*}%
 
 \subsection{Design}\label{sec-design}
 
@@ -571,8 +654,7 @@ Participants viewed all 108 experimental trials along with 6 attention
 check trials, in a fully-randomised order. Our dependent variable was
 the amount of money participants assigned to the left and right charity
 infographics on a per-trial basis. The experiment, including all
-stimuli, materials, and instructions, are hosted on GitLab
-\href{The\%20pre-registration\%20states\%20that\%20150\%20participants\%20would\%20be\%20recruited.\%20Additional\%20participants\%20were\%20recruited\%20due\%20to\%20an\%20oversight,\%20however\%20all\%20conclusions\%20and\%20statistical\%20results\%20are\%20identical\%20when\%20run\%20with\%20164\%20or\%20150\%20participants.}{1\^{}}.
+stimuli, materials, and instructions, are hosted on GitLab\footnote{https://osf.io/kywt9/overview?view\_only=1f677775eb80467dae61c7502bc3305f}.
 
 \subsection{Procedure}\label{sec-procedure}
 
@@ -649,12 +731,14 @@ required to have previously completed at least 100 studies on the
 platform, and were required to have been accepted on at least 99\% of
 them. Data were collected from 174 participants. 10 failed more than 3
 out of 6 attention checks, meaning their submissions were rejected in
-accordance with our pre-registration
-\href{The\%20pre-registration\%20states\%20that\%20150\%20participants\%20would\%20be\%20recruited.\%20Additional\%20participants\%20were\%20recruited\%20due\%20to\%20an\%20oversight,\%20however\%20all\%20conclusions\%20and\%20statistical\%20results\%20are\%20identical\%20when\%20run\%20with\%20164\%20or\%20150\%20participants.}{1\^{}}.
-Data from the remaining 164 participants were included in the full
-analysis (86 male, 76 female, and 2 non-binary). Participants' mean age
-was 34.7 (SD = 11.2). Participants took a mean of 25.7 minutes to
-complete the experiment (SD = 7.54).
+accordance with our pre-registration \footnote{The pre-registration
+  states that 150 participants would be recruited. Additional
+  participants were recruited due to an oversight, however all
+  conclusions and statistical results are identical when run with 164 or
+  150 participants.}. Data from the remaining 164 participants were
+included in the full analysis (86 male, 76 female, and 2 non-binary).
+Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
+25.7 minutes to complete the experiment (SD = 7.54).
 
 \section{Results}\label{sec-results}
 
