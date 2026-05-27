@@ -441,7 +441,7 @@ Modification}\label{using-visualisation-techniques-to-drive-behaviour-modificati
 \item
   has anything like this been tested before? (I am assuming not)
 \item
-  hat are the potential implications of this?
+  what are the potential implications of this?
 \end{itemize}
 
 \section{Hypotheses}\label{sec-hypotheses}
@@ -509,12 +509,19 @@ Ethical approval was granted by \emph{removed for anon}.
 
 \subsection{Modelling}\label{sec-modelling}
 
+The \texttt{buildmer} (version 2.12 \citep{buildmer}) package is used to
+automate the selection of the random effects structure. We specify a
+maximal model, including random intercepts and slopes for participants
+and experimental trials. \texttt{buildmer} then employs stepwise
+regression to identify the most complex model that successfully
+converges.
+
 \subsection{Stimuli}\label{sec-stimuli}
 
 \subsubsection{Charities}\label{sec-stimuli-charities}
 
 Three charitable concerns were chosen for the experiment. Initially, we
-intended to use the five charitable concerns outline in She and Sanfey,
+intended to use the five charitable concerns provided in She and Sanfey,
 2023 \citep{she_2023}. These were:
 
 \begin{enumerate}
@@ -539,9 +546,9 @@ and experimental length led us to use only the first three charity
 categories for the present experiment. After deciding on the three
 charity categories, one author created candidate fictional charities for
 each. Two authors then decided on a single fictional charity for each
-category. \ref{tbl-candidate-charities} shows the candidate charities
-for each charity category. The final chosen charity is highlighted in
-each case.
+category. Table \ref{tbl-candidate-charities} shows the candidate
+charities for each charity category. The final chosen charity is
+highlighted in each case.
 
 \begin{table*}
 
@@ -570,7 +577,7 @@ background graphics that corresponded to the theme of the charity being
 represented. Each charity template was designed by a single author using
 Canva (www.canva.com) and checked by co-authors. Each template featured
 a blank central space into which the scatterplot visualisations (see
-Figure~\ref{fig-raw-example-plots}) were later inserted.
+Figure~\ref{fig-raw-example-plots}) were later inserted. Figure
 \ref{fig-templates} shows the charity templates used.
 
 \begin{figure*}
@@ -618,16 +625,23 @@ reduced as a function of residual magnitude using equation 1:
   point_{size/opacity} = 1 - 0.25^{residual}
 \end{equation}
 
-We chose to use three Pearson's \emph{r} values. If participants are
-engaging with the visualisations and using them to inform their donation
-decisions, then plots featuring higher \emph{r} values should attract
-greater proportions of donated money. If the effects on perception and
-belief change seen previously with scatterplots of the type featured in
-the \emph{alternative} condition can be extended to change behaviour,
-then \emph{alternative} scatterplots should elicit greater donations.
+We chose to use three Pearson's \emph{r} values; 0.2, 0.5, and 0.8. If
+participants are engaging with the visualisations and using them to
+inform their donation decisions, then plots featuring higher \emph{r}
+values should attract greater proportions of donated money. If the
+effects on perception and belief change seen previously with
+scatterplots of the type featured in the \emph{alternative} condition
+can be extended to change behaviour, then \emph{alternative}
+scatterplots should elicit greater donations.
 
-Examples of \emph{standard} and \emph{alternative} scatterplots for each
-\emph{r} value used can be seen in Figure~\ref{fig-raw-example-plots}.
+Each scatterplot was positively correlated, and featured identical
+\(x\)-axis labels regarding donation amount. Each charity's \(y\)-axis
+label related to a realistic outcome variable relating to the particular
+charity category. Examples of \emph{standard} and \emph{alternative}
+scatterplots for each \emph{r} value used can be seen in
+Figure~\ref{fig-raw-example-plots}, while full charity template +
+scatterplot visualisation examples can be seen in Figure
+\ref{fig-templates}.
 
 \begin{figure*}
 
@@ -715,7 +729,7 @@ thanked for their participation.
 Illustrated are the reminder to use all available money (A), the display
 of the current total (B), the trial counter (C), the left infographic
 and allocation box (D), and the right infographic and allocation box
-(E)}
+(E).}
 
 \end{figure*}%
 
@@ -741,6 +755,18 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 25.7 minutes to complete the experiment (SD = 7.54).
 
 \section{Results}\label{sec-results}
+
+All analyses were conducted with R (version 4.5.3 \citep{rcore}). To
+test the first hypothesis, that participants will donate greater
+proportions of money to charities that they prefer, we build a model
+whereby donation amount is predicted by the Likert ratings of charities
+and their rank. Such models featured random intercepts for both
+participants and experimental items. The experimental model explained
+significantly more variance when compared to an null model without the
+fixed effects of Likert rating and charity ranking (\(\chi^2\)(17) =
+3,716.19, \emph{p} \textless{} .001). There were significant fixed
+effects of Likert rating charity and charity ranking, along with an
+interaction between the two.
 
 \section{Discussion}\label{sec-discussions}
 
