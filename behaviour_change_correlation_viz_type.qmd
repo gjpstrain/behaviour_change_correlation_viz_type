@@ -155,6 +155,7 @@ library(ggtext)
 library(Matrix)
 library(ordinal)
 library(janitor)
+library(effectsize)
 
 # fix conflicts now using the conflicted package
 
@@ -167,6 +168,10 @@ options(knitr.kable.NA = "")
 ```{r}
 #| label: lazyload-cache
 if (!params$eval_models){ lazyload_cache_dir("behaviour_change_correlation_viz_type_cache/pdf") }
+
+# temp command to load models for writing
+
+lazyload_cache_dir("behaviour_change_correlation_viz_type_cache/pdf")
 ```
 
 ```{r}
@@ -412,26 +417,9 @@ anova_results <- function(model, cmpr_model) {
   
   if (class(model) == "buildmer") model <- model@model
   if (class(cmpr_model) == "buildmer") cmpr_model <- cmpr_model@model
-  
-  if (class(model) == "clmm") {
-  
-  anova_output <- ordinal:::anova.clm(model, cmpr_model)
-  
-  assign(paste0(model_name, ".LR"),
-         anova_output$LR.stat[2],
-         envir = .GlobalEnv)
-  assign(paste0(model_name, ".df"),
-         anova_output$df[2],
-         envir = .GlobalEnv)
-  assign(paste0(model_name, ".p"),
-         anova_output$`Pr(>Chisq)`[2],
-         envir = .GlobalEnv)
-  }
-  
-  else
     
-  anova_output <- anova(model, cmpr_model) # currently unused, left it 
-                                           # in case you want to use LMMs
+  anova_output <- anova(model, cmpr_model)
+
   assign(paste0(model_name, ".Chisq"),
          anova_output$Chisq[2],
          envir = .GlobalEnv)
@@ -442,8 +430,6 @@ anova_results <- function(model, cmpr_model) {
          anova_output$`Pr(>Chisq)`[2],
          envir = .GlobalEnv)
 }
-
-
 ```
 
 # Introduction {#sec-intro}
@@ -829,7 +815,14 @@ pref_comp_model <- comparison(preference_model)
 anova_results(preference_model, pref_comp_model)
 ```
 
-All analyses were conducted with R (version `r paste0(R.version$major, ".", R.version$minor)` [@rcore]).
+```{r}
+#| label: get-omni-anova-charity-prefs
+
+aov_out <- anova(preference_model, type = 3, ddf = "Satterthwaite")
+aov_apa <- apa_print(aov_out)
+```
+
+All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` [@rcore]).
 To test the first hypothesis, that participants will donate greater proportions 
 of money to charities that they prefer, we build a model whereby donation
 amount is predicted by the Likert ratings of charities and their rank. Such 
@@ -837,9 +830,89 @@ models featured random intercepts for both participants and experimental
 items. The experimental model explained significantly more variance when compared
 to an null model without the fixed effects of Likert rating and charity ranking
 ($\chi^2$(`r in_paren(preference_model.df)`) = `r printnum(preference_model.Chisq)`,
-*p* `r printp(preference_model.p, add_equals = TRUE)`). There were significant
-fixed effects of Likert rating charity and charity ranking, along with an 
-interaction between the two.
+*p* `r printp(preference_model.p, add_equals = TRUE)`). 
+There was a significant main effect of charity rank, `r aov_apa$full_result$rank`, 
+a significant main effect of Likert rating, `r aov_apa$full_result$likert`, 
+and a significant interaction, `r aov_apa$full_result$rank_likert`. To explore
+these effects further, @fig-likert-charity-matrix plots total donation amounts
+for Likert ratings and charity rankings. Expectedly, participants rated charitable
+concerns as more important when they also ranked them more highly. When a charitable
+concern was ranked as 2^nd^ or 3^rd^, donation amounts generally increased 
+linearly with Likert rating. However, when the charitable concern was ranked as
+1^st^, there was a clear bias towards the centre of the Likert rating 
+distribution. *look for something to cite here* Effect sizes are supplied as 
+$\eta_p^2$ in @tbl-likert-charity-efs.
+
+```{r}
+#| label: fig-likert-charity-matrix
+#| include: true
+#| fig-env: "figure*"
+#| fig-cap: Mean donation amounts plotted by Likert rating and charity rank. When a charitable concern was ranked 2^nd^ or 3^rd^, donation amounts increase with Likert rating. When a charitable concern was ranked as 1^st^, however, there is a clear bias towards the centre of the Likert rating with regards to donations.
+#| fig-asp: 0.4
+
+donation_behaviour_tidy %>%
+  group_by(rank, likert) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE), .groups = "drop") %>%
+  complete(rank, likert, fill = list(mean_amount = NA)) %>%
+  mutate(
+    rank = factor(rank, levels = 1:3),
+    display_label = ifelse(is.na(mean_amount), "0", as.character(round(mean_amount, 1))),
+    fill_value = ifelse(is.na(mean_amount), -Inf, mean_amount)
+  ) %>%
+  ggplot(aes(x = likert, y = rank, fill = mean_amount)) +
+  geom_tile(colour = "white", linewidth = 2) +
+  geom_text(aes(label = display_label), na.rm = FALSE) +
+  scale_fill_distiller(palette = "RdYlGn", direction = 1, na.value = "grey80") +
+  scale_x_discrete(limits = as.character(1:7), position = "top") +
+  scale_y_discrete(limits = as.character(3:1)) +
+  labs(x = "Charity Likert Rating", y = "Charity Rank", fill = "Mean Amount") +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    axis.title.x = element_text(hjust = 0.5),
+    legend.position = "none"
+  )
+```
+
+```{r}
+#| label: tbl-likert-charity-efs
+#| include: true
+#| tbl-cap: "\\eta_{p}^{2} effect sizes for the main effects of Likert rating and charity rank, along with the interaction term."
+
+eta_squared(anova(preference_model, type = 3, ddf = "Satterthwaite"), partial = TRUE) %>%
+  kbl(booktabs = T)
+```
+
+
+<!-- # ```{r} -->
+<!-- # #| label: model-r-value -->
+<!-- # #| eval: !expr params$eval_models -->
+<!-- # #| cache: !expr params$eval_models -->
+<!-- #  -->
+<!-- # preference_model <- buildmer(amount ~ likert * rank + -->
+<!-- #                                (1 + likert * rank | participant) + -->
+<!-- #                                (1 + likert * rank | trial_id), -->
+<!-- #                              data = donation_behaviour_tidy) -->
+<!-- # ``` -->
+<!-- #  -->
+<!-- # ```{r} -->
+<!-- # #| label: model-r-value-comparison -->
+<!-- # #| eval: !expr params$eval_models -->
+<!-- # #| cache: !expr params$eval_models -->
+<!-- #  -->
+<!-- # pref_comp_model <- comparison(preference_model) -->
+<!-- #  -->
+<!-- # ``` -->
+<!-- #  -->
+<!-- # ```{r} -->
+<!-- # #| label: anova-charity-preferences -->
+<!-- #  -->
+<!-- # anova_results(preference_model, pref_comp_model) -->
+<!-- # ``` -->
+
+To investigate the second hypothesis, that participants will donate more money
+to charity infographics that feature higher *r* values, we built a model
+that featured the three chosen *r* values as a fixed effect
 
 Maybe use the matrix table as influence for a visualistion?
 or histogram or something?

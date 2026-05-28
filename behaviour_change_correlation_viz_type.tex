@@ -756,7 +756,7 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 
 \section{Results}\label{sec-results}
 
-All analyses were conducted with R (version 4.5.3 \citep{rcore}). To
+All analyses were conducted using R (version 4.5.3 \citep{rcore}). To
 test the first hypothesis, that participants will donate greater
 proportions of money to charities that they prefer, we build a model
 whereby donation amount is predicted by the Likert ratings of charities
@@ -764,9 +764,68 @@ and their rank. Such models featured random intercepts for both
 participants and experimental items. The experimental model explained
 significantly more variance when compared to an null model without the
 fixed effects of Likert rating and charity ranking (\(\chi^2\)(17) =
-3,716.19, \emph{p} \textless{} .001). There were significant fixed
-effects of Likert rating charity and charity ranking, along with an
-interaction between the two.
+3,716.19, \emph{p} \textless{} .001). There was a significant main
+effect of charity rank, \(F(2, 2330.53) = 354.39\), \(p < .001\), a
+significant main effect of Likert rating, \(F(6, 1297.02) = 35.43\),
+\(p < .001\), and a significant interaction, \(F(9, 3189.66) = 25.74\),
+\(p < .001\). To explore these effects further,
+Figure~\ref{fig-likert-charity-matrix} plots total donation amounts for
+Likert ratings and charity rankings. Expectedly, participants rated
+charitable concerns as more important when they also ranked them more
+highly. When a charitable concern was ranked as 2\textsuperscript{nd} or
+3\textsuperscript{rd}, donation amounts generally increased linearly
+with Likert rating. However, when the charitable concern was ranked as
+1\textsuperscript{st}, there was a clear bias towards the centre of the
+Likert rating distribution. \emph{look for something to cite here}
+Effect sizes are supplied as \(\eta_p^2\) in
+Table~\ref{tbl-likert-charity-efs}.
+
+\begin{figure*}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-likert-charity-matrix-1.pdf}}
+
+}
+
+\caption{\label{fig-likert-charity-matrix}Mean donation amounts plotted
+by Likert rating and charity rank. When a charitable concern was ranked
+2\textsuperscript{nd} or 3\textsuperscript{rd}, donation amounts
+increase with Likert rating. When a charitable concern was ranked as
+1\textsuperscript{st}, however, there is a clear bias towards the centre
+of the Likert rating with regards to donations.}
+
+\end{figure*}%
+
+\begin{table}
+
+\caption{\label{tbl-likert-charity-efs}\eta\_\{p\}\^{}\{2\} effect sizes
+for the main effects of Likert rating and charity rank, along with the
+interaction term.}
+
+\centering{
+
+\begin{tabular}[t]{lrrrr}
+\toprule
+Parameter & Eta2\_partial & CI & CI\_low & CI\_high\\
+\midrule
+rank & 0.2332021 & 0.95 & 0.2092695 & 1\\
+likert & 0.1408077 & 0.95 & 0.1103082 & 1\\
+rank:likert & 0.0676988 & 0.95 & 0.0522533 & 1\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
+
+To investigate the second hypothesis, that participants will donate more
+money to charity infographics that feature higher \emph{r} values, we
+built a model that featured the three chosen \emph{r} values as a fixed
+effect
+
+Maybe use the matrix table as influence for a visualistion? or histogram
+or something?
 
 \section{Discussion}\label{sec-discussions}
 
