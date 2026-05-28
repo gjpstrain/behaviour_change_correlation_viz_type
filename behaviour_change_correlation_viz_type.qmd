@@ -160,7 +160,7 @@ library(effectsize)
 # fix conflicts now using the conflicted package
 
 conflicts_prefer(dplyr::select(), dplyr::filter(), lme4::lmer(),
-                 dplyr::recode())
+                 dplyr::recode(), lme4::findbars())
 
 options(knitr.kable.NA = "")
 ```
@@ -191,119 +191,126 @@ anon_file <- read_csv("data/exp_data_final.csv", guess_max = 17000) # we need a 
 
 wrangle <- function(anon_file) {
   
-demographics <- anon_file %>%
-  filter(!is.na(age_textbox.text)) %>%
-  select(matches(c("participant",
-                   "age_textbox.text",
-                   "gender_slider.response")))
-
-# extract time taken information
-
-time_taken <- anon_file %>%
-  filter(!is.na(final.stopped)) %>%
-  select(c("participant", "final.stopped"))
-
-# extract charity Likert ratings
-
-charity_opinions <- anon_file %>%
-  select(c("participant",
-           "c1_slider.response",
-           "c2_slider.response",
-           "c3_slider.response")) %>%
-  filter(!is.na(c1_slider.response)) %>%
-  rename("dog_rescue_likert"  = "c1_slider.response",
-         "environment_likert" = "c2_slider.response",
-         "helpline_likert"    = "c3_slider.response")
-
-# extract charity rankings
-
-charity_rankings <- anon_file %>%
-  select(c("participant",
-           "donation_behaviour_survey.block_1/question1")) %>%
-  rename("ranking" = "donation_behaviour_survey.block_1/question1") %>%
-  filter(!is.na(ranking)) %>%
-    mutate(
-    ranking_list = ranking %>%
-      str_remove_all('\\[|\\]|"') %>%
-      str_squish() %>%
-      str_split(",\\s*"),
-    dog_rescue_rank  = map_int(ranking_list, ~ which(.x == "Item 1")),
-    helpline_rank    = map_int(ranking_list, ~ which(.x == "Item 2")),
-    environment_rank = map_int(ranking_list, ~ which(.x == "Item 3"))
-  ) %>%
-  select(-c("ranking", "ranking_list"))
+  demographics <- anon_file %>%
+    filter(!is.na(age_textbox.text)) %>%
+    select(matches(c("participant",
+                     "age_textbox.text",
+                     "gender_slider.response")))
   
-# get main experiment data, join other dataframes
-
-anon_file %>%
-  select(c("participant",
-           "trial_id",
-           "left_charity",
-           "right_charity",
-           "left_plot_type",
-           "right_plot_type",
-           "left_correlation",
-           "right_correlation",
-           "same_plot_type",
-           "same_correlation",
-           "tb1.text",
-           "tb3.text",
-          # "passed"
-           )) %>%
-  rename("left_amount"  = "tb1.text",
-         "right_amount" = "tb3.text") %>%
-  mutate(
-    left_amount = as.numeric(gsub("[^0-9.-]", "", left_amount)),
-    right_amount = as.numeric(gsub("[^0-9.-]", "", right_amount))) %>%
-  mutate(across(c(left_amount, right_amount), ~replace_na(., 0))) %>%
-  filter(trial_id < 109) %>%
-  full_join(demographics,     by = "participant") %>%
-  full_join(time_taken,       by = "participant") %>%
-  full_join(charity_opinions, by = "participant") %>%
-  full_join(charity_rankings, by = "participant") %>%
-  mutate(
-    left_plot_type  = factor(left_plot_type,  levels = c("Norm", "Alt")),
-    right_plot_type = factor(right_plot_type, levels = c("Norm", "Alt")),
-    left_correlation  = factor(left_correlation,  levels = 1:3, ordered = TRUE),
-    right_correlation = factor(right_correlation, levels = 1:3, ordered = TRUE)) %>%
-    pivot_longer(
-    cols = c(left_charity,  right_charity,
-             left_plot_type, right_plot_type,
-             left_correlation, right_correlation,
-             left_amount,  right_amount),
-    names_to      = c("side", ".value"),
-    names_pattern = "(left|right)_(.*)"
-  ) %>%
-  mutate(charity = factor(charity),
-         side    = factor(side, levels = c("left", "right"))) %>%
-  left_join(
-    anon_file %>%
-      full_join(charity_opinions, by = "participant") %>%
-      full_join(charity_rankings, by = "participant") %>%
-      select(participant,
-             dog_rescue_likert, environment_likert, helpline_likert,
-             dog_rescue_rank,   environment_rank,   helpline_rank) %>%
-      distinct() %>%
-      pivot_longer(
-        cols          = -participant,
-        names_to      = c("charity_key", ".value"),
-        names_pattern = "(.+)_(likert|rank)"
-      ) %>%
-      mutate(
-        charity = factor(recode(charity_key,
-                                dog_rescue  = "dog_rescue",
-                                environment = "greener_world",
-                                helpline    = "samaritans"))
-      ) %>%
-      select(participant, charity, likert, rank),
-    by = c("participant", "charity")
-  ) %>%
+  time_taken <- anon_file %>%
+    filter(!is.na(final.stopped)) %>%
+    select(c("participant", "final.stopped"))
+  
+  charity_opinions <- anon_file %>%
+    select(c("participant",
+             "c1_slider.response",
+             "c2_slider.response",
+             "c3_slider.response")) %>%
+    filter(!is.na(c1_slider.response)) %>%
+    rename("dog_rescue_likert"  = "c1_slider.response",
+           "environment_likert" = "c2_slider.response",
+           "helpline_likert"    = "c3_slider.response")
+  
+  charity_rankings <- anon_file %>%
+    select(c("participant",
+             "donation_behaviour_survey.block_1/question1")) %>%
+    rename("ranking" = "donation_behaviour_survey.block_1/question1") %>%
+    filter(!is.na(ranking)) %>%
     mutate(
-    likert = factor(likert, levels = 1:7, ordered = TRUE),
-    rank   = factor(rank,   levels = 1:3, ordered = TRUE),
-    correlation_num = as.numeric(as.character(correlation))
-  ) %>%
-  assign(paste0(unique(anon_file$expName), "_tidy"),
+      ranking_list = ranking %>%
+        str_remove_all('\\[|\\]|"') %>%
+        str_squish() %>%
+        str_split(",\\s*"),
+      dog_rescue_rank  = map_int(ranking_list, ~ which(.x == "Item 1")),
+      helpline_rank    = map_int(ranking_list, ~ which(.x == "Item 2")),
+      environment_rank = map_int(ranking_list, ~ which(.x == "Item 3"))
+    ) %>%
+    select(-c("ranking", "ranking_list"))
+  
+  # participant x charity likert/rank lookup (for joining later)
+  charity_lookup <- anon_file %>%
+    full_join(charity_opinions, by = "participant") %>%
+    full_join(charity_rankings, by = "participant") %>%
+    select(participant,
+           dog_rescue_likert, environment_likert, helpline_likert,
+           dog_rescue_rank,   environment_rank,   helpline_rank) %>%
+    distinct() %>%
+    pivot_longer(
+      cols          = -participant,
+      names_to      = c("charity_key", ".value"),
+      names_pattern = "(.+)_(likert|rank)"
+    ) %>%
+    mutate(
+      charity = factor(recode(charity_key,
+                              dog_rescue  = "dog_rescue",
+                              environment = "greener_world",
+                              helpline    = "samaritans"))
+    ) %>%
+    select(participant, charity, likert, rank) %>%
+    mutate(
+      likert = factor(likert, levels = 1:7, ordered = TRUE),
+      rank   = factor(rank,   levels = 1:3, ordered = TRUE)
+    )
+  
+  # main trial-level data — one row per participant x trial
+  anon_file %>%
+    select(c("participant",
+             "trial_id",
+             "left_charity",
+             "right_charity",
+             "left_plot_type",
+             "right_plot_type",
+             "left_correlation",
+             "right_correlation",
+             "same_plot_type",
+             "same_correlation",
+             "tb1.text",
+             "tb3.text")) %>%
+    rename("left_amount"  = "tb1.text",
+           "right_amount" = "tb3.text") %>%
+    mutate(
+      left_amount  = as.numeric(gsub("[^0-9.-]", "", left_amount)),
+      right_amount = as.numeric(gsub("[^0-9.-]", "", right_amount)),
+      left_correlation = recode(left_correlation,
+                                `1` = 0.2, `2` = 0.5, `3` = 0.8),
+      right_correlation = recode(right_correlation,
+                                 `1` = 0.2, `2` = 0.5, `3` = 0.8)
+    ) %>%
+    mutate(across(c(left_amount, right_amount), ~ replace_na(., 0))) %>%
+    filter(trial_id < 109) %>%
+    # outcome: proportion of total donated to left charity
+    # (bounded 0-1; 0.5 = even split; avoids the sum-to-100 constraint)
+    mutate(
+      total_amount   = left_amount + right_amount,
+      prop_left      = if_else(total_amount == 0, 0.5, left_amount / total_amount),
+      left_plot_type  = factor(left_plot_type,  levels = c("Norm", "Alt")),
+      right_plot_type = factor(right_plot_type, levels = c("Norm", "Alt")),
+      left_charity    = factor(left_charity),
+      right_charity   = factor(right_charity)
+    ) %>%
+    full_join(demographics,     by = "participant") %>%
+    full_join(time_taken,       by = "participant") %>%
+    full_join(charity_opinions, by = "participant") %>%
+    full_join(charity_rankings, by = "participant") %>%
+    # join left-charity likert/rank preferences
+    left_join(
+      charity_lookup %>% rename(
+        left_charity        = charity,
+        left_charity_likert = likert,
+        left_charity_rank   = rank
+      ),
+      by = c("participant", "left_charity")
+    ) %>%
+    # join right-charity likert/rank preferences
+    left_join(
+      charity_lookup %>% rename(
+        right_charity        = charity,
+        right_charity_likert = likert,
+        right_charity_rank   = rank
+      ),
+      by = c("participant", "right_charity")
+    ) %>%
+    assign(paste0(unique(anon_file$expName), "_tidy"),
            value = ., envir = .GlobalEnv)
 }
 
@@ -608,7 +615,6 @@ were later inserted. Figure \ref{fig-templates} shows the charity templates used
 
 ```
 
-
 Each infographic featured a scatterplot visualisation
 positioned centrally, which served as the primary visual element and the main focus of the experimental stimulus.
 
@@ -796,8 +802,11 @@ experiment (SD = `r printnum(time_taken$sd)`).
 
 preference_model <- buildmer(amount ~ likert * rank +
                                (1 + likert * rank | participant) +
-                               (1 + likert * rank | trial_id),
+                               (1 + likert * rank | trial_id) +
+                               (1 | participant:trial_id),
                              data = donation_behaviour_tidy)
+
+preference_model <- buildmer
 ```
 
 ```{r}
@@ -841,7 +850,7 @@ concern was ranked as 2^nd^ or 3^rd^, donation amounts generally increased
 linearly with Likert rating. However, when the charitable concern was ranked as
 1^st^, there was a clear bias towards the centre of the Likert rating 
 distribution. *look for something to cite here* Effect sizes are supplied as 
-$\eta_p^2$ in @tbl-likert-charity-efs.
+$\eta_p^2$ in @tbl-likert-charity-efs along with 95\% confidence intervals.
 
 ```{r}
 #| label: fig-likert-charity-matrix
@@ -877,45 +886,51 @@ donation_behaviour_tidy %>%
 ```{r}
 #| label: tbl-likert-charity-efs
 #| include: true
-#| tbl-cap: "\\eta_{p}^{2} effect sizes for the main effects of Likert rating and charity rank, along with the interaction term."
+#| tbl-cap: "$\\eta_{p}^{2}$ effect sizes for the main effects of Likert rating and charity rank, along with the interaction term."
 
 eta_squared(anova(preference_model, type = 3, ddf = "Satterthwaite"), partial = TRUE) %>%
-  kbl(booktabs = T)
+  rename("$\\eta_{p}^{2}$" = "Eta2_partial",
+         "CI Low" = "CI_low",
+         "CI High" = "CI_high") %>%
+  mutate(Parameter = recode(Parameter, 
+         rank = "Charity Rank Position",
+         likert = "Charity Likert Rating",
+         `rank:likert` = "Rank $\\times$ Likert"),
+         "95\\% CI" = paste0("[", round(`CI Low`, 2), ", ", round(`CI High`, 2), "]")) %>%
+  select(-`CI Low`, -`CI High`, -CI) %>%
+  kbl(booktabs = T, digits = c(1, 2, 1), escape = FALSE)
 ```
 
 
-<!-- # ```{r} -->
-<!-- # #| label: model-r-value -->
-<!-- # #| eval: !expr params$eval_models -->
-<!-- # #| cache: !expr params$eval_models -->
-<!-- #  -->
-<!-- # preference_model <- buildmer(amount ~ likert * rank + -->
-<!-- #                                (1 + likert * rank | participant) + -->
-<!-- #                                (1 + likert * rank | trial_id), -->
-<!-- #                              data = donation_behaviour_tidy) -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ```{r} -->
-<!-- # #| label: model-r-value-comparison -->
-<!-- # #| eval: !expr params$eval_models -->
-<!-- # #| cache: !expr params$eval_models -->
-<!-- #  -->
-<!-- # pref_comp_model <- comparison(preference_model) -->
-<!-- #  -->
-<!-- # ``` -->
-<!-- #  -->
-<!-- # ```{r} -->
-<!-- # #| label: anova-charity-preferences -->
-<!-- #  -->
-<!-- # anova_results(preference_model, pref_comp_model) -->
-<!-- # ``` -->
+```{r}
+#| label: model-r-value
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+correlation_model <- buildmer(amount ~ correlation  +
+                                (1 + correlation  | participant) +
+                                (1 + correlation  | trial_id) +
+                                (1 | participant:trial_id),
+                              data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-r-value-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+correlation_comp_model <- comparison(correlation_model)
+```
+
+```{r}
+#| label: anova-r-value
+
+anova_results(correlation_model, correlation_comp_model)
+```
 
 To investigate the second hypothesis, that participants will donate more money
 to charity infographics that feature higher *r* values, we built a model
 that featured the three chosen *r* values as a fixed effect
-
-Maybe use the matrix table as influence for a visualistion?
-or histogram or something?
 
 
 # Discussion {#sec-discussions}
