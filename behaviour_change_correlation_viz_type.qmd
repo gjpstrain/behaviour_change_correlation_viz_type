@@ -156,6 +156,8 @@ library(Matrix)
 library(ordinal)
 library(janitor)
 library(effectsize)
+library(glmmTMB)
+library(car)
 
 # fix conflicts now using the conflicted package
 
@@ -278,8 +280,6 @@ wrangle <- function(anon_file) {
     ) %>%
     mutate(across(c(left_amount, right_amount), ~ replace_na(., 0))) %>%
     filter(trial_id < 109) %>%
-    # outcome: proportion of total donated to left charity
-    # (bounded 0-1; 0.5 = even split; avoids the sum-to-100 constraint)
     mutate(
       total_amount   = left_amount + right_amount,
       prop_left      = if_else(total_amount == 0, 0.5, left_amount / total_amount),
@@ -292,7 +292,6 @@ wrangle <- function(anon_file) {
     full_join(time_taken,       by = "participant") %>%
     full_join(charity_opinions, by = "participant") %>%
     full_join(charity_rankings, by = "participant") %>%
-    # join left-charity likert/rank preferences
     left_join(
       charity_lookup %>% rename(
         left_charity        = charity,
@@ -310,6 +309,12 @@ wrangle <- function(anon_file) {
       ),
       by = c("participant", "right_charity")
     ) %>%
+    mutate(
+      likert_diff = as.numeric(left_charity_likert) - as.numeric(right_charity_likert),
+      rank_diff   = as.numeric(left_charity_rank)   - as.numeric(right_charity_rank),
+      likert_diff_c = likert_diff - mean(likert_diff, na.rm = TRUE),
+      rank_diff_c   = rank_diff   - mean(rank_diff,   na.rm = TRUE)
+  ) %>%
     assign(paste0(unique(anon_file$expName), "_tidy"),
            value = ., envir = .GlobalEnv)
 }
@@ -800,13 +805,10 @@ experiment (SD = `r printnum(time_taken$sd)`).
 #| eval: !expr params$eval_models
 #| cache: !expr params$eval_models
 
-preference_model <- buildmer(amount ~ likert * rank +
-                               (1 + likert * rank | participant) +
-                               (1 + likert * rank | trial_id) +
-                               (1 | participant:trial_id),
-                             data = donation_behaviour_tidy)
-
-preference_model <- buildmer
+preference_model <- glmmTMB(prop_left ~ likert_diff_c * rank_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
 ```
 
 ```{r}
@@ -815,7 +817,6 @@ preference_model <- buildmer
 #| cache: !expr params$eval_models
 
 pref_comp_model <- comparison(preference_model)
-
 ```
 
 ```{r}
@@ -827,15 +828,15 @@ anova_results(preference_model, pref_comp_model)
 ```{r}
 #| label: get-omni-anova-charity-prefs
 
-aov_out <- anova(preference_model, type = 3, ddf = "Satterthwaite")
+aov_out <- car::Anova(preference_model, type = 3)
 aov_apa <- apa_print(aov_out)
 ```
 
 All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` [@rcore]).
 To test the first hypothesis, that participants will donate greater proportions 
 of money to charities that they prefer, we build a model whereby donation
-amount is predicted by the Likert ratings of charities and their rank. Such 
-models featured random intercepts for both participants and experimental
+amount, coded as a ratio, is predicted by the Likert ratings of charities and their rank. This 
+model featured random intercepts for both participants and experimental
 items. The experimental model explained significantly more variance when compared
 to an null model without the fixed effects of Likert rating and charity ranking
 ($\chi^2$(`r in_paren(preference_model.df)`) = `r printnum(preference_model.Chisq)`,
@@ -859,16 +860,28 @@ $\eta_p^2$ in @tbl-likert-charity-efs along with 95\% confidence intervals.
 #| fig-cap: Mean donation amounts plotted by Likert rating and charity rank. When a charitable concern was ranked 2^nd^ or 3^rd^, donation amounts increase with Likert rating. When a charitable concern was ranked as 1^st^, however, there is a clear bias towards the centre of the Likert rating with regards to donations.
 #| fig-asp: 0.4
 
-donation_behaviour_tidy %>%
-  group_by(rank, likert) %>%
-  summarise(mean_amount = mean(amount, na.rm = TRUE), .groups = "drop") %>%
-  complete(rank, likert, fill = list(mean_amount = NA)) %>%
-  mutate(
-    rank = factor(rank, levels = 1:3),
-    display_label = ifelse(is.na(mean_amount), "0", as.character(round(mean_amount, 1))),
-    fill_value = ifelse(is.na(mean_amount), -Inf, mean_amount)
+donation_behaviour_tidy_long <- donation_behaviour_tidy %>%
+  pivot_longer(
+    cols = c(left_charity, right_charity,
+             left_plot_type, right_plot_type,
+             left_correlation, right_correlation,
+             left_amount, right_amount,
+             left_charity_likert, right_charity_likert,
+             left_charity_rank, right_charity_rank),
+    names_to      = c("side", ".value"),
+    names_pattern = "(left|right)_(.*)"
   ) %>%
-  ggplot(aes(x = likert, y = rank, fill = mean_amount)) +
+  mutate(side = factor(side, levels = c("left", "right")))
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank, charity_likert) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE), .groups = "drop") %>%
+  complete(charity_rank, charity_likert, fill = list(mean_amount = NA)) %>%
+  mutate(
+    charity_rank = factor(charity_rank, levels = 1:3),
+    display_label = ifelse(is.na(mean_amount), "0", as.character(round(mean_amount, 1))),
+  ) %>%
+  ggplot(aes(x = charity_likert, y = charity_rank, fill = mean_amount)) +
   geom_tile(colour = "white", linewidth = 2) +
   geom_text(aes(label = display_label), na.rm = FALSE) +
   scale_fill_distiller(palette = "RdYlGn", direction = 1, na.value = "grey80") +
@@ -876,11 +889,7 @@ donation_behaviour_tidy %>%
   scale_y_discrete(limits = as.character(3:1)) +
   labs(x = "Charity Likert Rating", y = "Charity Rank", fill = "Mean Amount") +
   theme_minimal() +
-  theme(
-    panel.grid = element_blank(),
-    axis.title.x = element_text(hjust = 0.5),
-    legend.position = "none"
-  )
+  theme(panel.grid = element_blank(), legend.position = "none")
 ```
 
 ```{r}
@@ -888,45 +897,51 @@ donation_behaviour_tidy %>%
 #| include: true
 #| tbl-cap: "$\\eta_{p}^{2}$ effect sizes for the main effects of Likert rating and charity rank, along with the interaction term."
 
-eta_squared(anova(preference_model, type = 3, ddf = "Satterthwaite"), partial = TRUE) %>%
-  rename("$\\eta_{p}^{2}$" = "Eta2_partial",
-         "CI Low" = "CI_low",
-         "CI High" = "CI_high") %>%
-  mutate(Parameter = recode(Parameter, 
-         rank = "Charity Rank Position",
-         likert = "Charity Likert Rating",
-         `rank:likert` = "Rank $\\times$ Likert"),
-         "95\\% CI" = paste0("[", round(`CI Low`, 2), ", ", round(`CI High`, 2), "]")) %>%
-  select(-`CI Low`, -`CI High`, -CI) %>%
-  kbl(booktabs = T, digits = c(1, 2, 1), escape = FALSE)
+library(parameters)
+
+model_parameters(preference_model) %>%
+  filter(Effects == "fixed", Parameter != "(Intercept)") %>%
+  select(Parameter, Coefficient, SE, CI_low, CI_high, z, p) %>%
+  mutate(
+    Parameter = recode(Parameter,
+      likert_diff_c               = "Relative Likert Rating",
+      rank_diff_c                 = "Relative Rank Position",
+      `likert_diff_c:rank_diff_c` = "Relative Likert $\\times$ Relative Rank"),
+    `95\\% CI` = paste0("[", round(CI_low, 2), ", ", round(CI_high, 2), "]"),
+    p = ifelse(p < .001, "$p$ < .001", paste0("$p$ = ", round(p, 3)))
+  ) %>%
+  select(-CI_low, -CI_high) %>%
+  kbl(booktabs = TRUE, digits = 3, escape = FALSE,
+      col.names = c("Parameter", "Coefficient", "SE", "$z$", "$p$", "95\\% CI")) %>%
+  kable_styling()
 ```
 
 
-```{r}
-#| label: model-r-value
-#| eval: !expr params$eval_models
-#| cache: !expr params$eval_models
-
-correlation_model <- buildmer(amount ~ correlation  +
-                                (1 + correlation  | participant) +
-                                (1 + correlation  | trial_id) +
-                                (1 | participant:trial_id),
-                              data = donation_behaviour_tidy)
-```
-
-```{r}
-#| label: model-r-value-comparison
-#| eval: !expr params$eval_models
-#| cache: !expr params$eval_models
-
-correlation_comp_model <- comparison(correlation_model)
-```
-
-```{r}
-#| label: anova-r-value
-
-anova_results(correlation_model, correlation_comp_model)
-```
+# ```{r}
+# #| label: model-r-value
+# #| eval: !expr params$eval_models
+# #| cache: !expr params$eval_models
+# 
+# correlation_model <- buildmer(amount ~ correlation  +
+#                                 (1 + correlation  | participant) +
+#                                 (1 + correlation  | trial_id) +
+#                                 (1 | participant:trial_id),
+#                               data = donation_behaviour_tidy)
+# ```
+# 
+# ```{r}
+# #| label: model-r-value-comparison
+# #| eval: !expr params$eval_models
+# #| cache: !expr params$eval_models
+# 
+# correlation_comp_model <- comparison(correlation_model)
+# ```
+# 
+# ```{r}
+# #| label: anova-r-value
+# 
+# anova_results(correlation_model, correlation_comp_model)
+# ```
 
 To investigate the second hypothesis, that participants will donate more money
 to charity infographics that feature higher *r* values, we built a model

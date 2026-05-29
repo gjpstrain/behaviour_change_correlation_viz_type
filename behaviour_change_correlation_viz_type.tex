@@ -759,16 +759,15 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 All analyses were conducted using R (version 4.5.3 \citep{rcore}). To
 test the first hypothesis, that participants will donate greater
 proportions of money to charities that they prefer, we build a model
-whereby donation amount is predicted by the Likert ratings of charities
-and their rank. Such models featured random intercepts for both
-participants and experimental items. The experimental model explained
-significantly more variance when compared to an null model without the
-fixed effects of Likert rating and charity ranking (\(\chi^2\)(17) =
-3,716.19, \emph{p} \textless{} .001). There was a significant main
-effect of charity rank, \(F(2, 2330.53) = 354.39\), \(p < .001\), a
-significant main effect of Likert rating, \(F(6, 1297.02) = 35.43\),
-\(p < .001\), and a significant interaction, \(F(9, 3189.66) = 25.74\),
-\(p < .001\). To explore these effects further,
+whereby donation amount, coded as a ratio, is predicted by the Likert
+ratings of charities and their rank. This model featured random
+intercepts for both participants and experimental items. The
+experimental model explained significantly more variance when compared
+to an null model without the fixed effects of Likert rating and charity
+ranking (\(\chi^2\)(9) = 5,174.73, \emph{p} \textless{} .001). There was
+a significant main effect of charity rank, \(\chi^2(1) = 217.30\),
+\(p < .001\), a significant main effect of Likert rating, , and a
+significant interaction, . To explore these effects further,
 Figure~\ref{fig-likert-charity-matrix} plots total donation amounts for
 Likert ratings and charity rankings. Expectedly, participants rated
 charitable concerns as more important when they also ranked them more
@@ -778,7 +777,7 @@ with Likert rating. However, when the charitable concern was ranked as
 1\textsuperscript{st}, there was a clear bias towards the centre of the
 Likert rating distribution. \emph{look for something to cite here}
 Effect sizes are supplied as \(\eta_p^2\) in
-Table~\ref{tbl-likert-charity-efs}.
+Table~\ref{tbl-likert-charity-efs} along with 95\% confidence intervals.
 
 \begin{figure*}
 
@@ -805,13 +804,15 @@ interaction term.}
 
 \centering{
 
-\begin{tabular}[t]{lrl}
+\begin{tabular}[t]{lrrrrrl}
 \toprule
-Parameter & $\eta_{p}^{2}$ & 95\% CI\\
+Parameter & Coefficient & SE & CI_low & CI_high & z & p\\
 \midrule
-Charity Rank Position & 0.23 & {}[0.21, 1]\\
-Charity Likert Rating & 0.14 & {}[0.11, 1]\\
-Rank $\times$ Likert & 0.07 & {}[0.05, 1]\\
+Intercept & -0.182 & 0.049 & -0.279 & -0.086 & -3.696 & < .001\\
+Relative Likert Rating & 0.265 & 0.007 & 0.252 & 0.278 & 39.567 & < .001\\
+Relative Rank Position & -0.106 & 0.007 & -0.120 & -0.091 & -14.741 & < .001\\
+Relative Likert $\times$ Relative Rank & -0.030 & 0.003 & -0.037 & -0.023 & -8.644 & < .001\\
+Intercept & 10.978 &  & 10.739 & 11.222 &  & \\
 \bottomrule
 \end{tabular}
 
@@ -819,13 +820,20 @@ Rank $\times$ Likert & 0.07 & {}[0.05, 1]\\
 
 \end{table}%
 
+\section{\texorpdfstring{\texttt{\{r\}\ \#\ \#\textbar{}\ label:\ model-r-value\ \#\ \#\textbar{}\ eval:\ !expr\ params\$eval\_models\ \#\ \#\textbar{}\ cache:\ !expr\ params\$eval\_models\ \#\ \ \#\ correlation\_model\ \textless{}-\ buildmer(amount\ \textasciitilde{}\ correlation\ \ +\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1\ +\ correlation\ \ \textbar{}\ participant)\ +\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1\ +\ correlation\ \ \textbar{}\ trial\_id)\ +\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1\ \textbar{}\ participant:trial\_id),\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ data\ =\ donation\_behaviour\_tidy)\ \#}}{\{r\} \# \#\textbar{} label: model-r-value \# \#\textbar{} eval: !expr params\$eval\_models \# \#\textbar{} cache: !expr params\$eval\_models \#  \# correlation\_model \textless- buildmer(amount \textasciitilde{} correlation  + \#                                 (1 + correlation  \textbar{} participant) + \#                                 (1 + correlation  \textbar{} trial\_id) + \#                                 (1 \textbar{} participant:trial\_id), \#                               data = donation\_behaviour\_tidy) \#}}\label{r-label-model-r-value-eval-expr-paramseval_models-cache-expr-paramseval_models-correlation_model---buildmeramount-correlation-1-correlation-participant-1-correlation-trial_id-1-participanttrial_id-data-donation_behaviour_tidy}
+
+\section{}\label{section}
+
+\section{\texorpdfstring{\texttt{\{r\}\ \#\ \#\textbar{}\ label:\ model-r-value-comparison\ \#\ \#\textbar{}\ eval:\ !expr\ params\$eval\_models\ \#\ \#\textbar{}\ cache:\ !expr\ params\$eval\_models\ \#\ \ \#\ correlation\_comp\_model\ \textless{}-\ comparison(correlation\_model)\ \#}}{\{r\} \# \#\textbar{} label: model-r-value-comparison \# \#\textbar{} eval: !expr params\$eval\_models \# \#\textbar{} cache: !expr params\$eval\_models \#  \# correlation\_comp\_model \textless- comparison(correlation\_model) \#}}\label{r-label-model-r-value-comparison-eval-expr-paramseval_models-cache-expr-paramseval_models-correlation_comp_model---comparisoncorrelation_model}
+
+\section{}\label{section-1}
+
+\section{\texorpdfstring{\texttt{\{r\}\ \#\ \#\textbar{}\ label:\ anova-r-value\ \#\ \ \#\ anova\_results(correlation\_model,\ correlation\_comp\_model)\ \#}}{\{r\} \# \#\textbar{} label: anova-r-value \#  \# anova\_results(correlation\_model, correlation\_comp\_model) \#}}\label{r-label-anova-r-value-anova_resultscorrelation_model-correlation_comp_model}
+
 To investigate the second hypothesis, that participants will donate more
 money to charity infographics that feature higher \emph{r} values, we
 built a model that featured the three chosen \emph{r} values as a fixed
 effect
-
-Maybe use the matrix table as influence for a visualistion? or histogram
-or something?
 
 \section{Discussion}\label{sec-discussions}
 

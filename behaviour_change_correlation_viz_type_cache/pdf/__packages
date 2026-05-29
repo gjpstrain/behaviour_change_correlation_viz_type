@@ -25,3 +25,7 @@ conflicted
 ggtext
 ordinal
 janitor
+effectsize
+glmmTMB
+carData
+car
