@@ -310,11 +310,11 @@ wrangle <- function(anon_file) {
       by = c("participant", "right_charity")
     ) %>%
     mutate(
-      likert_diff = as.numeric(left_charity_likert) - as.numeric(right_charity_likert),
-      rank_diff   = as.numeric(left_charity_rank)   - as.numeric(right_charity_rank),
+      likert_diff   = as.numeric(left_charity_likert) - as.numeric(right_charity_likert),
+      rank_diff     = (4 - as.numeric(left_charity_rank)) - (4 - as.numeric(right_charity_rank)),
       likert_diff_c = likert_diff - mean(likert_diff, na.rm = TRUE),
       rank_diff_c   = rank_diff   - mean(rank_diff,   na.rm = TRUE)
-  ) %>%
+    ) %>%
     assign(paste0(unique(anon_file$expName), "_tidy"),
            value = ., envir = .GlobalEnv)
 }
@@ -589,7 +589,7 @@ For each of the three selected charities, we developed a corresponding
 infographic to be presented during the experimental trials. These infographics
 were designed to appear realistic and included fictional charity-specific details,
 such as taglines, email addresses, website links, physical addresses, and 
-impact metrics (e.g., "5000+ Dog Lives Impacted"). In addition, the infographics
+impact metrics (e.g., "5000 + Dog Lives Impacted"). In addition, the infographics
 contained secondary background graphics that corresponded to the theme of the 
 charity being represented. Each charity template was designed by a single author using
 Canva (www.canva.com) and checked by co-authors. Each template featured a blank
@@ -787,7 +787,7 @@ pre-screening criteria were also employed [@peer_2021]; participants were requir
 to have previously completed at least 100 studies on the platform, and were 
 required to have been accepted on at least 99% of them. Data were collected
 from 174 participants. 10 failed more than 3 out of 6 attention checks, meaning their
-submissions were rejected in accordance with our pre-registration [^2]. Data
+submissions were rejected in accordance with our pre-registration[^2]. Data
 from the remaining 164 participants were included in the full analysis 
 (`r printnum(gender$male, digits = 2)` male, `r printnum(gender$female, digits = 2)`
 female, and `r printnum(gender$non_binary, digits = 2)` non-binary).
@@ -841,9 +841,9 @@ items. The experimental model explained significantly more variance when compare
 to an null model without the fixed effects of Likert rating and charity ranking
 ($\chi^2$(`r in_paren(preference_model.df)`) = `r printnum(preference_model.Chisq)`,
 *p* `r printp(preference_model.p, add_equals = TRUE)`). 
-There was a significant main effect of charity rank, `r aov_apa$full_result$rank`, 
-a significant main effect of Likert rating, `r aov_apa$full_result$likert`, 
-and a significant interaction, `r aov_apa$full_result$rank_likert`. To explore
+There was a significant main effect of charity rank, `r aov_apa$full_result$rank_diff_c`, 
+a significant main effect of Likert rating, `r aov_apa$full_result$likert_diff_c`, 
+and a significant interaction, `r aov_apa$full_result$likert_diff_c_rank_diff_c`. To explore
 these effects further, @fig-likert-charity-matrix plots total donation amounts
 for Likert ratings and charity rankings. Expectedly, participants rated charitable
 concerns as more important when they also ranked them more highly. When a charitable
@@ -897,56 +897,35 @@ donation_behaviour_tidy_long %>%
 #| include: true
 #| tbl-cap: "$\\eta_{p}^{2}$ effect sizes for the main effects of Likert rating and charity rank, along with the interaction term."
 
-library(parameters)
+library(marginaleffects)
 
-model_parameters(preference_model) %>%
-  filter(Effects == "fixed", Parameter != "(Intercept)") %>%
-  select(Parameter, Coefficient, SE, CI_low, CI_high, z, p) %>%
+avg_slopes(preference_model) %>%
+  as_tibble() %>%
+  filter(term != "(Intercept)") %>%
   mutate(
-    Parameter = recode(Parameter,
-      likert_diff_c               = "Relative Likert Rating",
-      rank_diff_c                 = "Relative Rank Position",
-      `likert_diff_c:rank_diff_c` = "Relative Likert $\\times$ Relative Rank"),
-    `95\\% CI` = paste0("[", round(CI_low, 2), ", ", round(CI_high, 2), "]"),
-    p = ifelse(p < .001, "$p$ < .001", paste0("$p$ = ", round(p, 3)))
+    full_range = case_when(
+      term == "likert_diff_c" ~ 12,
+      term == "rank_diff_c"   ~ 4
+    ),
+    estimate  = estimate  * full_range,
+    std.error = std.error * full_range,
+    conf.low  = conf.low  * full_range,
+    conf.high = conf.high * full_range,
+    term = recode(term,
+      likert_diff_c = "Relative Likert Rating",
+      rank_diff_c   = "Relative Rank Position"),
+    `95\\% CI` = paste0("[", round(conf.low, 2), ", ", round(conf.high, 2), "]"),
+    p = ifelse(p.value < .001, "< .001", paste0(round(p.value, 3)))
   ) %>%
-  select(-CI_low, -CI_high) %>%
-  kbl(booktabs = TRUE, digits = 3, escape = FALSE,
-      col.names = c("Parameter", "Coefficient", "SE", "$z$", "$p$", "95\\% CI")) %>%
+  select(term, estimate, std.error, statistic, p, `95\\% CI`) %>%
+  kbl(booktabs = TRUE, digits = c(2,2,2,2,2,2), escape = FALSE,
+      col.names = c("Parameter", "$\\Delta$ proportion donated (\\%)", "SE", "$z$", "$p$", "95\\% CI")) %>%
   kable_styling()
 ```
-
-
-# ```{r}
-# #| label: model-r-value
-# #| eval: !expr params$eval_models
-# #| cache: !expr params$eval_models
-# 
-# correlation_model <- buildmer(amount ~ correlation  +
-#                                 (1 + correlation  | participant) +
-#                                 (1 + correlation  | trial_id) +
-#                                 (1 | participant:trial_id),
-#                               data = donation_behaviour_tidy)
-# ```
-# 
-# ```{r}
-# #| label: model-r-value-comparison
-# #| eval: !expr params$eval_models
-# #| cache: !expr params$eval_models
-# 
-# correlation_comp_model <- comparison(correlation_model)
-# ```
-# 
-# ```{r}
-# #| label: anova-r-value
-# 
-# anova_results(correlation_model, correlation_comp_model)
-# ```
 
 To investigate the second hypothesis, that participants will donate more money
 to charity infographics that feature higher *r* values, we built a model
 that featured the three chosen *r* values as a fixed effect
-
 
 # Discussion {#sec-discussions}
 

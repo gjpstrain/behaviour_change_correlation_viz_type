@@ -571,7 +571,7 @@ For each of the three selected charities, we developed a corresponding
 infographic to be presented during the experimental trials. These
 infographics were designed to appear realistic and included fictional
 charity-specific details, such as taglines, email addresses, website
-links, physical addresses, and impact metrics (e.g., ``5000+ Dog Lives
+links, physical addresses, and impact metrics (e.g., ``5000 + Dog Lives
 Impacted''). In addition, the infographics contained secondary
 background graphics that corresponded to the theme of the charity being
 represented. Each charity template was designed by a single author using
@@ -745,7 +745,7 @@ required to have previously completed at least 100 studies on the
 platform, and were required to have been accepted on at least 99\% of
 them. Data were collected from 174 participants. 10 failed more than 3
 out of 6 attention checks, meaning their submissions were rejected in
-accordance with our pre-registration \footnote{The pre-registration
+accordance with our pre-registration\footnote{The pre-registration
   states that 150 participants would be recruited. Additional
   participants were recruited due to an oversight, however all
   conclusions and statistical results are identical when run with 164 or
@@ -766,8 +766,9 @@ experimental model explained significantly more variance when compared
 to an null model without the fixed effects of Likert rating and charity
 ranking (\(\chi^2\)(9) = 5,174.73, \emph{p} \textless{} .001). There was
 a significant main effect of charity rank, \(\chi^2(1) = 217.30\),
-\(p < .001\), a significant main effect of Likert rating, , and a
-significant interaction, . To explore these effects further,
+\(p < .001\), a significant main effect of Likert rating,
+\(\chi^2(1) = 1,565.58\), \(p < .001\), and a significant interaction,
+\(\chi^2(1) = 74.72\), \(p < .001\). To explore these effects further,
 Figure~\ref{fig-likert-charity-matrix} plots total donation amounts for
 Likert ratings and charity rankings. Expectedly, participants rated
 charitable concerns as more important when they also ranked them more
@@ -804,31 +805,19 @@ interaction term.}
 
 \centering{
 
-\begin{tabular}[t]{lrrrrrl}
+\centering
+\begin{tabular}[t]{lrrrll}
 \toprule
-Parameter & Coefficient & SE & CI_low & CI_high & z & p\\
+Parameter & $\Delta$ proportion donated (\%) & SE & $z$ & $p$ & 95\% CI\\
 \midrule
-Intercept & -0.182 & 0.049 & -0.279 & -0.086 & -3.696 & < .001\\
-Relative Likert Rating & 0.265 & 0.007 & 0.252 & 0.278 & 39.567 & < .001\\
-Relative Rank Position & -0.106 & 0.007 & -0.120 & -0.091 & -14.741 & < .001\\
-Relative Likert $\times$ Relative Rank & -0.030 & 0.003 & -0.037 & -0.023 & -8.644 & < .001\\
-Intercept & 10.978 &  & 10.739 & 11.222 &  & \\
+Relative Likert Rating & 0.70 & 0.02 & 40.95 & < .001 & {}[0.67, 0.74]\\
+Relative Rank Position & 0.09 & 0.01 & 14.93 & < .001 & {}[0.08, 0.11]\\
 \bottomrule
 \end{tabular}
 
 }
 
 \end{table}%
-
-\section{\texorpdfstring{\texttt{\{r\}\ \#\ \#\textbar{}\ label:\ model-r-value\ \#\ \#\textbar{}\ eval:\ !expr\ params\$eval\_models\ \#\ \#\textbar{}\ cache:\ !expr\ params\$eval\_models\ \#\ \ \#\ correlation\_model\ \textless{}-\ buildmer(amount\ \textasciitilde{}\ correlation\ \ +\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1\ +\ correlation\ \ \textbar{}\ participant)\ +\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1\ +\ correlation\ \ \textbar{}\ trial\_id)\ +\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ (1\ \textbar{}\ participant:trial\_id),\ \#\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ data\ =\ donation\_behaviour\_tidy)\ \#}}{\{r\} \# \#\textbar{} label: model-r-value \# \#\textbar{} eval: !expr params\$eval\_models \# \#\textbar{} cache: !expr params\$eval\_models \#  \# correlation\_model \textless- buildmer(amount \textasciitilde{} correlation  + \#                                 (1 + correlation  \textbar{} participant) + \#                                 (1 + correlation  \textbar{} trial\_id) + \#                                 (1 \textbar{} participant:trial\_id), \#                               data = donation\_behaviour\_tidy) \#}}\label{r-label-model-r-value-eval-expr-paramseval_models-cache-expr-paramseval_models-correlation_model---buildmeramount-correlation-1-correlation-participant-1-correlation-trial_id-1-participanttrial_id-data-donation_behaviour_tidy}
-
-\section{}\label{section}
-
-\section{\texorpdfstring{\texttt{\{r\}\ \#\ \#\textbar{}\ label:\ model-r-value-comparison\ \#\ \#\textbar{}\ eval:\ !expr\ params\$eval\_models\ \#\ \#\textbar{}\ cache:\ !expr\ params\$eval\_models\ \#\ \ \#\ correlation\_comp\_model\ \textless{}-\ comparison(correlation\_model)\ \#}}{\{r\} \# \#\textbar{} label: model-r-value-comparison \# \#\textbar{} eval: !expr params\$eval\_models \# \#\textbar{} cache: !expr params\$eval\_models \#  \# correlation\_comp\_model \textless- comparison(correlation\_model) \#}}\label{r-label-model-r-value-comparison-eval-expr-paramseval_models-cache-expr-paramseval_models-correlation_comp_model---comparisoncorrelation_model}
-
-\section{}\label{section-1}
-
-\section{\texorpdfstring{\texttt{\{r\}\ \#\ \#\textbar{}\ label:\ anova-r-value\ \#\ \ \#\ anova\_results(correlation\_model,\ correlation\_comp\_model)\ \#}}{\{r\} \# \#\textbar{} label: anova-r-value \#  \# anova\_results(correlation\_model, correlation\_comp\_model) \#}}\label{r-label-anova-r-value-anova_resultscorrelation_model-correlation_comp_model}
 
 To investigate the second hypothesis, that participants will donate more
 money to charity infographics that feature higher \emph{r} values, we
