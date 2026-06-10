@@ -509,12 +509,19 @@ Ethical approval was granted by \emph{removed for anon}.
 
 \subsection{Modelling}\label{sec-modelling}
 
-The \texttt{buildmer} (version 2.12 \citep{buildmer}) package is used to
-automate the selection of the random effects structure. We specify a
-maximal model, including random intercepts and slopes for participants
-and experimental trials. \texttt{buildmer} then employs stepwise
-regression to identify the most complex model that successfully
-converges.
+\begin{itemize}
+\tightlist
+\item
+  ordered beta regression using ordbeta package
+\item
+  avgslopes() from marginaleffects package to get marginal effects
+  instead of effect sizes.
+\item
+  glmmTMB to fit ordered beta model
+\item
+  all models featured random intercepts for both participants and
+  experimental items.
+\end{itemize}
 
 \subsection{Stimuli}\label{sec-stimuli}
 
@@ -759,16 +766,15 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 All analyses were conducted using R (version 4.5.3 \citep{rcore}). To
 test the first hypothesis, that participants will donate greater
 proportions of money to charities that they prefer, we build a model
-whereby donation amount, coded as a ratio, is predicted by the Likert
-ratings of charities and their rank. This model featured random
-intercepts for both participants and experimental items. The
-experimental model explained significantly more variance when compared
-to an null model without the fixed effects of Likert rating and charity
-ranking (\(\chi^2\)(9) = 5,174.73, \emph{p} \textless{} .001). There was
-a significant main effect of charity rank, \(\chi^2(1) = 217.30\),
-\(p < .001\), a significant main effect of Likert rating,
-\(\chi^2(1) = 1,565.58\), \(p < .001\), and a significant interaction,
-\(\chi^2(1) = 74.72\), \(p < .001\). To explore these effects further,
+whereby the ratio of donations is predicted by the differences in Likert
+ratings of charities and their ranks. The experimental model explained
+significantly more variance when compared to an null model without the
+fixed effects of Likert rating and charity ranking (\(\chi^2\)(9) =
+5,174.73, \emph{p} \textless{} .001). There was a significant main
+effect of charity rank, \(\chi^2(1) = 217.30\), \(p < .001\), a
+significant main effect of Likert rating, \(\chi^2(1) = 1,565.58\),
+\(p < .001\), and a significant interaction, \(\chi^2(1) = 74.72\),
+\(p < .001\). To explore these effects further,
 Figure~\ref{fig-likert-charity-matrix} plots total donation amounts for
 Likert ratings and charity rankings. Expectedly, participants rated
 charitable concerns as more important when they also ranked them more
@@ -776,9 +782,10 @@ highly. When a charitable concern was ranked as 2\textsuperscript{nd} or
 3\textsuperscript{rd}, donation amounts generally increased linearly
 with Likert rating. However, when the charitable concern was ranked as
 1\textsuperscript{st}, there was a clear bias towards the centre of the
-Likert rating distribution. \emph{look for something to cite here}
-Effect sizes are supplied as \(\eta_p^2\) in
-Table~\ref{tbl-likert-charity-efs} along with 95\% confidence intervals.
+Likert rating distribution. \emph{look for something to cite here}.
+Marginal effects are estimated over the full range of Likert scale and
+charity ranking responses using the \texttt{marginaleffects} package
+\citep{marginal} and presented in \ref{tbl-likert-charity-marginals}.
 
 \begin{figure*}
 
@@ -797,32 +804,43 @@ of the Likert rating with regards to donations.}
 
 \end{figure*}%
 
-\begin{table}
+\begin{table*}
 
-\caption{\label{tbl-likert-charity-efs}\(\eta_{p}^{2}\) effect sizes for
-the main effects of Likert rating and charity rank, along with the
-interaction term.}
-
-\centering{
-
+\caption{\label{tab:unnamed-chunk-2}\label{tbl-likert-charity-marginals}In lieu of a measure of effect sizes, we provide the total change in the proportion of money donated to the left-hand charity across the full range of Likert ratings and charity rankings, along with the associated statistics.}
 \centering
 \begin{tabular}[t]{lrrrll}
 \toprule
 Parameter & $\Delta$ proportion donated (\%) & SE & $z$ & $p$ & 95\% CI\\
 \midrule
-Relative Likert Rating & 0.70 & 0.02 & 40.95 & < .001 & {}[0.67, 0.74]\\
-Relative Rank Position & 0.09 & 0.01 & 14.93 & < .001 & {}[0.08, 0.11]\\
+Relative Likert Rating & 0.70 & 0.02 & 40.95 & <0.001 & {}[0.67, 0.74]\\
+Relative Rank Position & 0.09 & 0.01 & 14.93 & <0.001 & {}[0.08, 0.11]\\
 \bottomrule
 \end{tabular}
-
-}
-
-\end{table}%
+\end{table*}
 
 To investigate the second hypothesis, that participants will donate more
 money to charity infographics that feature higher \emph{r} values, we
-built a model that featured the three chosen \emph{r} values as a fixed
-effect
+built a model where the donation ratio is predicted by the difference in
+\emph{r} value between the two infographics in each trial. This model
+does not take into account trials that feature infographics with the
+same \emph{r} value. The experimental model explained significantly more
+variance when compared to an null model without the fixed effect of
+\emph{r} value (\(\chi^2\)(7) = 98.82, \emph{p} \textless{} .001),
+driven by the significant main effect of \emph{r} value.
+Figure~\ref{fig-donation-by-r} shows violin plots of mean donation
+amounts for each of the three \emph{r} values used.
+
+\begin{figure}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-donation-by-r-1.pdf}}
+
+}
+
+\caption{\label{fig-donation-by-r}place}
+
+\end{figure}%
 
 \section{Discussion}\label{sec-discussions}
 
