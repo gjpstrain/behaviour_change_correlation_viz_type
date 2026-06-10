@@ -765,7 +765,7 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 
 All analyses were conducted using R (version 4.5.3 \citep{rcore}). To
 test the first hypothesis, that participants will donate greater
-proportions of money to charities that they prefer, we build a model
+proportions of money to charities that they prefer, we built a model
 whereby the ratio of donations is predicted by the differences in Likert
 ratings of charities and their ranks. The experimental model explained
 significantly more variance when compared to an null model without the
@@ -821,16 +821,15 @@ Relative Rank Position & 0.09 & 0.01 & 14.93 & <0.001 & {}[0.08, 0.11]\\
 To investigate the second hypothesis, that participants will donate more
 money to charity infographics that feature higher \emph{r} values, we
 built a model where the donation ratio is predicted by the difference in
-\emph{r} value between the two infographics in each trial. This model
-does not take into account trials that feature infographics with the
-same \emph{r} value. The experimental model explained significantly more
-variance when compared to an null model without the fixed effect of
-\emph{r} value (\(\chi^2\)(7) = 98.82, \emph{p} \textless{} .001),
-driven by the significant main effect of \emph{r} value.
+\emph{r} value between the two infographics in each trial. The
+experimental model explained significantly more variance when compared
+to a null model without the fixed effect of \emph{r} value
+(\(\chi^2\)(7) = 121.13, \emph{p} \textless{} .001), driven by the
+significant main effect of \emph{r} value.
 Figure~\ref{fig-donation-by-r} shows violin plots of mean donation
 amounts for each of the three \emph{r} values used.
 
-\begin{figure}
+\begin{figure*}
 
 \centering{
 
@@ -838,9 +837,18 @@ amounts for each of the three \emph{r} values used.
 
 }
 
-\caption{\label{fig-donation-by-r}place}
+\caption{\label{fig-donation-by-r}Mean donation amounts by \textit{r}
+value.}
 
-\end{figure}%
+\end{figure*}%
+
+Finally, to investigate the third hypothesis, that participants'
+donation amounts would be affected by the type of scatterplot used in
+the infographics (\emph{standard} or \emph{alternative}), we built a
+model where donation ratio is predicted by the type of plot used. The
+experimental model explained significantly more variance when compared
+to a null model without the fixed effect of plot type (\(\chi^2\)(7) =
+14.14, \emph{p} \textless{} .001)
 
 \section{Discussion}\label{sec-discussions}
 

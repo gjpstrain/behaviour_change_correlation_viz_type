@@ -316,7 +316,9 @@ wrangle <- function(anon_file) {
       likert_diff_c = likert_diff - mean(likert_diff, na.rm = TRUE),
       rank_diff_c   = rank_diff   - mean(rank_diff,   na.rm = TRUE),
       correlation_diff   = left_correlation - right_correlation,
-      correlation_diff_c = correlation_diff - mean(correlation_diff, na.rm = TRUE)
+      correlation_diff_c = correlation_diff - mean(correlation_diff, na.rm = TRUE),
+      plot_type_diff = as.numeric(left_plot_type) - as.numeric(right_plot_type),
+      plot_type_diff_c = plot_type_diff - mean(plot_type_diff, na.rm = TRUE)
     ) %>%
     assign(paste0(unique(anon_file$expName), "_tidy"),
            value = ., envir = .GlobalEnv)
@@ -836,7 +838,7 @@ aov_apa_likert <- apa_print(aov_out_likert)
 
 All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` [@rcore]).
 To test the first hypothesis, that participants will donate greater proportions 
-of money to charities that they prefer, we build a model whereby the ratio of 
+of money to charities that they prefer, we built a model whereby the ratio of 
 donations is predicted by the differences in Likert ratings of charities and their ranks.
 The experimental model explained significantly more variance when compared
 to an null model without the fixed effects of Likert rating and charity ranking
@@ -953,7 +955,7 @@ cat(x)
 correlation_model <- glmmTMB(prop_left ~ correlation_diff_c +
                               (1 | participant) + (1 | trial_id),
                             family = ordbeta(),
-                            data = filter(donation_behaviour_tidy, !same_correlation))
+                            data = donation_behaviour_tidy)
 ```
 
 ```{r}
@@ -973,9 +975,8 @@ anova_results(correlation_model, correlation_comp_model)
 To investigate the second hypothesis, that participants will donate more money
 to charity infographics that feature higher *r* values, we built a model where
 the donation ratio is predicted by the difference in *r* value between the 
-two infographics in each trial. This model does not take into account trials
-that feature infographics with the same *r* value. The experimental model 
-explained significantly more variance when compared to an null model without the
+two infographics in each trial. The experimental model 
+explained significantly more variance when compared to a null model without the
 fixed effect of *r* value ($\chi^2$(`r in_paren(correlation_model.df)`) =
 `r printnum(correlation_model.Chisq)`, *p* `r printp(correlation_model.p, add_equals = TRUE)`),
 driven by the significant main effect of *r* value. @fig-donation-by-r shows
@@ -984,7 +985,8 @@ violin plots of mean donation amounts for each of the three *r* values used.
 ```{r}
 #| label: fig-donation-by-r
 #| include: true
-#| fig-cap: place
+#| fig-cap: "Mean donation amounts by \\textit{r} value." 
+#| fig-env: "figure*"
 #| fig-asp: 0.4
 
 donation_behaviour_tidy_long %>%
@@ -996,14 +998,49 @@ donation_behaviour_tidy_long %>%
   geom_text(aes(label = format(round(mean_amount, 1), nsmall = 1)),
             size = 3, colour = "black", fontface = "bold") +
   scale_fill_distiller(palette = "RdYlGn", direction = 1) +
-  theme_void() +
+  theme_ggdist() +
   theme(legend.position = "none",
         axis.title.x = element_markdown(),
         axis.text.x = element_markdown()) +
-  labs(x = "Correlation Value")
+  labs(x = "Correlation Value (*r*)",
+       y = "Mean Donation Amount")
   
   
 ```
+
+<!----------------------------------------------------------------------------->
+
+```{r}
+#| label: model-plot-type
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+plot_type_model <- glmmTMB(prop_left ~ plot_type_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-plot-type-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+plot_type_comp_model <- comparison(plot_type_model)
+```
+
+```{r}
+#| label: anova-plot-type
+
+anova_results(plot_type_model, plot_type_comp_model)
+```
+
+Finally, to investigate the third hypothesis, that participants' donation amounts
+would be affected by the type of scatterplot used in the infographics (*standard*
+or *alternative*), we built a model where donation ratio is predicted by the type 
+of plot used. The experimental model explained significantly more variance when 
+compared to a null model without the fixed effect of plot type ($\chi^2$(`r in_paren(plot_type_model.df)`) =
+`r printnum(plot_type_model.Chisq)`, *p* `r printp(plot_type_model.p, add_equals = TRUE)`)
 
 
 # Discussion {#sec-discussions}
