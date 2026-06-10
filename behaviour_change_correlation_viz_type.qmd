@@ -326,6 +326,22 @@ wrangle <- function(anon_file) {
 
 wrangle(anon_file)
 
+# create long df for later summary stats
+
+donation_behaviour_tidy_long <- donation_behaviour_tidy %>%
+  pivot_longer(
+    cols = c(left_charity, right_charity,
+             left_plot_type, right_plot_type,
+             left_correlation, right_correlation,
+             left_amount, right_amount,
+             left_charity_likert, right_charity_likert,
+             left_charity_rank, right_charity_rank),
+    names_to      = c("side", ".value"),
+    names_pattern = "(left|right)_(.*)"
+  ) %>%
+  mutate(side = factor(side, levels = c("left", "right")))
+
+
 # extract demographics and time taken info for rendering in text
 
 gender <- distinct(donation_behaviour_tidy, participant,
@@ -864,19 +880,6 @@ over the full range of Likert scale and charity ranking responses using the
 #| fig-cap: Mean donation amounts plotted by Likert rating and charity rank. When a charitable concern was ranked 2^nd^ or 3^rd^, donation amounts increase with Likert rating. When a charitable concern was ranked as 1^st^, however, there is a clear bias towards the centre of the Likert rating with regards to donations.
 #| fig-asp: 0.4
 
-donation_behaviour_tidy_long <- donation_behaviour_tidy %>%
-  pivot_longer(
-    cols = c(left_charity, right_charity,
-             left_plot_type, right_plot_type,
-             left_correlation, right_correlation,
-             left_amount, right_amount,
-             left_charity_likert, right_charity_likert,
-             left_charity_rank, right_charity_rank),
-    names_to      = c("side", ".value"),
-    names_pattern = "(left|right)_(.*)"
-  ) %>%
-  mutate(side = factor(side, levels = c("left", "right")))
-
 donation_behaviour_tidy_long %>%
   group_by(charity_rank, charity_likert) %>%
   summarise(mean_amount = mean(amount, na.rm = TRUE), .groups = "drop") %>%
@@ -979,33 +982,23 @@ two infographics in each trial. The experimental model
 explained significantly more variance when compared to a null model without the
 fixed effect of *r* value ($\chi^2$(`r in_paren(correlation_model.df)`) =
 `r printnum(correlation_model.Chisq)`, *p* `r printp(correlation_model.p, add_equals = TRUE)`),
-driven by the significant main effect of *r* value. @fig-donation-by-r shows
-violin plots of mean donation amounts for each of the three *r* values used.
+driven by the significant main effect of *r* value. @tbl-donation-by-r shows
+means and standard deviations of donation amounts for each of the three *r* values used.
 
 ```{r}
-#| label: fig-donation-by-r
+#| label: tbl-donation-by-r
 #| include: true
-#| fig-cap: "Mean donation amounts by \\textit{r} value." 
-#| fig-env: "figure*"
-#| fig-asp: 0.4
+#| tbl-cap: "Means and standard deviations of donation amounts for each \\textit{r} value used."
 
 donation_behaviour_tidy_long %>%
   mutate(correlation = factor(correlation)) %>%
   group_by(correlation) %>%
-  summarise(mean_amount = mean(amount, na.rm = TRUE)) %>%
-  ggplot(aes(x = correlation, y = mean_amount, fill = mean_amount)) +
-  geom_tile() +
-  geom_text(aes(label = format(round(mean_amount, 1), nsmall = 1)),
-            size = 3, colour = "black", fontface = "bold") +
-  scale_fill_distiller(palette = "RdYlGn", direction = 1) +
-  theme_ggdist() +
-  theme(legend.position = "none",
-        axis.title.x = element_markdown(),
-        axis.text.x = element_markdown()) +
-  labs(x = "Correlation Value (*r*)",
-       y = "Mean Donation Amount")
-  
-  
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            sd_amount = sd(amount, na.rm = TRUE)) %>%
+  kable(format = "latex", booktabs = TRUE, digits = 1,
+        col.names = c("", "Mean", "SD")) %>%
+  kable_styling(latex_options = c("hold_position")) %>%
+  add_header_above(c("Correlation Value" = 1, "Donation" = 2))
 ```
 
 <!----------------------------------------------------------------------------->
@@ -1040,7 +1033,105 @@ would be affected by the type of scatterplot used in the infographics (*standard
 or *alternative*), we built a model where donation ratio is predicted by the type 
 of plot used. The experimental model explained significantly more variance when 
 compared to a null model without the fixed effect of plot type ($\chi^2$(`r in_paren(plot_type_model.df)`) =
-`r printnum(plot_type_model.Chisq)`, *p* `r printp(plot_type_model.p, add_equals = TRUE)`)
+`r printnum(plot_type_model.Chisq)`, *p* `r printp(plot_type_model.p, add_equals = TRUE)`).
+@tbl-descriptives-donation-by-plot-type shows means and standard deviations of
+donation amounts for the two plot types.
+
+```{r}
+#| label: tbl-descriptives-donation-by-plot-type
+#| include: true
+#| tbl-cap: "Means and standard deviations of donation amounts for \\textit{standard} and \\textit{alternative} plot types."
+
+donation_behaviour_tidy_long %>%
+  mutate(plot_type = factor(plot_type)) %>%
+  group_by(plot_type) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            sd_amount = sd(amount, na.rm = TRUE)) %>%
+  mutate(plot_type = recode(plot_type,
+                            "Norm" = "Standard",
+                            "Alt" = "Alternative")) %>%
+  kable(format = "latex", booktabs = TRUE, digits = 1,
+        col.names = c("", "Mean", "SD")) %>%
+  kable_styling(latex_options = c("hold_position")) %>%
+  add_header_above(c("Plot Type" = 1, "Donation" = 2))
+```
+
+<!----------------------------------------------------------------------------->
+
+```{r}
+#| label: model-interactions
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+interactions_model <- glmmTMB(prop_left ~ likert_diff_c * rank_diff_c
+                            * correlation_diff_c * plot_type_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-interactions-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+interactions_comp_model <- comparison(plot_type_model)
+```
+
+```{r}
+#| label: anova-interactions
+
+anova_results(interactions_model, interactions_comp_model)
+```
+
+The effects of participants charity preference, as measured by the Likert rating
+and charity ranking, are much more influential than those of correlation value
+or plot type. To explore this more fully, we build a model where donation ratio is
+predicted by all 4 dependent variables simultaneously.
+
+```{r}
+avg_slopes(interactions_model) %>%
+  as_tibble() %>%
+  mutate(
+    estimate  = estimate  * case_when(
+      term == "likert_diff_c"      ~ 12,
+      term == "rank_diff_c"        ~ 4,
+      term == "correlation_diff_c" ~ 0.6,
+      term == "plot_type_diff_c"   ~ 2
+    ),
+    std.error = std.error * case_when(
+      term == "likert_diff_c"      ~ 12,
+      term == "rank_diff_c"        ~ 4,
+      term == "correlation_diff_c" ~ 0.6,
+      term == "plot_type_diff_c"   ~ 2
+    ),
+    conf.low  = conf.low  * case_when(
+      term == "likert_diff_c"      ~ 12,
+      term == "rank_diff_c"        ~ 4,
+      term == "correlation_diff_c" ~ 0.6,
+      term == "plot_type_diff_c"   ~ 2
+    ),
+    conf.high = conf.high * case_when(
+      term == "likert_diff_c"      ~ 12,
+      term == "rank_diff_c"        ~ 4,
+      term == "correlation_diff_c" ~ 0.6,
+      term == "plot_type_diff_c"   ~ 2
+    ),
+    term = recode(term,
+      likert_diff_c      = "Relative Likert Rating",
+      rank_diff_c        = "Relative Rank Position",
+      correlation_diff_c = "Relative Correlation",
+      plot_type_diff_c   = "Relative Plot Type"),
+    `95\\% CI` = paste0("[", round(conf.low, 3), ", ", round(conf.high, 3), "]"),
+    p = ifelse(p.value < .001, "$p$ < .001", paste0("$p$ = ", round(p.value, 3)))
+  ) %>%
+  select(term, estimate, std.error, statistic, p, `95\\% CI`) %>%
+  kbl(booktabs = TRUE, digits = 3, escape = FALSE,
+      col.names = c("Parameter", "$\\Delta$ prop. donated (full range)", "SE", "$z$", "$p$", "95\\% CI")) %>%
+  kable_styling()
+```
+
+
 
 
 # Discussion {#sec-discussions}

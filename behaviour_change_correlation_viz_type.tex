@@ -825,22 +825,33 @@ built a model where the donation ratio is predicted by the difference in
 experimental model explained significantly more variance when compared
 to a null model without the fixed effect of \emph{r} value
 (\(\chi^2\)(7) = 121.13, \emph{p} \textless{} .001), driven by the
-significant main effect of \emph{r} value.
-Figure~\ref{fig-donation-by-r} shows violin plots of mean donation
-amounts for each of the three \emph{r} values used.
+significant main effect of \emph{r} value. Table~\ref{tbl-donation-by-r}
+shows means and standard deviations of donation amounts for each of the
+three \emph{r} values used.
 
-\begin{figure*}
+\begin{table}
+
+\caption{\label{tbl-donation-by-r}Means and standard deviations of
+donation amounts for each \textit{r} value used.}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-donation-by-r-1.pdf}}
+\centering
+\begin{tabular}{lrr}
+\toprule
+\multicolumn{1}{c}{Correlation Value} & \multicolumn{2}{c}{Donation} \\
+\cmidrule(l{3pt}r{3pt}){1-1} \cmidrule(l{3pt}r{3pt}){2-3}
+ & Mean & SD\\
+\midrule
+0.2 & 47.9 & 25.1\\
+0.5 & 50.1 & 25.1\\
+0.8 & 51.5 & 25.3\\
+\bottomrule
+\end{tabular}
 
 }
 
-\caption{\label{fig-donation-by-r}Mean donation amounts by \textit{r}
-value.}
-
-\end{figure*}%
+\end{table}%
 
 Finally, to investigate the third hypothesis, that participants'
 donation amounts would be affected by the type of scatterplot used in
@@ -848,7 +859,33 @@ the infographics (\emph{standard} or \emph{alternative}), we built a
 model where donation ratio is predicted by the type of plot used. The
 experimental model explained significantly more variance when compared
 to a null model without the fixed effect of plot type (\(\chi^2\)(7) =
-14.14, \emph{p} \textless{} .001)
+14.14, \emph{p} \textless{} .001).
+Table~\ref{tbl-descriptives-donation-by-plot-type} shows means and
+standard deviations of donation amounts for the two plot types.
+
+\begin{table}
+
+\caption{\label{tbl-descriptives-donation-by-plot-type}Means and
+standard deviations of donation amounts for \textit{standard} and
+\textit{alternative} plot types.}
+
+\centering{
+
+\centering
+\begin{tabular}{lrr}
+\toprule
+\multicolumn{1}{c}{Plot Type} & \multicolumn{2}{c}{Donation} \\
+\cmidrule(l{3pt}r{3pt}){1-1} \cmidrule(l{3pt}r{3pt}){2-3}
+ & Mean & SD\\
+\midrule
+Standard & 49.0 & 25.1\\
+Alternative & 50.6 & 25.4\\
+\bottomrule
+\end{tabular}
+
+}
+
+\end{table}%
 
 \section{Discussion}\label{sec-discussions}
 
