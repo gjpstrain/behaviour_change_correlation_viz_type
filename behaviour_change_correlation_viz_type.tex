@@ -496,32 +496,32 @@ The experiment was conducted according the principles of open and
 reproducible research \citep{ayris_2018}. Hypotheses and analysis plans
 were pre-registered with the Open Science Framework (OSF)\footnote{https://osf.io/kywt9/overview?view\_only=1f677775eb80467dae61c7502bc3305f}.
 All data and analysis code are included in a GitHub
-repository\footnote{The pre-registration states that 150 participants
-  would be recruited. Additional participants were recruited due to an
-  oversight, however all conclusions and statistical results are
-  identical when run with 164 or 150 participants.}, which also contains
-instructions for building a Docker container \citep{merkel_2014} that
-reproduces the computational environment in which the paper was written.
-By capturing package versions and dependencies using the \texttt{renv}
-package \citep{ushey_2026} in R, this container allows for full
-replication of all stimuli, figures, analyses, and the paper itself.
-Ethical approval was granted by \emph{removed for anon}.
+repository\footnote{removed for anon}, which also contains instructions
+for building a Docker container \citep{merkel_2014} that reproduces the
+computational environment in which the paper was written. By capturing
+package versions and dependencies using the \texttt{renv} package
+\citep{ushey_2026} in R, this container allows for full replication of
+all stimuli, figures, analyses, and the paper itself. Ethical approval
+was granted by \emph{removed for anon}.
 
 \subsection{Modelling}\label{sec-modelling}
 
-\begin{itemize}
-\tightlist
-\item
-  ordered beta regression using ordbeta package
-\item
-  avgslopes() from marginaleffects package to get marginal effects
-  instead of effect sizes.
-\item
-  glmmTMB to fit ordered beta model
-\item
-  all models featured random intercepts for both participants and
-  experimental items.
-\end{itemize}
+Each experimental trial featured two stimuli. As participants were asked
+to split 100 dollars between the two charities displayed in the
+infographics, each trial also featured two linked responses. For
+modelling purposes, each pair of linked responses was reduced to a
+donation ratio between the left and right infographics. This ratio, in
+range \([0,1]\) exists on a beta distribution. In its standard form,
+beta regression cannot handle values of precisely 0 or 1
+\citep{ferrari_2004}. Smithson \& Verkuilen \citep{smithson_2006}
+proposed transforming values at the boundary of the distribution to
+force it into \((0,1)\). This method has faced criticism for actively
+distorting the data, so we instead chose to use Kubinec's ordered beta
+regression \citep{kubinec_2022}, which allows for the building of a
+single model that takes into account the continuous \((0,1)\) range and
+the \([0,1]\) bounds. These models were fitted using the
+\texttt{glmmTMB} package \citep{mcgillycuddy_2025}. All models featured
+random intercepts for both participants and experimental items.
 
 \subsection{Stimuli}\label{sec-stimuli}
 
@@ -616,7 +616,7 @@ Visualisations}\label{sec-stimuli-visualisations}
 
 Previous work has shown that changes to the opacities and sizes of
 scatterplot points can induce changes in perceptions of correlation in
-viewers \citep{strain_2023, strain_2023b, strain_2024}. In particular,
+viewers \citep{strain_2023, strain_2023a, strain_2024}. In particular,
 lowering the opacity and size of points as a function of residual
 magnitude is able to bias estimates of correlation upwards and partially
 correct for an observed underestimation bias in positively correlated
@@ -675,11 +675,11 @@ Participants viewed all 108 experimental trials along with 6 attention
 check trials, in a fully-randomised order. Our dependent variable was
 the amount of money participants assigned to the left and right charity
 infographics on a per-trial basis. The experiment, including all
-stimuli, materials, and instructions, are hosted on GitLab\footnote{https://osf.io/kywt9/overview?view\_only=1f677775eb80467dae61c7502bc3305f}.
+stimuli, materials, and instructions, are hosted on GitLab{[}\^{}3{]}.
 
 \subsection{Procedure}\label{sec-procedure}
 
-The experiment was built using PsychoPy \citep{pierce_2019} and is
+The experiment was built using PsychoPy \citep{peirce_2019} and is
 hosted on Pavlovia.org. Participants were instructed to only complete
 the experiment on desktop or laptop computers. Each participants first
 viewed the participant information sheet and provided consent by
@@ -763,8 +763,16 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 
 \section{Results}\label{sec-results}
 
-All analyses were conducted using R (version 4.5.3 \citep{rcore}). To
-test the first hypothesis, that participants will donate greater
+All analyses were conducted using R (version 4.5.3 \citep{r_core}). Each
+hypothesis is tested first using a model that only includes the fixed
+effects of interest. A full interaction model is then fitted taking into
+account all fixed effects and the potential interactions between them.
+This model provides more conservative estimates; we therefore use the
+\texttt{marginaleffects} package \citep{arel-bundock_2024} with this
+model to calculate marginal effects over the full ranges of each fixed
+effect in \textbf{?@tbl-marginal-effects-interactions}.
+
+To test the first hypothesis, that participants will donate greater
 proportions of money to charities that they prefer, we built a model
 whereby the ratio of donations is predicted by the differences in Likert
 ratings of charities and their ranks. The experimental model explained
@@ -783,9 +791,6 @@ highly. When a charitable concern was ranked as 2\textsuperscript{nd} or
 with Likert rating. However, when the charitable concern was ranked as
 1\textsuperscript{st}, there was a clear bias towards the centre of the
 Likert rating distribution. \emph{look for something to cite here}.
-Marginal effects are estimated over the full range of Likert scale and
-charity ranking responses using the \texttt{marginaleffects} package
-\citep{marginal} and presented in \ref{tbl-likert-charity-marginals}.
 
 \begin{figure*}
 
@@ -803,20 +808,6 @@ increase with Likert rating. When a charitable concern was ranked as
 of the Likert rating with regards to donations.}
 
 \end{figure*}%
-
-\begin{table*}
-
-\caption{\label{tab:unnamed-chunk-2}\label{tbl-likert-charity-marginals}In lieu of a measure of effect sizes, we provide the total change in the proportion of money donated to the left-hand charity across the full range of Likert ratings and charity rankings, along with the associated statistics.}
-\centering
-\begin{tabular}[t]{lrrrll}
-\toprule
-Parameter & $\Delta$ proportion donated (\%) & SE & $z$ & $p$ & 95\% CI\\
-\midrule
-Relative Likert Rating & 0.70 & 0.02 & 40.95 & <0.001 & {}[0.67, 0.74]\\
-Relative Rank Position & 0.09 & 0.01 & 14.93 & <0.001 & {}[0.08, 0.11]\\
-\bottomrule
-\end{tabular}
-\end{table*}
 
 To investigate the second hypothesis, that participants will donate more
 money to charity infographics that feature higher \emph{r} values, we
@@ -893,12 +884,28 @@ of correlation value or plot type. To explore this more fully, we build
 a model where donation ratio is predicted by all 4 dependent variables
 simultaneously.
 
+\begin{table*}
+
+\caption{\label{tab:unnamed-chunk-2}\label{tbl-marginal-effects-interactions}In lieu of a measure of effect sizes, we provide the total change in the proportion of money donated to the left-hand charity across the full range of each fixed effect, along with the associated statistics.}
+\centering
+\begin{tabular}[t]{lrrrll}
+\toprule
+Parameter & $\Delta$ proportion donated (\%) & SE & $z$ & $p$ & 95\% CI\\
+\midrule
+Relative Correlation & 0.04 & 0.00 & 12.52 & <0.001 & {}[0.032, 0.044]\\
+Relative Likert Rating & 0.69 & 0.02 & 40.26 & <0.001 & {}[0.658, 0.725]\\
+Relative Plot Type & 0.03 & 0.00 & 5.35 & <0.001 & {}[0.017, 0.036]\\
+Relative Rank Position & 0.09 & 0.01 & 14.95 & <0.001 & {}[0.081, 0.106]\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
 \section{Discussion}\label{sec-discussions}
 
 \section{Conclusion}\label{sec-cocnlusion}
 
 \bibliographystyle{ACM-Reference-Format}
-\bibliography{donation-behaviour.bib}
+\bibliography{donation_behaviour.bib}
 
 %% begin pandoc before-bib
 %% end pandoc before-bib

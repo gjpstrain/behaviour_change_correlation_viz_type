@@ -20,7 +20,7 @@ execute:
   warning: false
   message: false
   include: false
-bibliography: donation-behaviour.bib
+bibliography: donation_behaviour.bib
 title: Donation Behaviour in an Online Visualisation Experiment
 # if short-title is defined, then it's used
 # short-title: 
@@ -140,9 +140,7 @@ abstract: |
 
 library(tidyverse)
 library(MASS)
-library(emmeans)
 library(scales)
-library(buildmer)
 library(lme4)
 library(kableExtra)
 library(papaja)
@@ -153,7 +151,6 @@ library(ggpubr)
 library(conflicted)
 library(ggtext)
 library(Matrix)
-library(ordinal)
 library(janitor)
 library(effectsize)
 library(glmmTMB)
@@ -546,10 +543,20 @@ was granted by *removed for anon*.
 
 ## Modelling {#sec-modelling}
 
- - ordered beta regression using ordbeta package
- - avgslopes() from marginaleffects package to get marginal effects instead of effect sizes.
- - glmmTMB to fit ordered beta model
- - all models featured random intercepts for both participants and experimental items.
+Each experimental trial featured two stimuli. As participants were asked to split
+100 dollars between the two charities displayed in the infographics, each trial
+also featured two linked responses. For modelling purposes, each pair of linked
+responses was reduced to a donation ratio between the left and right infographics. 
+This ratio, in range $[0,1]$ exists on a beta distribution. In its standard form,
+beta regression cannot handle values of precisely 0 or 1 [@ferrari_2004]. Smithson
+\& Verkuilen [@smithson_2006] proposed transforming values at the boundary of 
+the distribution to force it into $(0,1)$. This method has faced criticism for
+actively distorting the data, so we instead chose to use Kubinec's ordered
+beta regression [@kubinec_2022], which allows for the building of a single
+model that takes into account the continuous $(0,1)$ range and the $[0,1]$ bounds.
+These models were fitted using the `glmmTMB` package [@mcgillycuddy_2025].
+All models featured random intercepts for both participants and experimental
+items.
 
 ## Stimuli {#sec-stimuli}
 
@@ -647,7 +654,7 @@ positioned centrally, which served as the primary visual element and the main fo
 
 Previous work has shown that changes to the opacities and sizes of scatterplot points
 can induce changes in perceptions of correlation in viewers 
-[@strain_2023; @strain_2023b; @strain_2024]. In particular, lowering the opacity
+[@strain_2023; @strain_2023a; @strain_2024]. In particular, lowering the opacity
 and size of points as a function of residual magnitude is able to bias estimates
 of correlation upwards and partially correct for an observed underestimation bias
 in positively correlated scatterplots. The same techniques have also been shown
@@ -739,13 +746,13 @@ experimental trials. Participants viewed all 108 experimental trials along with
 6 attention check trials, in a fully-randomised order. Our dependent variable was
 the amount of money participants assigned to the left and right charity infographics
 on a per-trial basis. The experiment, including all stimuli, materials, and 
-instructions, are hosted on GitLab[^1].
+instructions, are hosted on GitLab[^3].
 
-[1^]: removed for anon.
+[3^]: removed for anon.
 
 ## Procedure {#sec-procedure}
 
-The experiment was built using PsychoPy [@pierce_2019] and is hosted on Pavlovia.org.
+The experiment was built using PsychoPy [@peirce_2019] and is hosted on Pavlovia.org.
 Participants were instructed to only complete the experiment on desktop or laptop
 computers. Each participants first viewed the participant information sheet and provided
 consent by checking boxes next to consent statements. Consent was required in order
@@ -807,7 +814,7 @@ pre-screening criteria were also employed [@peer_2021]; participants were requir
 to have previously completed at least 100 studies on the platform, and were 
 required to have been accepted on at least 99% of them. Data were collected
 from 174 participants. 10 failed more than 3 out of 6 attention checks, meaning their
-submissions were rejected in accordance with our pre-registration[^2]. Data
+submissions were rejected in accordance with our pre-registration[^4]. Data
 from the remaining 164 participants were included in the full analysis 
 (`r printnum(gender$male, digits = 2)` male, `r printnum(gender$female, digits = 2)`
 female, and `r printnum(gender$non_binary, digits = 2)` non-binary).
@@ -816,7 +823,7 @@ Participants' mean age was `r printnum(age$mean, digits = 1)`
 `r printnum(time_taken$mean, digits = 1)` minutes to complete the 
 experiment (SD = `r printnum(time_taken$sd)`).
 
-[^2]: The pre-registration states that 150 participants would be recruited. Additional participants were recruited due to an oversight, however all conclusions and statistical results are identical when run with 164 or 150 participants.
+[^4]: The pre-registration states that 150 participants would be recruited. Additional participants were recruited due to an oversight, however all conclusions and statistical results are identical when run with 164 or 150 participants.
 
 # Results {#sec-results}
 
@@ -852,7 +859,14 @@ aov_out_likert <- car::Anova(preference_model, type = 3)
 aov_apa_likert <- apa_print(aov_out_likert)
 ```
 
-All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` [@rcore]).
+All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` [@r_core]).
+Each hypothesis is tested first using a model that only includes the fixed effects
+of interest. A full interaction model is then fitted taking into account all
+fixed effects and the potential interactions between them. This model provides
+more conservative estimates; we therefore use the `marginaleffects` package 
+[@arel-bundock_2024] with this model to calculate marginal effects over the full ranges of
+each fixed effect in @tbl-marginal-effects-interactions.
+
 To test the first hypothesis, that participants will donate greater proportions 
 of money to charities that they prefer, we built a model whereby the ratio of 
 donations is predicted by the differences in Likert ratings of charities and their ranks.
@@ -869,9 +883,7 @@ concerns as more important when they also ranked them more highly. When a charit
 concern was ranked as 2^nd^ or 3^rd^, donation amounts generally increased 
 linearly with Likert rating. However, when the charitable concern was ranked as
 1^st^, there was a clear bias towards the centre of the Likert rating 
-distribution. *look for something to cite here*. Marginal effects are estimated
-over the full range of Likert scale and charity ranking responses using the 
-`marginaleffects` package [@marginal] and presented in \ref{tbl-likert-charity-marginals}.
+distribution. *look for something to cite here*.
 
 ```{r}
 #| label: fig-likert-charity-matrix
@@ -897,55 +909,6 @@ donation_behaviour_tidy_long %>%
   labs(x = "Charity Likert Rating", y = "Charity Rank", fill = "Mean Amount") +
   theme_minimal() +
   theme(panel.grid = element_blank(), legend.position = "none")
-```
-
-```{r}
-#| results: asis
-#| include: true
-
-prop_df <- avg_slopes(preference_model) %>%
-  as_tibble() %>%
-  filter(term != "(Intercept)") %>%
-  mutate(
-    full_range = case_when(
-      term == "likert_diff_c" ~ 12,
-      term == "rank_diff_c"   ~ 4
-    ),
-    estimate  = estimate  * full_range,
-    std.error = std.error * full_range,
-    conf.low  = conf.low  * full_range,
-    conf.high = conf.high * full_range,
-    term = recode(term,
-      likert_diff_c = "Relative Likert Rating",
-      rank_diff_c   = "Relative Rank Position"),
-    `95\\% CI` = paste0("[", round(conf.low, 2), ", ", round(conf.high, 2), "]")) %>%
-  rename(`\\textit{p}` = "p.value") %>%
-  mutate(`\\textit{p}` = scales::pvalue(`\\textit{p}`)) %>%
-  select(term, estimate, std.error, statistic, `\\textit{p}`, `95\\% CI`)
-
-x <- kbl(
-  prop_df,
-  booktabs = TRUE,
-  escape = FALSE,
-  digits = c(2,2,2,2,2,2),
-  col.names = c("Parameter", "$\\Delta$ proportion donated (\\%)", "SE", "$z$", "$p$", "95\\% CI"),
-  caption = "\\label{tbl-likert-charity-marginals}In lieu of a measure of effect sizes, we provide the total change in the proportion of money donated to the left-hand charity across the full range of Likert ratings and charity rankings, along with the associated statistics."
-) %>%
-  as.character()
-
-x <- gsub(
-  "\\\\begin\\{table\\}",
-  "\\\\begin{table*}",
-  x
-)
-
-x <- gsub(
-  "\\\\end\\{table\\}",
-  "\\\\end{table*}",
-  x
-)
-
-cat(x)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -1090,7 +1053,10 @@ or plot type. To explore this more fully, we build a model where donation ratio 
 predicted by all 4 dependent variables simultaneously.
 
 ```{r}
-avg_slopes(interactions_model) %>%
+#| results: asis
+#| include: true
+
+marginal_effects_df <- avg_slopes(interactions_model) %>%
   as_tibble() %>%
   mutate(
     estimate  = estimate  * case_when(
@@ -1122,13 +1088,35 @@ avg_slopes(interactions_model) %>%
       rank_diff_c        = "Relative Rank Position",
       correlation_diff_c = "Relative Correlation",
       plot_type_diff_c   = "Relative Plot Type"),
-    `95\\% CI` = paste0("[", round(conf.low, 3), ", ", round(conf.high, 3), "]"),
-    p = ifelse(p.value < .001, "$p$ < .001", paste0("$p$ = ", round(p.value, 3)))
-  ) %>%
-  select(term, estimate, std.error, statistic, p, `95\\% CI`) %>%
-  kbl(booktabs = TRUE, digits = 3, escape = FALSE,
-      col.names = c("Parameter", "$\\Delta$ prop. donated (full range)", "SE", "$z$", "$p$", "95\\% CI")) %>%
-  kable_styling()
+    `95\\% CI` = paste0("[", round(conf.low, 3), ", ", round(conf.high, 3), "]")) %>%
+  rename(`\\textit{p}` = "p.value") %>%
+  mutate(`\\textit{p}` = scales::pvalue(`\\textit{p}`)) %>%
+  select(term, estimate, std.error, statistic, `\\textit{p}`, `95\\% CI`)
+
+
+x <- kbl(
+  marginal_effects_df,
+  booktabs = TRUE,
+  escape = FALSE,
+  digits = c(2,2,2,2,2,2),
+  col.names = c("Parameter", "$\\Delta$ proportion donated (\\%)", "SE", "$z$", "$p$", "95\\% CI"),
+  caption = "\\label{tbl-marginal-effects-interactions}In lieu of a measure of effect sizes, we provide the total change in the proportion of money donated to the left-hand charity across the full range of each fixed effect, along with the associated statistics."
+) %>%
+  as.character()
+
+x <- gsub(
+  "\\\\begin\\{table\\}",
+  "\\\\begin{table*}",
+  x
+)
+
+x <- gsub(
+  "\\\\end\\{table\\}",
+  "\\\\end{table*}",
+  x
+)
+
+cat(x)
 ```
 
 
