@@ -785,7 +785,7 @@ including the following:
 \hspace{0pt}
 ```
 
-Participants were informed that this was a deception at the conclusion of the
+Participants were informed that this was a deception following conclusion of the
 experiment. Following instructions, the experiment began. In a series of 108 experimental
 trials, participants were asked to split 100 dollars between two charity infographics.
 Presentation order was randomised, including 6 attention check trials which
