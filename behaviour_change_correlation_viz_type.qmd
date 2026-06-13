@@ -464,6 +464,8 @@ anova_results <- function(model, cmpr_model) {
 
 # Introduction {#sec-intro}
 
+https://www.policybee.co.uk/blog/uk-charity-statistics
+
  - some justification for only using scatterplots
  - motivate the study of data visualisation and behaviour change
  - motivate the use of novel visualisation techniques
