@@ -464,6 +464,12 @@ anova_results <- function(model, cmpr_model) {
 
 # Introduction {#sec-intro}
 
+With around 28\% of the UK charity sector's income coming from donations and legacies
+[@charity_commission], reaching new donors and persuading them to give more represents
+a key part of running a successful charity. Efficient spending on advertising
+and other fundraising activities leaves more money to be spent on charitable 
+activities.
+
 https://www.policybee.co.uk/blog/uk-charity-statistics
 
  - some justification for only using scatterplots
