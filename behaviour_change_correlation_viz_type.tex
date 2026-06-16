@@ -369,6 +369,15 @@ abstract goes here.
 
 \section{Introduction}\label{sec-intro}
 
+With around 28\% of the UK charity sector's income coming from donations
+and legacies \citep{charity_commission}, reaching new donors and
+persuading them to give more represents a key part of running a
+successful charity. Efficient spending on advertising and other
+fundraising activities leaves more money to be spent on charitable
+activities.
+
+https://www.policybee.co.uk/blog/uk-charity-statistics
+
 \begin{itemize}
 \tightlist
 \item
@@ -713,16 +722,16 @@ following:
 \end{tcolorbox}
 \hspace{0pt}
 
-Participants were informed that this was a deception at the conclusion
-of the experiment. Following instructions, the experiment began. In a
-series of 108 experimental trials, participants were asked to split 100
-dollars between two charity infographics. Presentation order was
-randomised, including 6 attention check trials which explicitly asked
-participants to assign 100 dollars to either the left (n = 3) or the
-right (n = 3) charity infographic. An example of an experimental trial
-can be seen in Figure~\ref{fig-example-trial}. After completing all
-trials, participants were debriefed regarding the deception employed and
-thanked for their participation.
+Participants were informed that this was a deception following
+conclusion of the experiment. Following instructions, the experiment
+began. In a series of 108 experimental trials, participants were asked
+to split 100 dollars between two charity infographics. Presentation
+order was randomised, including 6 attention check trials which
+explicitly asked participants to assign 100 dollars to either the left
+(n = 3) or the right (n = 3) charity infographic. An example of an
+experimental trial can be seen in Figure~\ref{fig-example-trial}. After
+completing all trials, participants were debriefed regarding the
+deception employed and thanked for their participation.
 
 \begin{figure*}
 
@@ -765,47 +774,56 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 
 All analyses were conducted using R (version 4.5.3 \citep{r_core}). Each
 hypothesis is tested first using a model that only includes the fixed
-effects of interest. A full interaction model is then fitted taking into
+effect of interest. A full interaction model is then fitted taking into
 account all fixed effects and the potential interactions between them.
 This model provides more conservative estimates; we therefore use the
 \texttt{marginaleffects} package \citep{arel-bundock_2024} with this
 model to calculate marginal effects over the full ranges of each fixed
-effect in \textbf{?@tbl-marginal-effects-interactions}.
+effect in Table \ref{tbl-marginal-effects-interactions}.
 
 To test the first hypothesis, that participants will donate greater
-proportions of money to charities that they prefer, we built a model
-whereby the ratio of donations is predicted by the differences in Likert
-ratings of charities and their ranks. The experimental model explained
-significantly more variance when compared to an null model without the
-fixed effects of Likert rating and charity ranking (\(\chi^2\)(9) =
-5,174.73, \emph{p} \textless{} .001). There was a significant main
-effect of charity rank, \(\chi^2(1) = 217.30\), \(p < .001\), a
-significant main effect of Likert rating, \(\chi^2(1) = 1,565.58\),
-\(p < .001\), and a significant interaction, \(\chi^2(1) = 74.72\),
-\(p < .001\). To explore these effects further,
-Figure~\ref{fig-likert-charity-matrix} plots total donation amounts for
-Likert ratings and charity rankings. Expectedly, participants rated
-charitable concerns as more important when they also ranked them more
-highly. When a charitable concern was ranked as 2\textsuperscript{nd} or
-3\textsuperscript{rd}, donation amounts generally increased linearly
-with Likert rating. However, when the charitable concern was ranked as
-1\textsuperscript{st}, there was a clear bias towards the centre of the
-Likert rating distribution. \emph{look for something to cite here}.
+proportions of money to charities that they prefer, we built a pair of
+models whereby the ratio of donations is predicted by the differences in
+Likert ratings of charities and their ranks. With regards to the Likert
+ratings, the experimental model explained significantly more variance
+than the null (\(\chi^2\)(7) = 4,808.16, \emph{p} \textless{} .001)
+driven by the fixed effect of Likert rating.
+Figure~\ref{fig-likert-line} illustrates how mean donation amounts
+change over the full range of Likert responses.
 
 \begin{figure*}
 
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-likert-charity-matrix-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-likert-line-1.pdf}}
 
 }
 
-\caption{\label{fig-likert-charity-matrix}Mean donation amounts plotted
-by Likert rating and charity rank. When a charitable concern was ranked
-2\textsuperscript{nd} or 3\textsuperscript{rd}, donation amounts
-increase with Likert rating. When a charitable concern was ranked as
-1\textsuperscript{st}, however, there is a clear bias towards the centre
-of the Likert rating with regards to donations.}
+\caption{\label{fig-likert-line}Mean donation amounts plotted by Likert
+ratings, averaged across each charity rank. In line with
+H\textsubscript{1}, donation amounts increase with participants' ratings
+of charity importance.}
+
+\end{figure*}%
+
+With regards to charity rankings, the experimental model also explained
+significantly more variance than the null (\(\chi^2\)(7) = 3,531.44,
+\emph{p} \textless{} .001) driven by the fixed effect of charity rank.
+Figure~\ref{fig-rank-line} illustrates how mean donation amounts change
+over the full range of Likert responses.
+
+\begin{figure*}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-rank-line-1.pdf}}
+
+}
+
+\caption{\label{fig-rank-line}Mean donation amounts plotted by charity
+rank, averaged across all Likert ratings. In line with
+H\textsubscript{1}, donation amounts increase as participants rank
+charities more highly.}
 
 \end{figure*}%
 
@@ -880,9 +898,30 @@ Alternative & 50.6 & 25.4\\
 
 The effects of participants charity preference, as measured by the
 Likert rating and charity ranking, are much more influential than those
-of correlation value or plot type. To explore this more fully, we build
-a model where donation ratio is predicted by all 4 dependent variables
-simultaneously.
+of correlation value or plot type. Both to explore this more fully and
+to investigate any potential interactions between our fixed effects, we
+build a model where donation ratio is predicted by all 4 dependent
+variables simultaneously. This model explains significantly more
+variance than a null model with no fixed effects (\(\chi^2\)(21) =
+5,295.26, \emph{p} \textless{} .001). The only significant interaction
+found by this model is that between charity rank and Likert ratings
+\(\chi^2(1) = 85.71\), \(p < .001\). Given that we anticpate more highly
+ranked charities to be awarded higher Likert ratings, this is an
+expected finding, however we explore the interaction further in
+Figure~\ref{fig-likert-rank-interactions}.
+
+\begin{figure*}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-likert-rank-interactions-1.pdf}}
+
+}
+
+\caption{\label{fig-likert-rank-interactions}Mean donation amounts
+plotted separately for each charity rank.}
+
+\end{figure*}%
 
 \begin{table*}
 

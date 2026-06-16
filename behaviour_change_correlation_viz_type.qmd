@@ -836,87 +836,120 @@ experiment (SD = `r printnum(time_taken$sd)`).
 # Results {#sec-results}
 
 ```{r}
-#| label: model-charity-preference
+#| label: model-charity-likert
 #| eval: !expr params$eval_models
 #| cache: !expr params$eval_models
 
-preference_model <- glmmTMB(prop_left ~ likert_diff_c * rank_diff_c +
+likert_model <- glmmTMB(prop_left ~ likert_diff_c +
                               (1 | participant) + (1 | trial_id),
                             family = ordbeta(),
                             data = donation_behaviour_tidy)
 ```
 
 ```{r}
-#| label: model-charity-preference-comparison
+#| label: model-charity-likert-comparison
 #| eval: !expr params$eval_models
 #| cache: !expr params$eval_models
 
-pref_comp_model <- comparison(preference_model)
+likert_comp_model <- comparison(likert_model)
 ```
 
 ```{r}
-#| label: anova-charity-preferences
+#| label: anova-charity-likert
 
-anova_results(preference_model, pref_comp_model)
+anova_results(likert_model, likert_comp_model)
+```
+
+<!----------------------------------------------------------------------------->
+
+```{r}
+#| label: model-charity-rank
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+rank_model <- glmmTMB(prop_left ~ rank_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
 ```
 
 ```{r}
-#| label: get-omni-anova-charity-prefs
+#| label: model-charity-rank-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
 
-aov_out_likert <- car::Anova(preference_model, type = 3)
-aov_apa_likert <- apa_print(aov_out_likert)
+rank_comp_model <- comparison(rank_model)
 ```
+
+```{r}
+#| label: anova-charity-rank
+
+anova_results(rank_model, rank_comp_model)
+```
+
+<!----------------------------------------------------------------------------->
 
 All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` [@r_core]).
-Each hypothesis is tested first using a model that only includes the fixed effects
+Each hypothesis is tested first using a model that only includes the fixed effect
 of interest. A full interaction model is then fitted taking into account all
 fixed effects and the potential interactions between them. This model provides
 more conservative estimates; we therefore use the `marginaleffects` package 
 [@arel-bundock_2024] with this model to calculate marginal effects over the full ranges of
-each fixed effect in @tbl-marginal-effects-interactions.
+each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
 
 To test the first hypothesis, that participants will donate greater proportions 
-of money to charities that they prefer, we built a model whereby the ratio of 
+of money to charities that they prefer, we built a pair of models whereby the ratio of 
 donations is predicted by the differences in Likert ratings of charities and their ranks.
-The experimental model explained significantly more variance when compared
-to an null model without the fixed effects of Likert rating and charity ranking
-($\chi^2$(`r in_paren(preference_model.df)`) = `r printnum(preference_model.Chisq)`,
-*p* `r printp(preference_model.p, add_equals = TRUE)`). 
-There was a significant main effect of charity rank, `r aov_apa_likert$full_result$rank_diff_c`, 
-a significant main effect of Likert rating, `r aov_apa_likert$full_result$likert_diff_c`, 
-and a significant interaction, `r aov_apa_likert$full_result$likert_diff_c_rank_diff_c`. To explore
-these effects further, @fig-likert-charity-matrix plots total donation amounts
-for Likert ratings and charity rankings. Expectedly, participants rated charitable
-concerns as more important when they also ranked them more highly. When a charitable
-concern was ranked as 2^nd^ or 3^rd^, donation amounts generally increased 
-linearly with Likert rating. However, when the charitable concern was ranked as
-1^st^, there was a clear bias towards the centre of the Likert rating 
-distribution. *look for something to cite here*.
+With regards to the Likert ratings, the experimental model explained significantly
+more variance than the null ($\chi^2$(`r in_paren(likert_model.df)`) = `r printnum(likert_model.Chisq)`,
+*p* `r printp(likert_model.p, add_equals = TRUE)`) driven by the fixed effect
+of Likert rating. @fig-likert-line illustrates how mean donation amounts change
+over the full range of Likert responses.
 
 ```{r}
-#| label: fig-likert-charity-matrix
+#| label: fig-likert-line
 #| include: true
+#| fig-cap: "Mean donation amounts plotted by Likert ratings, averaged across each charity rank. In line with H\\textsubscript{1}, donation amounts increase with participants' ratings of charity importance."
+#| fig-asp: 0.5
 #| fig-env: "figure*"
-#| fig-cap: Mean donation amounts plotted by Likert rating and charity rank. When a charitable concern was ranked 2^nd^ or 3^rd^, donation amounts increase with Likert rating. When a charitable concern was ranked as 1^st^, however, there is a clear bias towards the centre of the Likert rating with regards to donations.
-#| fig-asp: 0.4
 
 donation_behaviour_tidy_long %>%
-  group_by(charity_rank, charity_likert) %>%
-  summarise(mean_amount = mean(amount, na.rm = TRUE), .groups = "drop") %>%
-  complete(charity_rank, charity_likert, fill = list(mean_amount = NA)) %>%
-  mutate(
-    charity_rank = factor(charity_rank, levels = 1:3),
-    display_label = ifelse(is.na(mean_amount), "0", as.character(round(mean_amount, 1))),
-  ) %>%
-  ggplot(aes(x = charity_likert, y = charity_rank, fill = mean_amount)) +
-  geom_tile(colour = "white", linewidth = 2) +
-  geom_text(aes(label = display_label), na.rm = FALSE) +
-  scale_fill_distiller(palette = "RdYlGn", direction = 1, na.value = "grey80") +
-  scale_x_discrete(limits = as.character(1:7), position = "top") +
-  scale_y_discrete(limits = as.character(3:1)) +
-  labs(x = "Charity Likert Rating", y = "Charity Rank", fill = "Mean Amount") +
-  theme_minimal() +
-  theme(panel.grid = element_blank(), legend.position = "none")
+  group_by(charity_likert) %>%
+  summarise(mean_amount = mean(amount, na.mr = TRUE), .groups = "drop") %>%
+  ggplot(aes(x = charity_likert, y = mean_amount)) +
+  geom_line(group = 1) +
+  theme_ggdist() +
+  labs(x = "Likert Rating (/7)",
+       y = "Mean Donation Amount")
+```
+
+With regards to charity rankings, the experimental model also explained significantly
+more variance than the null ($\chi^2$(`r in_paren(rank_model.df)`) = `r printnum(rank_model.Chisq)`,
+*p* `r printp(rank_model.p, add_equals = TRUE)`) driven by the fixed effect
+of charity rank. @fig-rank-line illustrates how mean donation amounts change
+over the full range of Likert responses.
+
+```{r}
+#| label: fig-rank-line
+#| include: true
+#| fig-cap: "Mean donation amounts plotted by charity rank, averaged across all Likert ratings. In line with H\\textsubscript{1}, donation amounts increase as participants rank charities more highly."
+#| fig-asp: 0.5
+#| fig-env: "figure*"
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank) %>%
+  summarise(mean_amount = mean(amount, na.mr = TRUE), .groups = "drop") %>%
+  mutate(charity_rank = recode(charity_rank,
+                               "1" = "1^st^",
+                               "2" = "2^nd^",
+                               "3" = "3^rd^")) %>%
+  ggplot(aes(x = charity_rank, y = mean_amount)) +
+  geom_line(group = 1) +
+  theme_ggdist() +
+  theme(axis.text.x = element_markdown()) +
+  labs(x = "Charity Rank",
+       y = "Mean Donation Amount") +
+  scale_x_discrete(limits = rev)
 ```
 
 <!----------------------------------------------------------------------------->
@@ -1055,10 +1088,60 @@ interactions_comp_model <- comparison(plot_type_model)
 anova_results(interactions_model, interactions_comp_model)
 ```
 
+```{r}
+#| label: get-omni-anova-interactions
+
+aov_out_interactions <- car::Anova(interactions_model, type = 3)
+aov_apa_interactions <- apa_print(aov_out_interactions)
+```
+
+
 The effects of participants charity preference, as measured by the Likert rating
 and charity ranking, are much more influential than those of correlation value
-or plot type. To explore this more fully, we build a model where donation ratio is
-predicted by all 4 dependent variables simultaneously.
+or plot type. Both to explore this more fully and to investigate any potential interactions
+between our fixed effects, we build a model where donation ratio is
+predicted by all 4 dependent variables simultaneously. This model explains 
+significantly more variance than a null model with no fixed effects 
+($\chi^2$(`r in_paren(interactions_model.df)`) =
+`r printnum(interactions_model.Chisq)`, *p* `r printp(interactions_model.p, add_equals = TRUE)`).
+The only significant interaction found by this model is that between charity rank
+and Likert ratings `r aov_apa_interactions$full_result$likert_diff_c_rank_diff_c`.
+Given that we anticpate more highly ranked charities to be awarded higher Likert
+ratings, this is an expected finding, however we explore the interaction further
+in @fig-likert-rank-interactions.
+
+```{r}
+#| label: fig-likert-rank-interactions
+#| include: true
+#| fig-cap: Mean donation amounts plotted separately for each charity rank.
+#| fig-env: "figure*"
+#| fig-asp: 0.6
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank, charity_likert) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE), .groups = "drop") %>%
+  complete(charity_rank, charity_likert, fill = list(mean_amount = NA)) %>%
+  mutate(charity_rank = factor(charity_rank, levels = 1:3)) %>%
+    mutate(charity_rank = recode(charity_rank,
+                               "1" = "1^st^",
+                               "2" = "2^nd^",
+                               "3" = "3^rd^")) %>%
+  ggplot(aes(x = charity_likert, y = mean_amount, colour = charity_rank, group = charity_rank)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  scale_colour_brewer(palette = "Set1", name = "Charity Rank") +
+  scale_x_discrete(limits = as.character(1:7)) +
+  labs(x = "Charity Likert Rating", y = "Mean Donation Amount") +
+  theme_ggdist() +
+  annotate(geom = "text", label = '"1"^"st"', x = 7.25, y = 63, parse = TRUE) +
+  annotate(geom = "text", label = '"2"^"nd"', x = 7.25, y = 55.5, parse = TRUE) +
+  annotate(geom = "text", label = '"3"^"rd"', x = 7.25, y = 44.5, parse = TRUE) +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = c(0.1,0.8),
+        legend.text = element_markdown())
+```
+
+
 
 ```{r}
 #| results: asis
