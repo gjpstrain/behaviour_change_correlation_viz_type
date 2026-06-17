@@ -464,17 +464,28 @@ anova_results <- function(model, cmpr_model) {
 
 # Introduction {#sec-intro}
 
+Can data visualisation be used to change the ways people behave? 
+
+
+
+
+
+
+
+
+
+
 With around 28\% of the UK charity sector's income coming from donations and legacies
 [@charity_commission], reaching new donors and persuading them to give more represents
 a key part of running a successful charity. Efficient spending on advertising
 and other fundraising activities leaves more money to be spent on charitable 
-activities.
+activities. Data visualisation, which has been shown in some contexts to be more
+persuasive than textual information [@pandey_2014] and able to affect the levels
+to which people change their beliefs [@karduni_2020; @markant_2023; @strain_2025],
+is an untapped resource with regards to creating more effective advertising materials.
 
-https://www.policybee.co.uk/blog/uk-charity-statistics
 
- - some justification for only using scatterplots
- - motivate the study of data visualisation and behaviour change
- - motivate the use of novel visualisation techniques
+
  - 
 
 # Related Work {#sec-related-work}
