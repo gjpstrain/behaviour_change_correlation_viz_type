@@ -369,41 +369,62 @@ abstract goes here.
 
 \section{Introduction}\label{sec-intro}
 
-With around 28\% of the UK charity sector's income coming from donations
-and legacies \citep{charity_commission}, reaching new donors and
-persuading them to give more represents a key part of running a
-successful charity. Efficient spending on advertising and other
-fundraising activities leaves more money to be spent on charitable
-activities.
+Can data visualisation be used to change the ways people behave? Far
+from being solely used by academics and professionals, data
+visualisations are now an everyday part of many people's lives. From
+health visualisations during the COVID-19 pandemic, to visualisations
+illustrating statistics in live sports reporting, the ability of data
+visualisation to scaffold understanding of numerical data has led to
+widespread adoption across scientific and health communication, news
+media, and policy making. Traditionally, data visualisation design has
+been technician-led; designers often prefer software defaults
+\citep{haber_2016, petrescu_2024}, rely on personal knowledge as opposed
+to design theory \citep{parsons_2020}, and rely on oversimplified
+guidance that fails to properly link design guidelines to actual human
+perception and cognition \citep{patterson_2014}. The result of this
+disconnect is a landscape saturated with misleading visualisations
+\citep{wt_2026}; whether due to intentional deception
+\citep{pandey_2015} or a lack of understanding, it is clear that there
+is a need for more work studying how we design visualisations based on
+established perceptual and cognitive phenomena.
 
-https://www.policybee.co.uk/blog/uk-charity-statistics
+Part of designing visualisations in such a way is understanding how
+small variations in them, of the kind that might traditionally be
+thought of as purely aesthetic choice, can change the perceptions,
+cognitions, and behaviours of those who view them. Recent work
+investigating a novel form of scatterplot point encoding found that
+lowering the opacity and size of scatterplots points as a function of
+residual error, both separately \citep{strain_2023, strain_2023a} and
+together \citep{strain_2024} can have significant effects on perceptions
+of correlation. These techniques were used to correct for a historic
+underestimation bias, and have additionally been shown to affect the
+degree to which people's beliefs about the levels of relatedness between
+a variable pair change \citep{strain_2025}. In addition to providing new
+options to designers who wish to highlight different visualisation
+features, studies such as these can provide insight into data concepts
+are interpreted more generally.
 
-\begin{itemize}
-\tightlist
-\item
-  some justification for only using scatterplots
-\item
-  motivate the study of data visualisation and behaviour change
-\item
-  motivate the use of novel visualisation techniques
-\item
-\end{itemize}
+Testing whether visualisation modifications such as this are able to
+reach past cognition to affect what people actually do is a much harder
+problem to solve. To this end, we present a single, crowdsourced, online
+experiment study that situates novel scatterplot visualisation
+techniques in charity infographics. We use a forced donation task,
+whereby participants must share money between charities represented by
+infographics including standard and alternatively-designed scatterplots,
+and collect and analyse participants' charity preferences. We build a
+range of models to show that while preference for certain charitable
+concerns is responsible for most of the variance in donation behaviour,
+both the data displayed in the plot and the alternative scatterplot
+point encoding have significant effects.
 
 \section{Related Work}\label{sec-related-work}
 
-\subsection{Donation Behaviour}\label{sec-donation-behaviour}
-
-\begin{itemize}
-\tightlist
-\item
-  factors influencing charitable donations
-\item
-  specifically regarding online infographics/donation campaigns
-\item
-  do people donate more to things they like more?
-\item
-  do they donate more to things that show better outcomes?
-\end{itemize}
+We begin this section by reviewing the general literature at the
+intersection of data visualisation and behaviour change. We then explore
+our chosen behaviour-change paradigm, donation behaviour, particularly
+in response to infographics and other forms of informative advertising.
+This section concludes by reviewing the modified scatterplots used to
+elicit behaviour change, followed by a statement of our hypotheses.
 
 \subsection{Behaviour and Data
 Visualisation}\label{sec-behaviour-data-viz}
@@ -419,6 +440,37 @@ Visualisation}\label{sec-behaviour-data-viz}
   data visualisation and belief change
 \item
   then, can this meaningfully be extended to modify behaviour?
+\item
+  Using Visualisation Techniques to Drive Behaviour Modification
+\item
+  has anything like this been tested before? (I am assuming not)
+\item
+  what are the potential implications of this?
+\end{itemize}
+
+\subsection{Donation Behaviour}\label{sec-donation-behaviour}
+
+With around 28\% of the UK charity sector's income coming from donations
+and legacies \citep{charity_commission}, reaching new donors and
+persuading them to give more represents a key part of running a
+successful charity. Efficient spending on advertising and other
+fundraising activities leaves more money to be spent on charitable
+activities. Data visualisation, which has been shown in some contexts to
+be more persuasive than textual information \citep{pandey_2014} and able
+to affect the levels to which people change their beliefs
+\citep{karduni_2020, markant_2023, strain_2025}, is an untapped resource
+with regards to creating more effective advertising materials.
+
+\begin{itemize}
+\tightlist
+\item
+  factors influencing charitable donations
+\item
+  specifically regarding online infographics/donation campaigns
+\item
+  do people donate more to things they like more?
+\item
+  do they donate more to things that show better outcomes?
 \end{itemize}
 
 \subsection{Correlation Perception \& Modified
@@ -440,17 +492,6 @@ Scatterplots}\label{sec-corr-percept}
 \item
   particularly, highlight the potential moral benefit of motivating
   better behaviour
-\end{itemize}
-
-\subsection{Using Visualisation Techniques to Drive Behaviour
-Modification}\label{using-visualisation-techniques-to-drive-behaviour-modification}
-
-\begin{itemize}
-\tightlist
-\item
-  has anything like this been tested before? (I am assuming not)
-\item
-  what are the potential implications of this?
 \end{itemize}
 
 \section{Hypotheses}\label{sec-hypotheses}
@@ -788,42 +829,48 @@ Likert ratings of charities and their ranks. With regards to the Likert
 ratings, the experimental model explained significantly more variance
 than the null (\(\chi^2\)(7) = 4,808.16, \emph{p} \textless{} .001)
 driven by the fixed effect of Likert rating.
-Figure~\ref{fig-likert-line} illustrates how mean donation amounts
+Figure~\ref{fig-donation-lines-1} illustrates how mean donation amounts
 change over the full range of Likert responses.
-
-\begin{figure*}
-
-\centering{
-
-\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-likert-line-1.pdf}}
-
-}
-
-\caption{\label{fig-likert-line}Mean donation amounts plotted by Likert
-ratings, averaged across each charity rank. In line with
-H\textsubscript{1}, donation amounts increase with participants' ratings
-of charity importance.}
-
-\end{figure*}%
 
 With regards to charity rankings, the experimental model also explained
 significantly more variance than the null (\(\chi^2\)(7) = 3,531.44,
 \emph{p} \textless{} .001) driven by the fixed effect of charity rank.
-Figure~\ref{fig-rank-line} illustrates how mean donation amounts change
-over the full range of Likert responses.
+Figure~\ref{fig-donation-lines-2} illustrates how mean donation amounts
+change over the full range of Likert responses.
 
 \begin{figure*}
 
+\begin{minipage}[t]{0.50\linewidth}
+
 \centering{
 
-\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-rank-line-1.pdf}}
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-donation-lines-1.pdf}}
 
 }
 
-\caption{\label{fig-rank-line}Mean donation amounts plotted by charity
-rank, averaged across all Likert ratings. In line with
-H\textsubscript{1}, donation amounts increase as participants rank
-charities more highly.}
+\subcaption{\label{fig-donation-lines-1}Mean donation amounts plotted by
+Likert ratings.}
+
+\end{minipage}%
+%
+\begin{minipage}[t]{0.50\linewidth}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-donation-lines-2.pdf}}
+
+}
+
+\subcaption{\label{fig-donation-lines-2}Mean donation amounts plotted by
+charity rank.}
+
+\end{minipage}%
+
+\caption{\label{fig-donation-lines}Mean donation amounts plotted by (a)
+Likert ratings, averaged across each charity rank, and (b) charity rank,
+averaged across all Likert ratings. In line with H\textsubscript{1},
+donation amounts increase with participants' ratings of charity
+importance and as participants rank charities more highly.}
 
 \end{figure*}%
 
