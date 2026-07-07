@@ -490,9 +490,9 @@ to correct for a historic underestimation bias, and have additionally been shown
 to affect the degree to which people's beliefs about the levels of relatedness
 between a variable pair change [@strain_2025]. In addition to providing new options
 to designers who wish to highlight different visualisation features, studies such
-as these can provide insight into data concepts are interpreted more generally.
+as these can provide insight into how data concepts are interpreted more generally.
 
-Testing whether visualisation modifications such as this are able to reach past
+Testing whether visualisation modifications such as these are able to reach past
 cognition to affect what people actually do is a much harder problem to solve.
 To this end, we present a single, crowdsourced, online experiment study that 
 situates novel scatterplot visualisation techniques in charity infographics. We
@@ -527,7 +527,7 @@ people behave.
 Clearly, there is the assumption (or hope), that data visualisations are able to
 affect behaviour to a certain degree. If this were not the case, they would not be
 displayed in hospitals to promote health behaviours or by environmental charities
-to promote ecologically sound practices. There is a wealth of evidence suggesting
+to promote green behaviours. There is a wealth of evidence suggesting
 that data visualisations in different forms can affect perceptions of underlying
 data; varying the sizes and opacities of scatterplot points can change perceptions
 of correlation [@strain_2023; @strain_2023a; @strain_2024], perceptions of 
@@ -584,7 +584,7 @@ is an untapped resource with regards to creating more effective advertising mate
 
 The literature on donation behaviour is generally focused on the characteristics
 of donors, and often make a distinction between choosing to donate at all and the
-amount donated. Green and Webb (1997 [@green_1997]) used factor analysis  and an
+amount donated. Green and Webb (1997 [@green_1997]) used factor analysis  and
 an interdisciplinary literature review to identify seven factors associated with
 charitable giving behaviour. Five of these were motivations for giving, and include
 altruism, negative state relief, and social exchange. Gittell and Tebaldi
@@ -593,7 +593,7 @@ giving rates; with higher levels of personal income, protestantism, and educatio
 positively impacting donations. More recently, Neumayr and Handy (2019 [@neumayr_2019])
 identified subjective dispositions, such as trust, empathic concern, and religious
 affiliation as predictive of the decision to donate (but not the amount); what they
-term *human resources*, such as inxcome and education level, impact both the decision
+term *human resources*, such as income and education level, impact both the decision
 to donate and the amounts people choose to give. Bekkers and Wiepking (2011 [@bekkers_2011])
 provide a detailed review of the person-specific mechanisms that drive charitable
 giving. Despite this literature, it remains difficult to design donation-eliciting
@@ -630,9 +630,22 @@ The underestimation is particularly pronounced for 0.2 < *r* < 0.6.
 
 Recent work aiming to correct for this bias has been partially successful. Strain
 et al. [@strain_2023; @strain_2024a; @strain_2024] systematically varied the opacities
-and sizes of scatterplot points to manipulate perceptions of correlation.
+and sizes of scatterplot points to manipulate perceptions of correlation in crowdsourced
+online experiments. Using equation 1 to relate point opacity and size to residual
+error, they were able to achieve significant amounts of correction, suggesting 
+that correlation perception may be related to point salience.
 
+\begin{equation}
+  point_{size/opacity} = 1 - b^{residual}
+\end{equation}
 
+Examples of scatterplots that use these modifications can be seen on the top row
+of @fig-raw-example-plots. In addition to being able to manipulate estimates of
+correlation, there is also evidence that the same technique can change the extent
+to which participants update their beliefs about the levels of relatedness between
+a pair of variables [@strain_2025]. Given the perceptual and cognitive effects
+of scatterplot visualisation techniques such as these, it remains to be seen
+whether they can additionally affect behavioural intention.
 
  - factors influencing correlation perception, including what we have found
  - how have scatterplots been modified to induce changes in correlation perception

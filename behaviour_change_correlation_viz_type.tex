@@ -401,10 +401,10 @@ underestimation bias, and have additionally been shown to affect the
 degree to which people's beliefs about the levels of relatedness between
 a variable pair change \citep{strain_2025}. In addition to providing new
 options to designers who wish to highlight different visualisation
-features, studies such as these can provide insight into data concepts
-are interpreted more generally.
+features, studies such as these can provide insight into how data
+concepts are interpreted more generally.
 
-Testing whether visualisation modifications such as this are able to
+Testing whether visualisation modifications such as these are able to
 reach past cognition to affect what people actually do is a much harder
 problem to solve. To this end, we present a single, crowdsourced, online
 experiment study that situates novel scatterplot visualisation
@@ -443,15 +443,15 @@ visualisation may affect the ways people behave.
 Clearly, there is the assumption (or hope), that data visualisations are
 able to affect behaviour to a certain degree. If this were not the case,
 they would not be displayed in hospitals to promote health behaviours or
-by environmental charities to promote ecologically sound practices.
-There is a wealth of evidence suggesting that data visualisations in
-different forms can affect perceptions of underlying data; varying the
-sizes and opacities of scatterplot points can change perceptions of
-correlation \citep{strain_2023, strain_2023a, strain_2024}, perceptions
-of data magnitudes and ratio are affected by axis orientations and
-truncation \citep{bradley_2025, mckinley_2026}, and line characteristics
-affect judgements of global means in line charts \citep{moritz_2023} --
-add Charlotte ref here.
+by environmental charities to promote green behaviours. There is a
+wealth of evidence suggesting that data visualisations in different
+forms can affect perceptions of underlying data; varying the sizes and
+opacities of scatterplot points can change perceptions of correlation
+\citep{strain_2023, strain_2023a, strain_2024}, perceptions of data
+magnitudes and ratio are affected by axis orientations and truncation
+\citep{bradley_2025, mckinley_2026}, and line characteristics affect
+judgements of global means in line charts \citep{moritz_2023} -- add
+Charlotte ref here.
 
 There is also a body of literature that provides evidence that
 perceptual effects, such as those described above, may penetrate and
@@ -509,7 +509,7 @@ materials.
 The literature on donation behaviour is generally focused on the
 characteristics of donors, and often make a distinction between choosing
 to donate at all and the amount donated. Green and Webb (1997
-\citep{green_1997}) used factor analysis and an an interdisciplinary
+\citep{green_1997}) used factor analysis and an interdisciplinary
 literature review to identify seven factors associated with charitable
 giving behaviour. Five of these were motivations for giving, and include
 altruism, negative state relief, and social exchange. Gittell and
@@ -519,7 +519,7 @@ personal income, protestantism, and education positively impacting
 donations. More recently, Neumayr and Handy (2019 \citep{neumayr_2019})
 identified subjective dispositions, such as trust, empathic concern, and
 religious affiliation as predictive of the decision to donate (but not
-the amount); what they term \emph{human resources}, such as inxcome and
+the amount); what they term \emph{human resources}, such as income and
 education level, impact both the decision to donate and the amounts
 people choose to give. Bekkers and Wiepking (2011 \citep{bekkers_2011})
 provide a detailed review of the person-specific mechanisms that drive
@@ -563,7 +563,24 @@ pronounced for 0.2 \textless{} \emph{r} \textless{} 0.6.
 Recent work aiming to correct for this bias has been partially
 successful. Strain et al. \citep{strain_2023, strain_2024a, strain_2024}
 systematically varied the opacities and sizes of scatterplot points to
-manipulate perceptions of correlation.
+manipulate perceptions of correlation in crowdsourced online
+experiments. Using equation 1 to relate point opacity and size to
+residual error, they were able to achieve significant amounts of
+correction, suggesting that correlation perception may be related to
+point salience.
+
+\begin{equation}
+  point_{size/opacity} = 1 - b^{residual}
+\end{equation}
+
+Examples of scatterplots that use these modifications can be seen on the
+top row of Figure~\ref{fig-raw-example-plots}. In addition to being able
+to manipulate estimates of correlation, there is also evidence that the
+same technique can change the extent to which participants update their
+beliefs about the levels of relatedness between a pair of variables
+\citep{strain_2025}. Given the perceptual and cognitive effects of
+scatterplot visualisation techniques such as these, it remains to be
+seen whether they can additionally affect behavioural intention.
 
 \begin{itemize}
 \tightlist
