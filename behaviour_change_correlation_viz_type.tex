@@ -535,13 +535,13 @@ that donors are more likely to give to charities that they personally
 like and that align with their values. Berman et al.~(2018
 \citep{berman_2018}), in a quantitative study designed to increase
 donation amounts using principles of effective altruism
-\citep{macaskill_2019} found that participants preferred and donated
-more to charities that they preferred, even when transparently more
-effective options were made available to them; this is explained as
-being a result of emotional connection to the cause being valued over
-rational decision making and reasoned argument. In opposition, She and
-Sanfey (2023 \citep{she_2023}) found that charity preference had no
-effect on donation amounts in an online dictator game-style study. The
+\citep{macaskill_2019} found that participants donated more to charities
+that they preferred, even when transparently more effective options were
+made available to them; this was explained as being a result of
+emotional connection to the cause being valued over rational decision
+making and reasoned argument. In opposition, She and Sanfey (2023
+\citep{she_2023}) found that charity preference had no effect on
+donation amounts in an online dictator game-style study. The
 disagreement here motivated the collection of charity preference ratings
 and rankings in the present study.
 
@@ -550,27 +550,30 @@ Scatterplots}\label{sec-corr-percept}
 
 In addition to testing whether data visualisation can influence donation
 decisions, we also aim to test a recently developed novel scatterplot
-visualisation technique. Historically, there has been evidence of a bias
-in correlation estimation in scatterplots; positive correlation is
-routinely underestimated. This finding has been replicated in direct
-estimation paradigms, where participants are asked to provide a
-numerical estimate of correlation
+visualisation technique. Scatterplots, which are primarily used to
+visualise the correlation between pairs of variables, are a widely used
+type of data visualisation \citep{tufte_1983}. Historically, there has
+been evidence of a bias in correlation estimation in scatterplots;
+positive correlation is routinely underestimated. This finding has been
+replicated in direct estimation paradigms, where participants are asked
+to provide a numerical estimate of correlation
 \citep{strahan_1978, bobko_1979, cleveland_1982, lane_1985, lauer_1989, collyer_1990, meyer_1992},
 and in those asking participants to estimate correlation via a bisection
 task \citep{rensink_2017}. The underestimation is particularly
 pronounced for 0.2 \textless{} \emph{r} \textless{} 0.6.
 
-Recent work aiming to correct for this bias has been partially
-successful. Strain et al. \citep{strain_2023, strain_2024a, strain_2024}
-systematically varied the opacities and sizes of scatterplot points to
-manipulate perceptions of correlation in crowdsourced online
-experiments. Using equation 1 to relate point opacity and size to
-residual error, they were able to achieve significant amounts of
-correction, suggesting that correlation perception may be related to
-point salience.
+Partially inspired by evidence that estimates of means can be biased by
+changing the opacities and size of scatterplot points \citep{hong_2022},
+recent work aiming to correct for this bias has been successful. Strain
+et al. \citep{strain_2023, strain_2024a, strain_2024} systematically
+varied the opacities and sizes of scatterplot points to manipulate
+perceptions of correlation in crowdsourced online experiments. Using
+equation 1 to relate point opacity and size to residual error, they were
+able to achieve significant amounts of correction, suggesting that
+correlation perception may be related to point salience.
 
 \begin{equation}
-  point_{size/opacity} = 1 - b^{residual}
+  point_{size/opacity} = 1 - 0.25^{residual}
 \end{equation}
 
 Examples of scatterplots that use these modifications can be seen on the
@@ -790,12 +793,12 @@ reduced as a function of residual magnitude using equation 1:
 
 We chose to use three Pearson's \emph{r} values; 0.2, 0.5, and 0.8. If
 participants are engaging with the visualisations and using them to
-inform their donation decisions, then plots featuring higher \emph{r}
-values should attract greater proportions of donated money. If the
-effects on perception and belief change seen previously with
-scatterplots of the type featured in the \emph{alternative} condition
-can be extended to change behaviour, then \emph{alternative}
-scatterplots should elicit greater donations.
+inform their donation\\
+decisions, then plots featuring higher \emph{r} values should attract
+greater proportions of donated money. If the effects on perception and
+belief change seen previously with scatterplots of the type featured in
+the \emph{alternative} condition can be extended to change behaviour,
+then \emph{alternative} scatterplots should elicit greater donations.
 
 Each scatterplot was positively correlated, and featured identical
 \(x\)-axis labels regarding donation amount. Each charity's \(y\)-axis
