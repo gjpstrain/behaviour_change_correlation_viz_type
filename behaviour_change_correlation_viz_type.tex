@@ -407,9 +407,9 @@ concepts are interpreted more generally.
 Testing whether visualisation modifications such as these are able to
 reach past cognition to affect what people actually do is a much harder
 problem to solve. To this end, we present a single, crowdsourced, online
-experiment study that situates novel scatterplot visualisation
-techniques in charity infographics. We use a forced donation task,
-whereby participants must share money between charities represented by
+experiment that situates novel scatterplot visualisation techniques in
+charity infographics. We use a forced donation task, whereby
+participants must share money between charities represented by
 infographics including standard and alternatively-designed scatterplots,
 and collect and analyse participants' charity preferences. We build a
 range of models to show that while preference for certain charitable
@@ -419,19 +419,19 @@ point encoding have significant effects.
 
 \section{Related Work}\label{sec-related-work}
 
-We begin this section by reviewing the general literature at the
-intersection of data visualisation and behaviour change. We then explore
-our chosen behaviour-change paradigm, donation behaviour, particularly
-in response to infographics and other forms of informative advertising.
-This section concludes by reviewing the modified scatterplots used to
-elicit behaviour change, followed by a statement of our hypotheses.
+We begin this section by reviewing the literature at the intersection of
+data visualisation and behaviour change. We then explore our chosen
+behaviour-change paradigm, donation behaviour, particularly in response
+to infographics and other forms of informative advertising. This section
+concludes by reviewing the modified scatterplots used to elicit
+behaviour change, followed by a statement of our hypotheses.
 
 \subsection{Behaviour and Data
 Visualisation}\label{sec-behaviour-data-viz}
 
 Data visualisation, broadly defined as the practice of presenting
 information in a visual modality \citep{hinterberger_2009}, is widely
-relied on for the communication of simple and complex statistical and
+relied upon for the communication of simple and complex statistical and
 numerical data and concepts. From infographics designed to promote
 health behaviours to complex multiclass scatterplot matrices used for
 exploratory data analysis in machine learning paradigms, pictorial
@@ -465,8 +465,8 @@ to increase decision-making performance
 visualisation can, in some contexts, be more persuasive than the
 equivalent information presented in a tabular format
 \citep{pandey_2014}, it remains to be seen whether perceptual and
-cognitive effects of data visualisation can penetrate further and drive
-differences in behaviour.
+cognitive effects of data visualisation can drive differences in
+behaviour.
 
 There is some evidence that effects such as those described above are
 driven by data visualisation promoting higher levels of engagement with
@@ -476,8 +476,8 @@ engagement and learning, resulting in better financial decision-making
 amongst non-expert participants when compared to those presented only
 with tabular data, while Fu et al. \citep{fu_2025} found that static and
 dynamic visualisation promoted higher levels of learning motivation and
-engagement with algorithm learning amongst young students. In a
-longitudinal study of self-created `vernacular visualisations', Abos and
+engagement with algorithm learning amongst students. In a longitudinal
+study of participant-created `vernacular visualisations', Abos and
 Franco \citep{abos_2024} found use of visualisation to be beneficial for
 participants with regards to forming and maintaining sustainable food
 waste habits. This improvement was attributed to increased engagement
@@ -487,10 +487,8 @@ Testing real behaviour change in response to visualisation viewing is
 necessarily difficult; lab or online testing may fail to induce enough
 of a sense of realism to extract actual behaviour, while longitudinal
 testing is difficult and expensive to carry out. In the present study,
-we use a deception technique in an attempt to elicit participants' real
-behavioural intentions, however we acknowledge that this may not be
-actually reflective and propose future work to further test
-interventions of this kind in Section \ref{sec-future-work}.
+we use a deception technique to elicit participants' real behavioural
+intentions.
 
 \subsection{Donation Behaviour}\label{sec-donation-behaviour}
 
@@ -507,8 +505,8 @@ untapped resource with regards to creating more effective advertising
 materials.
 
 The literature on donation behaviour is generally focused on the
-characteristics of donors, and often make a distinction between choosing
-to donate at all and the amount donated. Green and Webb (1997
+characteristics of donors, and often makes a distinction between
+choosing to donate at all and the amount donated. Green and Webb (1997
 \citep{green_1997}) used factor analysis and an interdisciplinary
 literature review to identify seven factors associated with charitable
 giving behaviour. Five of these were motivations for giving, and include
@@ -563,14 +561,15 @@ task \citep{rensink_2017}. The underestimation is particularly
 pronounced for 0.2 \textless{} \emph{r} \textless{} 0.6.
 
 Partially inspired by evidence that estimates of means can be biased by
-changing the opacities and size of scatterplot points \citep{hong_2022},
-recent work aiming to correct for this bias has been successful. Strain
-et al. \citep{strain_2023, strain_2024a, strain_2024} systematically
-varied the opacities and sizes of scatterplot points to manipulate
-perceptions of correlation in crowdsourced online experiments. Using
-equation 1 to relate point opacity and size to residual error, they were
-able to achieve significant amounts of correction, suggesting that
-correlation perception may be related to point salience.
+changing the opacities and sizes of scatterplot points
+\citep{hong_2022}, recent work aiming to correct for this bias has been
+successful. Strain et al. \citep{strain_2023, strain_2023a, strain_2024}
+systematically varied the opacities and sizes of scatterplot points to
+manipulate perceptions of correlation in crowdsourced online
+experiments. Using equation 1 to relate point opacity and size to
+residual error, they were able to achieve significant amounts of
+correction, suggesting that correlation perception may be related to
+point salience.
 
 \begin{equation}
   point_{size/opacity} = 1 - 0.25^{residual}
@@ -585,24 +584,6 @@ beliefs about the levels of relatedness between a pair of variables
 scatterplot visualisation techniques such as these, it remains to be
 seen whether they can additionally affect behavioural intention.
 
-\begin{itemize}
-\tightlist
-\item
-  factors influencing correlation perception, including what we have
-  found
-\item
-  how have scatterplots been modified to induce changes in correlation
-  perception
-\item
-  then, how this has been shown to extend to belief change
-\item
-  motivate the study of behaviour change as a result of visualisation
-  viewing
-\item
-  particularly, highlight the potential moral benefit of motivating
-  better behaviour
-\end{itemize}
-
 \section{Hypotheses}\label{sec-hypotheses}
 
 We formulate the first hypothesis based on previous evidence that people
@@ -616,7 +597,7 @@ will donate more money to charitable concerns that they prefer:
 \end{itemize}
 
 Owing to evidence that strong relationships portrayed in scatterplots
-can induce belief change in viewers, and that, featured in data
+can induce belief change in viewers, and that features of data
 visualisations can have effects on viewers' thoughts and attitudes, we
 formulate the second hypothesis:
 
@@ -627,11 +608,11 @@ formulate the second hypothesis:
   whose infographics feature scatterplots with higher \emph{r} values.
 \end{itemize}
 
-Finally, in light of evidence that scatterplots whose points have been
-modified in such a way that correlation is perceived as higher and is
-able to induce belief change to a greater degree, we formulate the third
-hypothesis. This hypothesis is non-directional due to small effects
-sizes reported in a previous study that utilised these techniques:
+Finally, in light of evidence that modified scatterplots can produce
+higher estimates of correlation and greater levels of belief change
+regarding relatedness, we formulate the third hypothesis. This
+hypothesis is non-directional due to small effects sizes reported in a
+previous study that utilised these techniques:
 
 \begin{itemize}
 \tightlist
@@ -656,7 +637,7 @@ reproducible research \citep{ayris_2018}. Hypotheses and analysis plans
 were pre-registered with the Open Science Framework (OSF)\footnote{https://osf.io/kywt9/overview?view\_only=1f677775eb80467dae61c7502bc3305f}.
 All data and analysis code are included in a GitHub
 repository\footnote{removed for anon}, which also contains instructions
-for building a Docker container \citep{merkel_2014} that reproduces the
+for building a Podman container \citep{heon_2018} that reproduces the
 computational environment in which the paper was written. By capturing
 package versions and dependencies using the \texttt{renv} package
 \citep{ushey_2026} in R, this container allows for full replication of
@@ -744,7 +725,10 @@ represented. Each charity template was designed by a single author using
 Canva (www.canva.com) and checked by co-authors. Each template featured
 a blank central space into which the scatterplot visualisations (see
 Figure~\ref{fig-raw-example-plots}) were later inserted. Figure
-\ref{fig-templates} shows the charity templates used.
+\ref{fig-templates} shows the charity templates used. Each infographic
+featured a scatterplot visualisation positioned centrally, which served
+as the primary visual element and the main focus of the experimental
+stimulus.
 
 \begin{figure*}
   \centering
@@ -766,10 +750,6 @@ Figure~\ref{fig-raw-example-plots}) were later inserted. Figure
   \label{fig-templates}
 \end{figure*}
 
-Each infographic featured a scatterplot visualisation positioned
-centrally, which served as the primary visual element and the main focus
-of the experimental stimulus.
-
 \subsubsection{Scatterplot
 Visualisations}\label{sec-stimuli-visualisations}
 
@@ -785,20 +765,16 @@ contextualised as part of news items \citep{strain_2025} when compared
 to traditional plots. To test whether such effects can be extended to
 change behaviours, we use the same technique here. In the
 \emph{alternative} scatterplot condition, point opacity and size is
-reduced as a function of residual magnitude using equation 1:
-
-\begin{equation}
-  point_{size/opacity} = 1 - 0.25^{residual}
-\end{equation}
+reduced as a function of residual magnitude using equation 1.
 
 We chose to use three Pearson's \emph{r} values; 0.2, 0.5, and 0.8. If
 participants are engaging with the visualisations and using them to
-inform their donation\\
-decisions, then plots featuring higher \emph{r} values should attract
-greater proportions of donated money. If the effects on perception and
-belief change seen previously with scatterplots of the type featured in
-the \emph{alternative} condition can be extended to change behaviour,
-then \emph{alternative} scatterplots should elicit greater donations.
+inform their donation decisions, then plots featuring higher \emph{r}
+values should attract greater proportions of donated money. If the
+effects on perception and belief change seen previously with
+scatterplots of the type featured in the \emph{alternative} condition
+can be extended to change behaviour, then \emph{alternative}
+scatterplots should elicit greater donations.
 
 Each scatterplot was positively correlated, and featured identical
 \(x\)-axis labels regarding donation amount. Each charity's \(y\)-axis
