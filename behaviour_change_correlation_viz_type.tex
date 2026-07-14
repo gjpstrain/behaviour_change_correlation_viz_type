@@ -806,11 +806,15 @@ charities \(\times\) 3 correlation values \(\times\) 2 plot types), all
 unique combinations would result in \(\binom{18}{2} = 153\) pairs. To
 decrease the task load on participants, we removed the 45 trials which
 featured the same charity for a final total of 108 experimental trials.
-Participants viewed all 108 experimental trials along with 6 attention
+Participants viewed all 108 experimental trials, along with 6 attention
 check trials, in a fully-randomised order. Our dependent variable was
 the amount of money participants assigned to the left and right charity
 infographics on a per-trial basis. The experiment, including all
-stimuli, materials, and instructions, are hosted on GitLab{[}\^{}3{]}.
+stimuli, materials, and instructions, are hosted on GitLab \footnote{The
+  pre-registration states that 150 participants would be recruited.
+  Additional participants were recruited due to an oversight, however
+  all conclusions and statistical results are identical when run with
+  164 or 150 participants.}.
 
 \subsection{Procedure}\label{sec-procedure}
 
@@ -899,7 +903,7 @@ Participants' mean age was 34.7 (SD = 11.2). Participants took a mean of
 \section{Results}\label{sec-results}
 
 All analyses were conducted using R (version 4.5.3 \citep{r_core}). Each
-hypothesis is tested first using a model that only includes the fixed
+hypothesis is first tested using a model that only includes the fixed
 effect of interest. A full interaction model is then fitted taking into
 account all fixed effects and the potential interactions between them.
 This model provides more conservative estimates; we therefore use the
@@ -912,7 +916,7 @@ proportions of money to charities that they prefer, we built a pair of
 models whereby the ratio of donations is predicted by the differences in
 Likert ratings of charities and their ranks. With regards to the Likert
 ratings, the experimental model explained significantly more variance
-than the null (\(\chi^2\)(7) = 4,808.16, \emph{p} \textless{} .001)
+than the null (\(\chi^2\)(7) = 4,808.16, \emph{p} \textless{} .001),
 driven by the fixed effect of Likert rating.
 Figure~\ref{fig-donation-lines-1} illustrates how mean donation amounts
 change over the full range of Likert responses.
@@ -1028,7 +1032,7 @@ Alternative & 50.6 & 25.4\\
 
 \end{table}%
 
-The effects of participants charity preference, as measured by the
+The effects of participants' charity preference, as measured by the
 Likert rating and charity ranking, are much more influential than those
 of correlation value or plot type. Both to explore this more fully and
 to investigate any potential interactions between our fixed effects, we
@@ -1037,8 +1041,8 @@ variables simultaneously. This model explains significantly more
 variance than a null model with no fixed effects (\(\chi^2\)(21) =
 5,295.26, \emph{p} \textless{} .001). The only significant interaction
 found by this model is that between charity rank and Likert ratings
-\(\chi^2(1) = 85.71\), \(p < .001\). Given that we anticpate more highly
-ranked charities to be awarded higher Likert ratings, this is an
+(\(\chi^2(1) = 85.71\), \(p < .001\)). Given that we anticipate more
+highly ranked charities to be awarded higher Likert ratings, this is an
 expected finding, however we explore the interaction further in
 Figure~\ref{fig-likert-rank-interactions}.
 
@@ -1063,19 +1067,58 @@ plotted separately for each charity rank.}
 \toprule
 Parameter & $\Delta$ proportion donated (\%) & SE & $z$ & $p$ & 95\% CI\\
 \midrule
-Relative Correlation & 0.04 & 0.00 & 12.52 & <0.001 & {}[0.032, 0.044]\\
 Relative Likert Rating & 0.69 & 0.02 & 40.26 & <0.001 & {}[0.658, 0.725]\\
-Relative Plot Type & 0.03 & 0.00 & 5.35 & <0.001 & {}[0.017, 0.036]\\
 Relative Rank Position & 0.09 & 0.01 & 14.95 & <0.001 & {}[0.081, 0.106]\\
+Relative Correlation & 0.04 & 0.00 & 12.52 & <0.001 & {}[0.032, 0.044]\\
+Relative Plot Type & 0.03 & 0.00 & 5.35 & <0.001 & {}[0.017, 0.036]\\
 \bottomrule
 \end{tabular}
 \end{table*}
 
 \section{Discussion}\label{sec-discussions}
 
-\subsection{Future Working}\label{sec-future-work}
+All three hypotheses were supported in this experiment. Participants
+donation decisions were significantly affected by their thoughts and
+feelings about the charitable concerns, by the correlation displayed in
+each infographic, and by the type of scatterplot employed. These results
+add to evidence that preference is the strongest predictor of donation
+\citep{breeze_2013, berman_2018, macaskill_2019}, and the finding that
+higher \emph{r} values in plots increased donation amounts suggests that
+participants used the data visualisations when making their decisions.
+Not only are data visualisations incorporated into donation decisions,
+visual features which have previously been shown to affect correlation
+estimates and belief updating (point opacity and size) are also able to
+alter donation behaviour. Despite only being responsible for a small
+amount of donation behaviour change (see
+\textbf{?@tbl-marginal-effects-interactions}), the huge amounts involved
+in charitable donations \citep{charity_commission} mean that these
+findings represent a large opportunity to significantly increase
+donation amounts without having to tailor the design of advertising
+campaigns to different demographic groups. As this experiment represents
+a behaviour proxy, further work would be required to more fully explore
+the relationship between data visualisation and donation behaviour with
+a view to full implementation.
 
-\section{Conclusion}\label{sec-cocnlusion}
+\subsection{Donation Behaviour \& Charity
+Preferences}\label{donation-behaviour-charity-preferences}
+
+\subsection{Effects of Visualisations on
+Behaviour}\label{effects-of-visualisations-on-behaviour}
+
+\begin{itemize}
+\tightlist
+\item
+  maybe look into reaction times?
+\end{itemize}
+
+\subsection{Implications for the Design of Effective Advertising
+Campaigns}\label{implications-for-the-design-of-effective-advertising-campaigns}
+
+\subsection{Future Work}\label{sec-future-work}
+
+\subsection{Limitations}\label{limitations}
+
+\section{Conclusion}\label{sec-conclusion}
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{donation_behaviour.bib}

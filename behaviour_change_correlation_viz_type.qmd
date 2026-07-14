@@ -1049,7 +1049,7 @@ anova_results(rank_model, rank_comp_model)
 <!----------------------------------------------------------------------------->
 
 All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` 
-[@r_core]). Each hypothesis is tested first using a model that only includes the 
+[@r_core]). Each hypothesis is first tested using a model that only includes the 
 fixed effect of interest. A full interaction model is then fitted taking into 
 account all fixed effects and the potential interactions between them. This model
 provides more conservative estimates; we therefore use the `marginaleffects`
@@ -1062,7 +1062,7 @@ ratio of donations is predicted by the differences in Likert ratings of charitie
 and their ranks. With regards to the Likert ratings, the experimental model
 explained significantly more variance than the null 
 ($\chi^2$(`r in_paren(likert_model.df)`) = `r printnum(likert_model.Chisq)`,
-*p* `r printp(likert_model.p, add_equals = TRUE)`) driven by the fixed effect
+*p* `r printp(likert_model.p, add_equals = TRUE)`), driven by the fixed effect
 of Likert rating. @fig-donation-lines-1 illustrates how mean donation amounts 
 change over the full range of Likert responses.
 
@@ -1253,7 +1253,7 @@ aov_out_interactions <- car::Anova(interactions_model, type = 3)
 aov_apa_interactions <- apa_print(aov_out_interactions)
 ```
 
-The effects of participants charity preference, as measured by the Likert 
+The effects of participants' charity preference, as measured by the Likert 
 rating and charity ranking, are much more influential than those of
 correlation value or plot type. Both to explore this more fully and to 
 investigate any potential interactions between our fixed effects, we build 
@@ -1263,8 +1263,8 @@ model with no fixed effects ($\chi^2$(`r in_paren(interactions_model.df)`)
 = `r printnum(interactions_model.Chisq)`, *p*
 `r printp(interactions_model.p, add_equals = TRUE)`). The only significant 
 interaction found by this model is that between charity rank and Likert
-ratings `r aov_apa_interactions$full_result$likert_diff_c_rank_diff_c`. 
-Given that we anticpate more highly ranked charities to be awarded higher
+ratings (`r aov_apa_interactions$full_result$likert_diff_c_rank_diff_c`). 
+Given that we anticipate more highly ranked charities to be awarded higher
 Likert ratings, this is an expected finding, however we explore the 
 interaction further in @fig-likert-rank-interactions.
 
@@ -1338,6 +1338,7 @@ marginal_effects_df <- avg_slopes(interactions_model) %>%
     `95\\% CI` = paste0("[", round(conf.low, 3), ", ", round(conf.high, 3), "]")) %>%
   rename(`\\textit{p}` = "p.value") %>%
   mutate(`\\textit{p}` = scales::pvalue(`\\textit{p}`)) %>%
+  arrange(desc(estimate)) %>%
   select(term, estimate, std.error, statistic, `\\textit{p}`, `95\\% CI`)
 
 
@@ -1368,8 +1369,38 @@ cat(x)
 
 # Discussion {#sec-discussions}
 
-## Future Working {#sec-future-work}
+All three hypotheses were supported in this experiment. Participants donation
+decisions were significantly affected by their thoughts and feelings about
+the charitable concerns, by the correlation displayed in each infographic, and
+by the type of scatterplot employed. These results add to evidence that preference
+is the strongest predictor of donation [@breeze_2013; @berman_2018; @macaskill_2019],
+and the finding that higher *r* values in plots increased donation amounts
+suggests that participants used the data visualisations when making their decisions.
+Not only are data visualisations incorporated into donation decisions, visual features
+which have previously been shown to affect correlation estimates and belief updating
+(point opacity and size) are also able to alter donation behaviour. Despite only
+being responsible for a small amount of donation behaviour change
+(see \ref{tbl-marginal-effects-interactions}), the huge amounts involved in charitable
+donations [@charity_commission] mean that these findings represent a large 
+opportunity to significantly increase donation amounts without having to tailor
+the design of advertising campaigns to different demographic groups. As this
+experiment represents a behaviour proxy, further work would be required to more
+fully explore the relationship between data visualisation and donation behaviour with
+a view to full implementation.
 
-# Conclusion {#sec-cocnlusion}
+## Donation Behaviour & Charity Preferences
+
+## Effects of Visualisations on Behaviour
+
+ - maybe look into reaction times?
+
+## Implications for the Design of Effective Advertising Campaigns
+
+
+## Future Work {#sec-future-work}
+
+## Limitations
+
+# Conclusion {#sec-conclusion}
 
 # References {.unnumbered}
