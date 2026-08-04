@@ -487,7 +487,7 @@ purely aesthetic choice, can change the perceptions, cognitions, and behaviours
 of those who view them. Recent work investigating a novel form of scatterplot
 point encoding found that lowering the opacity and size of scatterplots points 
 as a function of residual error, both separately [@strain_2023; @strain_2023a]
-and together [@strain_2024] can have significant effects on perceptions of 
+and together [@strain_2024], can have significant effects on perceptions of 
 correlation. These techniques were used to correct for a historic 
 underestimation bias, and have additionally been shown to affect the degree to
 which people's beliefs about the levels of relatedness between a variable pair 
@@ -590,18 +590,18 @@ is an untapped resource with regards to creating more effective advertising mate
 
 The literature on donation behaviour is generally focused on the characteristics 
 of donors, and often makes a distinction between choosing to donate at all and 
-the amount donated. Green and Webb (1997 [@green_1997]) used factor analysis
+the amount donated. Green and Webb [@green_1997] used factor analysis
 and an interdisciplinary literature review to identify seven factors associated 
 with charitable giving behaviour. Five of these were motivations for giving, 
 and include altruism, negative state relief, and social exchange. Gittell and 
-Tebaldi (2006 [@gittell_2006]) identify economic, religious, and demographic 
+Tebaldi [@gittell_2006] identify economic, religious, and demographic 
 factors influencing giving rates; with higher levels of personal income, 
 protestantism, and education positively impacting donations. More recently, 
-Neumayr and Handy (2019 [@neumayr_2019]) identified subjective dispositions, 
+Neumayr and Handy [@neumayr_2019] identified subjective dispositions, 
 such as trust, empathic concern, and religious affiliation as predictive of 
 the decision to donate (but not the amount); what they term *human resources*,
 such as income and education level, impact both the decision to donate and 
-the amounts people choose to give. Bekkers and Wiepking (2011 [@bekkers_2011]) 
+the amounts people choose to give. Bekkers and Wiepking [@bekkers_2011] 
 provide a detailed review of the person-specific mechanisms that drive 
 charitable giving. Despite this literature, it remains difficult to design 
 donation-eliciting campaigns that appeal across the range of personal
@@ -610,15 +610,15 @@ characteristics that may motivate donation behaviour.
 The weight of evidence generally points towards donation decisions being 
 strongly influenced by personal preferences of charities and charitable 
 concerns, although the literature is not in full agreement. In a qualitative 
-study of 60 donors, Breeze (2013 [@breeze_2013]) found that donors are more 
+study of 60 donors, Breeze [@breeze_2013] found that donors are more 
 likely to give to charities that they personally like and that align with
-their values. Berman et al. (2018 [@berman_2018]), in a quantitative study 
+their values. Berman et al. [@berman_2018], in a quantitative study 
 designed to increase donation amounts using principles of effective altruism 
 [@macaskill_2019] found that participants donated more to charities that
 they preferred, even when transparently more effective options were made 
 available to them; this was explained as being a result of emotional 
 connection to the cause being valued over rational decision making and 
-reasoned argument. In opposition, She and Sanfey (2023 [@she_2023]) found
+reasoned argument. In opposition, She and Sanfey [@she_2023] found
 that charity preference had no effect on donation amounts in an online 
 dictator game-style study. The disagreement here motivated the collection 
 of charity preference ratings and rankings in the present study.
