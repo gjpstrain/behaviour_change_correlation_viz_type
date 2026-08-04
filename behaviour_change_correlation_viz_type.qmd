@@ -1380,15 +1380,24 @@ Not only are data visualisations incorporated into donation decisions, visual fe
 which have previously been shown to affect correlation estimates and belief updating
 (point opacity and size) are also able to alter donation behaviour. Despite only
 being responsible for a small amount of donation behaviour change
-(see \ref{tbl-marginal-effects-interactions}), the huge amounts involved in charitable
+(see Table \ref{tbl-marginal-effects-interactions}), the huge amounts involved in charitable
 donations [@charity_commission] mean that these findings represent a large 
 opportunity to significantly increase donation amounts without having to tailor
 the design of advertising campaigns to different demographic groups. As this
-experiment represents a behaviour proxy, further work would be required to more
+experiment represents a behavioural proxy, further work would be required to more
 fully explore the relationship between data visualisation and donation behaviour with
 a view to full implementation.
 
 ## Donation Behaviour & Charity Preferences
+
+In line with previous work [@breeze_2013; @berman_2018], participants gave a 
+significantly greater proportion of money to charities that they preferred, as 
+measured by Likert scales and a charity rank. This finding was in opposition to
+that of She and Sanfey [@she_2023], from whom the charity categories, Likert rating,
+and ranking were taken. In their study, participants were asked to play a binary choice
+dictator game in which they could also assign money to themselves. As our primary
+interest is in the effects of data visualisations on donation behaviour, we elected
+not to recreate this measure
 
 ## Effects of Visualisations on Behaviour
 
