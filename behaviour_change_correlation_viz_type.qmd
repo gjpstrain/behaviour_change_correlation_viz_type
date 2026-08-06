@@ -1297,6 +1297,32 @@ donation_behaviour_tidy_long %>%
   theme(panel.grid.minor = element_blank(),
         legend.position = c(0.1,0.8),
         legend.text = element_markdown())
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank, charity_likert) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            n = n(),
+            .groups = "drop") %>%
+  complete(charity_rank, charity_likert, fill = list(mean_amount = NA, n = 0)) %>%
+  mutate(charity_rank = factor(charity_rank, levels = 1:3)) %>%
+    mutate(charity_rank = recode(charity_rank,
+                               "1" = "1^st^",
+                               "2" = "2^nd^",
+                               "3" = "3^rd^")) %>%
+  ggplot(aes(x = charity_likert, y = mean_amount, colour = charity_rank, group = charity_rank)) +
+  geom_line(linewidth = 1) +
+  geom_point(aes(size = n)) +
+  scale_size_continuous(name = "N", range = c(1, 8)) +
+  scale_colour_brewer(palette = "Set1", name = "Charity Rank") +
+  scale_x_discrete(limits = as.character(1:7)) +
+  labs(x = "Charity Likert Rating", y = "Mean Donation Amount") +
+  theme_ggdist() +
+  annotate(geom = "text", label = '"1"^"st"', x = 7.25, y = 63, parse = TRUE) +
+  annotate(geom = "text", label = '"2"^"nd"', x = 7.25, y = 55.5, parse = TRUE) +
+  annotate(geom = "text", label = '"3"^"rd"', x = 7.25, y = 44.5, parse = TRUE) +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = c(0.1,0.8),
+        legend.text = element_markdown())
 ```
 
 ```{r}
@@ -1405,7 +1431,13 @@ relationships between donation amounts and Likert scale ratings and charity
 rankings respectively. The model, however, reveals an unexpected interaction, which
 is visualised in @fig-likert-rank-interactions. When participants ranked a particular
 charity 1^st^, their donation amount is maximal when their Likert rating is at 
-the midpoint.
+the midpoint of the scale. A potential explanation for this finding may be derived
+from the range-frequency theory [@parducci_1963]. In short, this theory describes
+how subjective judgements of the same stimulus can differ based on the context
+in which they are presented; an item weighing 50g would be described as heavy
+when presented amongst a series of items weighing less than 50g, but would be
+described as light when presented amongst a different series of items weighing
+more than 50g.
 
 ## Effects of Visualisations on Behaviour
 
