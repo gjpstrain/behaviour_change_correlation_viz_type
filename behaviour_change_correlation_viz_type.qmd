@@ -1431,13 +1431,21 @@ relationships between donation amounts and Likert scale ratings and charity
 rankings respectively. The model, however, reveals an unexpected interaction, which
 is visualised in @fig-likert-rank-interactions. When participants ranked a particular
 charity 1^st^, their donation amount is maximal when their Likert rating is at 
-the midpoint of the scale. A potential explanation for this finding may be derived
-from the range-frequency theory [@parducci_1963]. In short, this theory describes
-how subjective judgements of the same stimulus can differ based on the context
-in which they are presented; an item weighing 50g would be described as heavy
-when presented amongst a series of items weighing less than 50g, but would be
-described as light when presented amongst a different series of items weighing
-more than 50g.
+the midpoint of the scale. When a charity is ranked 2^nd^ or 3^rd^ however, the 
+relationship between donation amount and Likert scale rating is more linear.
+The mean donation amounts in @fig-likert-rank-interactions do not take into account
+the number of donation decisions for each combination of Likert scale rating and
+charity rank, meaning that a very small number high-value donations associated with
+midpoint Likert rating $\times$ 1^st^ charity rank may have skewed the descriptive
+statistics. Examining the distributions of donation decisions
+
+<!-- A potential explanation for this finding may be derived -->
+<!-- from the range-frequency theory [@parducci_1963]. In short, this theory describes -->
+<!-- how subjective judgements of the same stimulus can differ based on the context -->
+<!-- in which they are presented; an item weighing 50g would be described as heavy -->
+<!-- when presented amongst a series of items weighing less than 50g, but would be -->
+<!-- described as light when presented amongst a different series of items weighing -->
+<!-- more than 50g. -->
 
 ## Effects of Visualisations on Behaviour
 
