@@ -1297,32 +1297,6 @@ donation_behaviour_tidy_long %>%
   theme(panel.grid.minor = element_blank(),
         legend.position = c(0.1,0.8),
         legend.text = element_markdown())
-
-donation_behaviour_tidy_long %>%
-  group_by(charity_rank, charity_likert) %>%
-  summarise(mean_amount = mean(amount, na.rm = TRUE),
-            n = n(),
-            .groups = "drop") %>%
-  complete(charity_rank, charity_likert, fill = list(mean_amount = NA, n = 0)) %>%
-  mutate(charity_rank = factor(charity_rank, levels = 1:3)) %>%
-    mutate(charity_rank = recode(charity_rank,
-                               "1" = "1^st^",
-                               "2" = "2^nd^",
-                               "3" = "3^rd^")) %>%
-  ggplot(aes(x = charity_likert, y = mean_amount, colour = charity_rank, group = charity_rank)) +
-  geom_line(linewidth = 1) +
-  geom_point(aes(size = n)) +
-  scale_size_continuous(name = "N", range = c(1, 8)) +
-  scale_colour_brewer(palette = "Set1", name = "Charity Rank") +
-  scale_x_discrete(limits = as.character(1:7)) +
-  labs(x = "Charity Likert Rating", y = "Mean Donation Amount") +
-  theme_ggdist() +
-  annotate(geom = "text", label = '"1"^"st"', x = 7.25, y = 63, parse = TRUE) +
-  annotate(geom = "text", label = '"2"^"nd"', x = 7.25, y = 55.5, parse = TRUE) +
-  annotate(geom = "text", label = '"3"^"rd"', x = 7.25, y = 44.5, parse = TRUE) +
-  theme(panel.grid.minor = element_blank(),
-        legend.position = c(0.1,0.8),
-        legend.text = element_markdown())
 ```
 
 ```{r}
@@ -1435,9 +1409,56 @@ the midpoint of the scale. When a charity is ranked 2^nd^ or 3^rd^ however, the
 relationship between donation amount and Likert scale rating is more linear.
 The mean donation amounts in @fig-likert-rank-interactions do not take into account
 the number of donation decisions for each combination of Likert scale rating and
-charity rank, meaning that a very small number high-value donations associated with
+charity rank, meaning that a very small number of high-value donations associated with
 midpoint Likert rating $\times$ 1^st^ charity rank may have skewed the descriptive
-statistics. Examining the distributions of donation decisions
+statistics. Examining the distributions of donation decisions separately
+for each charity rank and Likert scale rating in @fig-donation-histos illustrates
+this. When a charity is ranked 2^nd^ or 3^rd^, the distribution of donation decisions
+approaches normal, albeit with different central tendencies. However, when a charity
+is ranked 1^st^, the distribution climbs to a peak at the top rating on the 
+Likert scale. The peak at Likert rating 4 $\times$ rank 1 is actually driven
+by a very small number of responses.
+
+```{r}
+#| label: fig-donation-histos
+#| include: true
+#| fig-cap: "Histograms for of donation decisions for each charity rank and Likert rating. Note the distributions in each case, including the very small number of donation decisions for the charity rank 1 $\\times$ Likert rating 4 combination."
+#| fig-env: "figure*"
+#| fig-asp: 0.6
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank, charity_likert) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  complete(charity_rank, charity_likert, fill = list(count = 0)) %>%
+  mutate(charity_rank = factor(charity_rank, levels = 1:3)) %>%
+  mutate(charity_rank = recode(charity_rank,
+                               "1" = '"1"^"st"',
+                               "2" = '"2"^"nd"',
+                               "3" = '"3"^"rd"')) %>%
+  ggplot(aes(x = charity_likert, y = count, fill = charity_rank)) +
+  geom_col(colour = "white", width = 1) +
+  scale_fill_brewer(palette = "Set1", name = "Charity Rank") +
+  scale_x_discrete(limits = as.character(1:7)) +
+  facet_wrap(~ charity_rank, ncol = 1, labeller = label_parsed, strip.position = "right") +
+  labs(x = "Charity Likert Rating", y = "Number of Donation Decisions") +
+  geom_curve(
+    data = data.frame(charity_rank = '"1"^"st"', x = 5.5, y_end_offset = 5),
+    aes(x = 3, y = 2500, xend = 4, yend = 500),
+    inherit.aes = FALSE,
+    curvature = -0.2,
+    arrow = arrow(length = unit(0.2, "cm")),
+    colour = "black"
+  ) +
+  geom_text(
+    data = data.frame(charity_rank = '"1"^"st"'),
+    aes(x = 2.6, y = 2500, label = "n = 360\ndonations"),
+    inherit.aes = FALSE, size = 3.5
+  ) +
+  theme_ggdist() +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = "none",
+        strip.text.y = element_text(angle = 0))
+```
 
 <!-- A potential explanation for this finding may be derived -->
 <!-- from the range-frequency theory [@parducci_1963]. In short, this theory describes -->

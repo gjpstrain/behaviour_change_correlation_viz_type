@@ -1119,14 +1119,39 @@ and Likert scale ratings and charity rankings respectively. The model,
 however, reveals an unexpected interaction, which is visualised in
 Figure~\ref{fig-likert-rank-interactions}. When participants ranked a
 particular charity 1\textsuperscript{st}, their donation amount is
-maximal when their Likert rating is at the midpoint of the scale. A
-potential explanation for this finding may be derived from the
-range-frequency theory \citep{parducci_1963}. In short, this theory
-describes how subjective judgements of the same stimulus can differ
-based on the context in which they are presented; an item weighing 50g
-would be described as heavy when presented amongst a series of items
-weighing less than 50g, but would be described as light when presented
-amongst a different series of items weighing more than 50g.
+maximal when their Likert rating is at the midpoint of the scale. When a
+charity is ranked 2\textsuperscript{nd} or 3\textsuperscript{rd}
+however, the relationship between donation amount and Likert scale
+rating is more linear. The mean donation amounts in
+Figure~\ref{fig-likert-rank-interactions} do not take into account the
+number of donation decisions for each combination of Likert scale rating
+and charity rank, meaning that a very small number of high-value
+donations associated with midpoint Likert rating \(\times\)
+1\textsuperscript{st} charity rank may have skewed the descriptive
+statistics. Examining the distributions of donation decisions separately
+for each charity rank and Likert scale rating in
+Figure~\ref{fig-donation-histos} illustrates this. When a charity is
+ranked 2\textsuperscript{nd} or 3\textsuperscript{rd}, the distribution
+of donation decisions approaches normal, albeit with different central
+tendencies. However, when a charity is ranked 1\textsuperscript{st}, the
+distribution climbs to a peak at the top rating on the Likert scale. The
+peak at Likert rating 4 \(\times\) rank 1 is actually driven by a very
+small number of responses.
+
+\begin{figure*}
+
+\centering{
+
+\pandocbounded{\includegraphics[keepaspectratio]{behaviour_change_correlation_viz_type_files/figure-pdf/fig-donation-histos-1.pdf}}
+
+}
+
+\caption{\label{fig-donation-histos}Histograms for of donation decisions
+for each charity rank and Likert rating. Note the distributions in each
+case, including the very small number of donation decisions for the
+charity rank 1 \(\times\) Likert rating 4 combination.}
+
+\end{figure*}%
 
 \subsection{Effects of Visualisations on
 Behaviour}\label{effects-of-visualisations-on-behaviour}
