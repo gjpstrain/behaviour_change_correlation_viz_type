@@ -963,11 +963,11 @@ importance and as participants rank charities more highly.}
 \end{figure*}%
 
 To investigate the second hypothesis, that participants will donate more
-money to charity infographics that feature higher \emph{r} values, we
-built a model where the donation ratio is predicted by the difference in
-\emph{r} value between the two infographics in each trial. The
-experimental model explained significantly more variance when compared
-to a null model without the fixed effect of \emph{r} value
+money to charity infographics that feature scatterplots with higher
+\emph{r} values, we built a model where the donation ratio is predicted
+by the difference in \emph{r} value between the two infographics in each
+trial. The experimental model explained significantly more variance when
+compared to a null model without the fixed effect of \emph{r} value
 (\(\chi^2\)(7) = 121.13, \emph{p} \textless{} .001), driven by the
 significant main effect of \emph{r} value. Table~\ref{tbl-donation-by-r}
 shows means and standard deviations of donation amounts for each of the
@@ -1076,7 +1076,7 @@ Relative Plot Type & 0.03 & 0.00 & 5.35 & <0.001 & {}[0.017, 0.036]\\
 
 \section{Discussion}\label{sec-discussions}
 
-All three hypotheses were supported in this experiment. Participants
+All three hypotheses were supported in this experiment. Participants'
 donation decisions were significantly affected by their thoughts and
 feelings about the charitable concerns, by the correlation displayed in
 each infographic, and by the type of scatterplot employed. These results
@@ -1104,29 +1104,33 @@ Preferences}\label{donation-behaviour-charity-preferences}
 In line with previous work \citep{breeze_2013, berman_2018},
 participants gave a significantly greater proportion of money to
 charities that they preferred, as measured by Likert scales and a
-charity rank. This finding was in opposition to that of She and Sanfey
-\citep{she_2023}, from whom the charity categories, Likert rating, and
-ranking were taken. In their study, participants were asked to play a
-binary choice dictator game in which they could also assign money to
-themselves. As our primary interest is in the effects of data
-visualisations on donation behaviour, we elected not to recreate this
-measure, which could explain the differences in findings between the two
-studies.
+charity rank (see Figure~\ref{fig-donation-lines}). This finding was in
+opposition to that of She and Sanfey \citep{she_2023}, from whom the
+charity categories, Likert rating, and ranking were taken. In their
+study, participants were asked to play a binary choice dictator game in
+which they could also assign money to themselves. As our primary
+interest is in the effects of data visualisations on donation behaviour,
+we elected not to recreate this measure, which could explain the
+differences in findings between the two studies.
 
 Figure~\ref{fig-donation-lines-1} and Figure~\ref{fig-donation-lines-2}
 show the mostly linear positive relationships between donation amounts
 and Likert scale ratings and charity rankings respectively. The model,
-however, reveals an unexpected interaction, which is visualised in
-Figure~\ref{fig-likert-rank-interactions}. When participants ranked a
-particular charity 1\textsuperscript{st}, their donation amount is
-maximal when their Likert rating is at the midpoint of the scale. When a
-charity is ranked 2\textsuperscript{nd} or 3\textsuperscript{rd}
+however, reveals an interaction, which is visualised in
+Figure~\ref{fig-likert-rank-interactions}. Visual inspection of
+Figure~\ref{fig-likert-rank-interactions} suggests two possible sources
+for this interaction: (1) the clear peak at Likert rating 4 that is seen
+only for the 1\textsuperscript{st} charity rank, or (2) the vertical
+separation between trend lines for ranks 1, 2, and 3. When participants
+ranked a particular charity 1\textsuperscript{st}, their donation amount
+is maximal when their Likert rating is at the midpoint of the scale.
+When a charity is ranked 2\textsuperscript{nd} or 3\textsuperscript{rd}
 however, the relationship between donation amount and Likert scale
 rating is more linear. The mean donation amounts in
 Figure~\ref{fig-likert-rank-interactions} do not take into account the
 number of donation decisions for each combination of Likert scale rating
 and charity rank, meaning that a very small number of high-value
-donations associated with midpoint Likert rating \(\times\)
+donations associated with Likert rating 4 \(\times\)
 1\textsuperscript{st} charity rank may have skewed the descriptive
 statistics. Examining the distributions of donation decisions separately
 for each charity rank and Likert scale rating in
@@ -1135,8 +1139,10 @@ ranked 2\textsuperscript{nd} or 3\textsuperscript{rd}, the distribution
 of donation decisions approaches normal, albeit with different central
 tendencies. However, when a charity is ranked 1\textsuperscript{st}, the
 distribution climbs to a peak at the top rating on the Likert scale. The
-peak at Likert rating 4 \(\times\) rank 1 is actually driven by a very
-small number of responses.
+peak at Likert rating 4 \(\times\) 1\textsuperscript{st} charity rank is
+actually driven by a very small number of responses, meaning the
+interaction is most likely driven by the vertical distance between the
+trend lines.
 
 \begin{figure*}
 
@@ -1156,11 +1162,23 @@ charity rank 1 \(\times\) Likert rating 4 combination.}
 \subsection{Effects of Visualisations on
 Behaviour}\label{effects-of-visualisations-on-behaviour}
 
-\begin{itemize}
-\tightlist
-\item
-  maybe look into reaction times?
-\end{itemize}
+As in previous work examining the effects of alternative scatterplot
+design on correlation estimation and belief updating
+\citep{strain_2023, strain_2023a, strain_2024, strain_2025}, significant
+differences in results were found between standard and alternative
+scatterplots. If participants had paid no attention to the data
+visualisations present, and only relied on their pre-existing attitudes
+about the charitable concerns contained in the visualisations, then we
+would not expect to see a difference in donations between scatterplots
+with different \emph{r} values. The finding that donations vary
+significantly between \emph{r} values (see
+\textbf{?@tbl-tbl-donation-by-r}) suggests that the data visualisations
+were being utilised by participants when they were making their donation
+decisions. The finding that participants donated significantly more to
+alternatively designed scatterplots (see
+Table~\ref{tbl-descriptives-donation-by-plot-type}), also suggests that
+the scatterplot designs were being utilised by participants when making
+donation decisions.
 
 \subsection{Implications for the Design of Effective Advertising
 Campaigns}\label{implications-for-the-design-of-effective-advertising-campaigns}

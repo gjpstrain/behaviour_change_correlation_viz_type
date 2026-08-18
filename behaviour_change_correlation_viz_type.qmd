@@ -1138,7 +1138,7 @@ anova_results(correlation_model, correlation_comp_model)
 ```
 
 To investigate the second hypothesis, that participants will donate more money 
-to charity infographics that feature higher *r* values, we built a model where 
+to charity infographics that feature scatterplots with higher *r* values, we built a model where 
 the donation ratio is predicted by the difference in *r* value between the two 
 infographics in each trial. The experimental model explained significantly more
 variance when compared to a null model without the fixed effect of *r* value
@@ -1369,7 +1369,7 @@ cat(x)
 
 # Discussion {#sec-discussions}
 
-All three hypotheses were supported in this experiment. Participants donation
+All three hypotheses were supported in this experiment. Participants' donation
 decisions were significantly affected by their thoughts and feelings about
 the charitable concerns, by the correlation displayed in each infographic, and
 by the type of scatterplot employed. These results add to evidence that preference
@@ -1392,7 +1392,7 @@ a view to full implementation.
 
 In line with previous work [@breeze_2013; @berman_2018], participants gave a 
 significantly greater proportion of money to charities that they preferred, as 
-measured by Likert scales and a charity rank. This finding was in opposition to
+measured by Likert scales and a charity rank (see @fig-donation-lines). This finding was in opposition to
 that of She and Sanfey [@she_2023], from whom the charity categories, Likert rating,
 and ranking were taken. In their study, participants were asked to play a binary choice
 dictator game in which they could also assign money to themselves. As our primary
@@ -1402,22 +1402,27 @@ between the two studies.
 
 @fig-donation-lines-1 and @fig-donation-lines-2 show the mostly linear positive
 relationships between donation amounts and Likert scale ratings and charity
-rankings respectively. The model, however, reveals an unexpected interaction, which
-is visualised in @fig-likert-rank-interactions. When participants ranked a particular
-charity 1^st^, their donation amount is maximal when their Likert rating is at 
+rankings respectively. The model, however, reveals an interaction, which
+is visualised in @fig-likert-rank-interactions. Visual inspection of
+@fig-likert-rank-interactions suggests two possible sources for this interaction:
+(1) the clear peak at Likert rating 4 that is seen only for the 1^st^ charity rank, or
+(2) the vertical separation between trend lines for ranks 1, 2, and 3. When 
+participants ranked a particular
+charity 1^st^, their donation amount is maximal when their Likert rating is at
 the midpoint of the scale. When a charity is ranked 2^nd^ or 3^rd^ however, the 
 relationship between donation amount and Likert scale rating is more linear.
 The mean donation amounts in @fig-likert-rank-interactions do not take into account
 the number of donation decisions for each combination of Likert scale rating and
 charity rank, meaning that a very small number of high-value donations associated with
-midpoint Likert rating $\times$ 1^st^ charity rank may have skewed the descriptive
+Likert rating 4 $\times$ 1^st^ charity rank may have skewed the descriptive
 statistics. Examining the distributions of donation decisions separately
 for each charity rank and Likert scale rating in @fig-donation-histos illustrates
 this. When a charity is ranked 2^nd^ or 3^rd^, the distribution of donation decisions
 approaches normal, albeit with different central tendencies. However, when a charity
 is ranked 1^st^, the distribution climbs to a peak at the top rating on the 
-Likert scale. The peak at Likert rating 4 $\times$ rank 1 is actually driven
-by a very small number of responses.
+Likert scale. The peak at Likert rating 4 $\times$ 1^st^ charity rank is actually driven
+by a very small number of responses, meaning the interaction is most likely driven
+by the vertical distance between the trend lines.
 
 ```{r}
 #| label: fig-donation-histos
@@ -1470,7 +1475,21 @@ donation_behaviour_tidy_long %>%
 
 ## Effects of Visualisations on Behaviour
 
- - maybe look into reaction times?
+As in previous work examining the effects of alternative scatterplot design on
+correlation estimation and belief updating [@strain_2023; @strain_2023a; @strain_2024; @strain_2025],
+significant differences in results were found between standard and alternative
+scatterplots. If participants had paid no attention to the data visualisations present,
+and only relied on their pre-existing attitudes about the charitable concerns
+contained in the visualisations, then we would not expect to see a difference
+in donations between scatterplots with different *r* values. The finding that
+donations vary significantly between *r* values (see @tbl-tbl-donation-by-r) 
+suggests that the data visualisations were being utilised by participants when 
+they were making their donation decisions. The finding that participants donated 
+significantly more to alternatively designed scatterplots (see @tbl-descriptives-donation-by-plot-type),
+also suggests that the scatterplot designs were being utilised by participants 
+when making donation decisions.
+
+
 
 ## Implications for the Design of Effective Advertising Campaigns
 
