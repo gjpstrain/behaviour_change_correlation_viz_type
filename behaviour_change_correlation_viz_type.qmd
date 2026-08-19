@@ -265,7 +265,9 @@ wrangle <- function(anon_file) {
              "same_plot_type",
              "same_correlation",
              "tb1.text",
-             "tb3.text")) %>%
+             "tb3.text",
+             "exp_trials.started",
+             "exp_trials.stopped")) %>%
     rename("left_amount"  = "tb1.text",
            "right_amount" = "tb3.text") %>%
     mutate(
@@ -315,8 +317,14 @@ wrangle <- function(anon_file) {
       correlation_diff   = left_correlation - right_correlation,
       correlation_diff_c = correlation_diff - mean(correlation_diff, na.rm = TRUE),
       plot_type_diff = as.numeric(left_plot_type) - as.numeric(right_plot_type),
-      plot_type_diff_c = plot_type_diff - mean(plot_type_diff, na.rm = TRUE)
-    ) %>%
+      plot_type_diff_c = plot_type_diff - mean(plot_type_diff, na.rm = TRUE,),
+      trial_RT = exp_trials.stopped - exp_trials.started,
+      combo = case_when(
+        same_plot_type & left_plot_type == "Norm" ~ "same_standard",
+        same_plot_type & left_plot_type == "Alt"  ~ "same_alt",
+      TRUE ~ "different_plots"
+    )) %>%
+    filter(total_amount == 100) %>%     # remove trials where total != 100 (errors)
     assign(paste0(unique(anon_file$expName), "_tidy"),
            value = ., envir = .GlobalEnv)
 }
@@ -827,7 +835,7 @@ underestimation bias in positively correlated scatterplots. The same techniques
 have also been shown to be able to induce greater levels of belief change in 
 viewers of scatterplots contextualised as part of news items [@strain_2025] when
 compared to traditional plots. To test whether such effects can be extended to
-change behaviours, we use the same technique here. In the *alternative* scatterplot
+change behaviours, we use the same technique here. In the alternative scatterplot
 condition, point opacity and size is reduced as a function of residual magnitude 
 using equation 1.
 
@@ -835,14 +843,14 @@ We chose to use three Pearson's *r* values; 0.2, 0.5, and 0.8. If participants
 are engaging with the visualisations and using them to inform their donation
 decisions, then plots featuring higher *r* values should attract greater 
 proportions of donated money. If the effects on perception and belief change 
-seen previously with scatterplots of the type featured in the *alternative*
-condition can be extended to change behaviour, then *alternative* scatterplots
+seen previously with scatterplots of the type featured in the alternative
+condition can be extended to change behaviour, then alternative scatterplots
 should elicit greater donations.
 
 Each scatterplot was positively correlated, and featured identical $x$-axis
 labels regarding donation amount. Each charity's $y$-axis label related to a 
 realistic outcome variable relating to the particular charity category.
-Examples of *standard* and *alternative* scatterplots for each *r* value 
+Examples of standard and alternative scatterplots for each *r* value 
 used can be seen in @fig-raw-example-plots, while full charity template + 
 scatterplot visualisation examples can be seen in Figure \ref{fig-templates}.
 
@@ -1192,7 +1200,7 @@ anova_results(plot_type_model, plot_type_comp_model)
 
 Finally, to investigate the third hypothesis, that participants' donation 
 amounts would be affected by the type of scatterplot used in the infographics 
-(*standard* or *alternative*), we built a model where donation ratio is 
+(standard or alternative), we built a model where donation ratio is 
 predicted by the type of plot used. The experimental model explained 
 significantly more variance when compared to a null model without the fixed 
 effect of plot type ($\chi^2$(`r in_paren(plot_type_model.df)`) = 
@@ -1475,19 +1483,42 @@ donation_behaviour_tidy_long %>%
 
 ## Effects of Visualisations on Behaviour
 
-As in previous work examining the effects of alternative scatterplot design on
-correlation estimation and belief updating [@strain_2023; @strain_2023a; @strain_2024; @strain_2025],
-significant differences in results were found between standard and alternative
-scatterplots. If participants had paid no attention to the data visualisations present,
-and only relied on their pre-existing attitudes about the charitable concerns
+As predicted, participants donated more money to charities that featured 
+scatterplots with higher *r* values. If participants had paid no attention 
+to the data visualisations present,
+and relied only on their pre-existing attitudes about the charitable concerns
 contained in the visualisations, then we would not expect to see a difference
 in donations between scatterplots with different *r* values. The finding that
 donations vary significantly between *r* values (see @tbl-tbl-donation-by-r) 
 suggests that the data visualisations were being utilised by participants when 
-they were making their donation decisions. The finding that participants donated 
-significantly more to alternatively designed scatterplots (see @tbl-descriptives-donation-by-plot-type),
-also suggests that the scatterplot designs were being utilised by participants 
-when making donation decisions.
+they were making their donation decisions.
+
+As in previous work examining the effects of alternative scatterplot design on
+belief updating [@strain_2025], we found significant differences in donation 
+amounts between standard and alternative scatterplots. Again, this finding 
+suggests that visual features in scatterplots are cognitively integrated into
+participants' donation decisions. 
+
+```{r}
+#| label: tbl-RT-by-trial
+#| include: true
+#| tbl-cap: Mean reaction times (RT) for trials featuring two different scatterplots, two alternative scatterplots, and two standard scatterplots.
+
+donation_behaviour_tidy %>%
+  select(c("combo", "trial_RT")) %>%
+  group_by(combo) %>%
+  summarise(mean = mean(trial_RT), sd = sd(trial_RT)) %>%
+  rename("Mean RT" = "mean",
+         "Trial Type" = "combo",
+         "SD" = "sd") %>%
+  mutate("Trial Type" = recode(`Trial Type`,
+                               different_plots = "Different Plot Types",
+                               same_alt = "Same Plot Types: Alternative",
+                               same_standard = "Same Plot Types: Standard")) %>%
+  kbl(format = "latex",
+      booktabs = TRUE,
+      digits = c(2,2))
+```
 
 
 
