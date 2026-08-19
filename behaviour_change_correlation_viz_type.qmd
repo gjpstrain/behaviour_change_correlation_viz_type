@@ -1483,22 +1483,6 @@ donation_behaviour_tidy_long %>%
 
 ## Effects of Visualisations on Behaviour
 
-As predicted, participants donated more money to charities that featured 
-scatterplots with higher *r* values. If participants had paid no attention 
-to the data visualisations present,
-and relied only on their pre-existing attitudes about the charitable concerns
-contained in the visualisations, then we would not expect to see a difference
-in donations between scatterplots with different *r* values. The finding that
-donations vary significantly between *r* values (see @tbl-tbl-donation-by-r) 
-suggests that the data visualisations were being utilised by participants when 
-they were making their donation decisions.
-
-As in previous work examining the effects of alternative scatterplot design on
-belief updating [@strain_2025], we found significant differences in donation 
-amounts between standard and alternative scatterplots. Again, this finding 
-suggests that visual features in scatterplots are cognitively integrated into
-participants' donation decisions. 
-
 ```{r}
 #| label: tbl-RT-by-trial
 #| include: true
@@ -1514,11 +1498,30 @@ donation_behaviour_tidy %>%
   mutate("Trial Type" = recode(`Trial Type`,
                                different_plots = "Different Plot Types",
                                same_alt = "Same Plot Types: Alternative",
-                               same_standard = "Same Plot Types: Standard")) %>%
+                               same_standard = "Same Plot Types: Standard"))
   kbl(format = "latex",
       booktabs = TRUE,
       digits = c(2,2))
 ```
+
+As predicted, participants donated more money to charities that featured 
+scatterplots with higher *r* values. If participants had paid no attention 
+to the data visualisations present,
+and relied only on their pre-existing attitudes about the charitable concerns
+contained in the visualisations, then we would not expect to see a difference
+in donations between scatterplots with different *r* values. The finding that
+donations vary significantly between *r* values (see @tbl-tbl-donation-by-r) 
+suggests that the data visualisations were being utilised by participants when 
+they were making their donation decisions.
+
+As in previous work examining the effects of alternative scatterplot design on
+belief updating [@strain_2025], we found significant differences in donation 
+amounts between standard and alternative scatterplots. Again, this finding 
+suggests that visual features in scatterplots are cognitively integrated into
+participants' donation decisions. Examining the mean reaction times for different
+types of trial in @tbl-RT-by-trial-
+
+
 
 
 
