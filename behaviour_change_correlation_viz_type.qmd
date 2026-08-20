@@ -1498,7 +1498,7 @@ donation_behaviour_tidy %>%
   mutate("Trial Type" = recode(`Trial Type`,
                                different_plots = "Different Plot Types",
                                same_alt = "Same Plot Types: Alternative",
-                               same_standard = "Same Plot Types: Standard"))
+                               same_standard = "Same Plot Types: Standard")) %>%
   kbl(format = "latex",
       booktabs = TRUE,
       digits = c(2,2))
@@ -1519,18 +1519,39 @@ belief updating [@strain_2025], we found significant differences in donation
 amounts between standard and alternative scatterplots. Again, this finding 
 suggests that visual features in scatterplots are cognitively integrated into
 participants' donation decisions. Examining the mean reaction times for different
-types of trial in @tbl-RT-by-trial-
-
-
-
-
+types of trial in @tbl-RT-by-trial, we can see that reaction times are consistent
+across trial types, including when two alternative scatterplots were presented,
+when two standard scatterplots were presented, and when two different types 
+were presented. With regards to a dual-processing account [@padilla_2018], similar
+reaction times suggests that the stimuli are being processed in similar ways by
+participants. Evidence that correlation is perceived rapidly by viewers of
+scatterplots [@rensink_2014] suggests that, in the case of the present experiment,
+participants were spending more time to make a more informed decision, yet were
+still significantly influenced by both the *r* value of the plot in question
+and the specific point opacity and size encodings utilised.
 
 ## Implications for the Design of Effective Advertising Campaigns
 
+- something about how designing for specific groups/people requires more work
+- the findings here suggest that small changes to visual presentation can have effects on behaviour
+- maybe some concrete example with worked-out monetary amounts
+- coupled with previous work, this strongly suggests that these techniques can change behaviour
 
 ## Future Work {#sec-future-work}
 
+- testing the same visualisations/visualisations in general in a real-life scenario,
+potentially by randomly varying webpages over a long course of time
+- testing a mismatch between data visualisations and messaging, or exploring
+the limits of the viz effect - i.e., to what extent are the effects of the visual
+encoding still relevant when changing the subject matter?
+- collecting qualitative data on people's thoughts and feelings about alternative
+visual encodings
+
 ## Limitations
+
+- could not use real charities
+- or real donations
+- entirely possible that people would behave differently with their own money
 
 # Conclusion {#sec-conclusion}
 
