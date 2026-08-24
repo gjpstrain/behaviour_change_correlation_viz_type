@@ -412,10 +412,10 @@ charity infographics. We use a forced donation task, whereby
 participants must share money between charities represented by
 infographics including standard and alternatively-designed scatterplots,
 and collect and analyse participants' charity preferences. We build a
-range of models to show that while preference for certain charitable
-concerns is responsible for most of the variance in donation behaviour,
-both the data displayed in the plot and the alternative scatterplot
-point encoding have significant effects.
+range of models to show that while preference for charitable concerns is
+responsible for most of the variance in donation behaviour, both the
+data displayed in the plot and the alternative scatterplot point
+encoding have significant effects.
 
 \section{Related Work}\label{sec-related-work}
 
@@ -438,29 +438,26 @@ exploratory data analysis in machine learning paradigms, pictorial
 representations of data are ubiquitous. On a base level, their
 popularity speaks to the human tendency to represent our world visually.
 Despite this, there is relatively little literature exploring how data
-visualisation may affect the ways people behave.
-
-Clearly, there is the assumption (or hope), that data visualisations are
-able to affect behaviour to a certain degree. If this were not the case,
-they would not be displayed in hospitals to promote health behaviours or
-by environmental charities to promote green behaviours. There is a
-wealth of evidence suggesting that data visualisations in different
-forms can affect perceptions of underlying data; varying the sizes and
-opacities of scatterplot points can change perceptions of correlation
+visualisation may affect the ways people behave. Clearly, there is the
+assumption (or hope), that data visualisations are able to affect
+behaviour to a certain degree. If this were not the case, they would not
+be displayed in hospitals to promote health behaviours or by
+environmental charities to promote green behaviours. There is a wealth
+of evidence suggesting that data visualisations in different forms can
+affect perceptions of underlying data; varying the sizes and opacities
+of scatterplot points can change perceptions of correlation
 \citep{strain_2023, strain_2023a, strain_2024}, perceptions of data
 magnitudes and ratio are affected by axis orientations and truncation
 \citep{bradley_2025, mckinley_2026}, and line characteristics affect
-judgements of global means in line charts \citep{moritz_2023} -- add
-Charlotte ref here.
+judgements of global means in line charts \citep{moritz_2023}.
 
 There is also a body of literature that provides evidence that
-perceptual effects, such as those described above, may penetrate and
-influence cognition. Scatterplots featuring points with varying
-opacities and sizes can affect the levels to which viewers update their
-beliefs \citep{strain_2025}, risk information presented graphically can
-increase stated risk-avoidant behaviour
-\citep{stone_1997, schirillo_2005}, and data visualisation can be used
-to increase decision-making performance
+perceptual effects may penetrate and influence cognition. Scatterplots
+featuring points with varying opacities and sizes can affect the levels
+to which viewers update their beliefs \citep{strain_2025}, risk
+information presented graphically can increase stated risk-avoidant
+behaviour \citep{stone_1997, schirillo_2005}, and data visualisation can
+be used to increase decision-making performance
 \citep{cheong_2016, padilla_2018}. Given evidence that data
 visualisation can, in some contexts, be more persuasive than the
 equivalent information presented in a tabular format
@@ -492,16 +489,17 @@ intentions.
 
 \subsection{Donation Behaviour}\label{sec-donation-behaviour}
 
-With around 28\% of the UK charity sector's income coming from donations
+With around 32\% of the UK charity sector's income coming from donations
 and legacies \citep{gov_report}, reaching new donors and persuading them
 to give more represents a key part of running a successful charity
-\citep{sargeant_2001, wymer_2006}. Efficient spending on advertising and
-other fundraising activities leaves more money to be spent on charitable
-activities. Data visualisation, which has been shown in some contexts to
-be more persuasive than textual information \citep{pandey_2014} and able
-to affect the levels to which people change their beliefs
-\citep{karduni_2021, markant_2023, strain_2025}, is an untapped resource
-with regards to creating more effective advertising materials.
+\citep{sargeant_2001, wymer_2006}, as efficient spending on advertising
+and other fundraising activities leaves more money to be spent on
+charitable activities. Data visualisation, which has been shown in some
+contexts to be more persuasive than textual information
+\citep{pandey_2014} and able to affect the levels to which people change
+their beliefs \citep{karduni_2021, markant_2023, strain_2025}, is an
+untapped resource with regards to creating more effective advertising
+materials.
 
 The literature on donation behaviour is generally focused on the
 characteristics of donors, and often makes a distinction between
@@ -511,7 +509,7 @@ literature review to identify seven factors associated with charitable
 giving behaviour. Five of these were motivations for giving, and include
 altruism, negative state relief, and social exchange. Gittell and
 Tebaldi \citep{gittell_2006} identify economic, religious, and
-demographic factors influencing giving rates; with higher levels of
+demographic factors influencing giving rates, with higher levels of
 personal income, protestantism, and education positively impacting
 donations. More recently, Neumayr and Handy \citep{neumayr_2019}
 identified subjective dispositions, such as trust, empathic concern, and
@@ -531,7 +529,7 @@ qualitative study of 60 donors, Breeze \citep{breeze_2013} found that
 donors are more likely to give to charities that they personally like
 and that align with their values. Berman et al. \citep{berman_2018}, in
 a quantitative study designed to increase donation amounts using
-principles of effective altruism \citep{macaskill_2019} found that
+principles of effective altruism \citep{macaskill_2019}, found that
 participants donated more to charities that they preferred, even when
 transparently more effective options were made available to them; this
 was explained as being a result of emotional connection to the cause
@@ -545,7 +543,7 @@ charity preference ratings and rankings in the present study.
 Scatterplots}\label{sec-corr-percept}
 
 In addition to testing whether data visualisation can influence donation
-decisions, we also aim to test a recently developed novel scatterplot
+decisions, we also aim to test a recently developed scatterplot
 visualisation technique. Scatterplots, which are primarily used to
 visualise the correlation between pairs of variables, are a widely used
 type of data visualisation \citep{tufte_1983}. Historically, there has
@@ -578,9 +576,10 @@ top row of Figure~\ref{fig-raw-example-plots}. In addition to being able
 to manipulate estimates of correlation, there is also evidence that the
 same technique can change the extent to which participants update their
 beliefs about the levels of relatedness between a pair of variables
-\citep{strain_2025}. Given the perceptual and cognitive effects of
-scatterplot visualisation techniques such as these, it remains to be
-seen whether they can additionally affect behavioural intention.
+\citep{strain_2025}. While the perceptual and cognitive effects of
+scatterplot visualisation techniques such as these have been
+demonstrated, it remains to be seen whether they can additionally affect
+behavioural intention.
 
 \section{Hypotheses}\label{sec-hypotheses}
 
@@ -763,21 +762,19 @@ contextualised as part of news items \citep{strain_2025} when compared
 to traditional plots. To test whether such effects can be extended to
 change behaviours, we use the same technique here. In the alternative
 scatterplot condition, point opacity and size is reduced as a function
-of residual magnitude using equation 1.
-
-We chose to use three Pearson's \emph{r} values; 0.2, 0.5, and 0.8. If
-participants are engaging with the visualisations and using them to
-inform their donation decisions, then plots featuring higher \emph{r}
-values should attract greater proportions of donated money. If the
-effects on perception and belief change seen previously with
-scatterplots of the type featured in the alternative condition can be
-extended to change behaviour, then alternative scatterplots should
-elicit greater donations.
+of residual magnitude using equation 1. We chose to use three Pearson's
+\emph{r} values; 0.2, 0.5, and 0.8. If participants are engaging with
+the visualisations and using them to inform their donation decisions,
+then plots featuring higher \emph{r} values should attract greater
+proportions of donated money. If the effects on perception and belief
+change seen previously with scatterplots of the type featured in the
+alternative condition can be extended to change behaviour, then
+alternative scatterplots should elicit greater donations.
 
 Each scatterplot was positively correlated, and featured identical
 \(x\)-axis labels regarding donation amount. Each charity's \(y\)-axis
-label related to a realistic outcome variable relating to the particular
-charity category. Examples of standard and alternative scatterplots for
+label related to a realistic outcome variable for the particular charity
+category featured. Examples of standard and alternative scatterplots for
 each \emph{r} value used can be seen in
 Figure~\ref{fig-raw-example-plots}, while full charity template +
 scatterplot visualisation examples can be seen in Figure
@@ -808,17 +805,14 @@ Participants viewed all 108 experimental trials, along with 6 attention
 check trials, in a fully-randomised order. Our dependent variable was
 the amount of money participants assigned to the left and right charity
 infographics on a per-trial basis. The experiment, including all
-stimuli, materials, and instructions, are hosted on GitLab \footnote{The
-  pre-registration states that 150 participants would be recruited.
-  Additional participants were recruited due to an oversight, however
-  all conclusions and statistical results are identical when run with
-  164 or 150 participants.}.
+stimuli, materials, and instructions, are hosted on GitLab\footnote{removed
+  for anon.}.
 
 \subsection{Procedure}\label{sec-procedure}
 
 The experiment was built using PsychoPy \citep{peirce_2019} and is
 hosted on Pavlovia.org. Participants were instructed to only complete
-the experiment on desktop or laptop computers. Each participants first
+the experiment on desktop or laptop computers. Each participant first
 viewed the participant information sheet and provided consent by
 checking boxes next to consent statements. Consent was required in order
 to progress through the experiment. They were asked to provide their age
@@ -1227,42 +1221,62 @@ financial investment and high workloads -- outlays a charity may not be
 able to afford. The work presented here suggests that small changes in
 visual features is able to cause small changes in donation amounts.
 Extrapolated out to the £27.43 billion in income derived from donations
-and legacies that charities received in 2024, these small changes in
-donations could potentially result in large amounts of increased income
-for no additional outlay.
-
-\subsection{Future Work}\label{sec-future-work}
-
-\begin{itemize}
-\tightlist
-\item
-  testing the same visualisations/visualisations in general in a
-  real-life scenario, potentially by randomly varying webpages over a
-  long course of time
-\item
-  testing a mismatch between data visualisations and messaging, or
-  exploring the limits of the viz effect - i.e., to what extent are the
-  effects of the visual encoding still relevant when changing the
-  subject matter?
-\item
-  collecting qualitative data on people's thoughts and feelings about
-  alternative visual encodings
-\end{itemize}
+and legacies that charities received in 2024 \citep{gov_report}, these
+small changes in donations could potentially result in large amounts of
+increased income for no additional outlay.
 
 \subsection{Limitations}\label{limitations}
 
-\begin{itemize}
-\tightlist
-\item
-  could not use real charities
-\item
-  or real donations
-\item
-  entirely possible that people would behave differently with their own
-  money
-\end{itemize}
+The biggest limitation of the present study lies in whether or not
+participants acted as they would when choosing where to donate their own
+money. While we made efforts to lead participants to believe that their
+choices in the experiment would have real-world consequences (see
+Section \ref{sec-procedure}), it is impossible to know whether our
+findings would be replicated in a real-world donation scenario. Reaction
+times to different combinations of stimuli suggest that participants
+processed both the standard and alternative scatterplots similarly;
+regardless, the alternative scatterplots may elicit distrust or
+confusion in participants given their novel design.
+
+\subsection{Future Work}\label{sec-future-work}
+
+Before techniques such as those described in the present study can be
+used in the real world, future work must determine whether they are able
+to cause the same effects in a naturalistic setting. Testing this would
+require collaboration with an organisation seeking donations, such as a
+charity, and the implementation of an Online Controlled Experiment, such
+as a form of A/B testing \citep{kohavi_2023}. In such a scenario,
+donation amounts would be monitored while visitors to a website would be
+randomly presented with either standard or alternative scatterplots. Due
+to the difficulty in linking donations to advertisement/visualisation
+viewing, such a study would have to take place longitudinally.
+
+Due to the relative novelty of testing visualisations such as those
+described in this study, we elected to maintain congruence between the
+visualisations and the messaging in the infographics. Future work may
+wish to test to what extent the effect of visualisations persists when
+text-based messaging is in opposition to it.
+
+Finally, future work should explore people's thoughts and feelings about
+alternative visualisation types. There is no reason for this to be
+restricted to alternatively designed scatterplots, and there is a wide
+range of data visualisations that would be unfamiliar to the majority of
+laypeople. It may be that any advantages of unfamiliar visualisations is
+outweighed by feelings of distrust in them.
 
 \section{Conclusion}\label{sec-conclusion}
+
+In a fully-reproducible experiment, we investigated the effects of
+alternative scatterplot design on the propensity to donate money in an
+online forced-choice donation experiment. We collected a range of
+donation-relevant participant characteristics, and showed that while
+charity preference was able to explain most of the variation in donation
+amounts, the statistics communicated in scatterplots (correlation) and
+the visual character of those scatterplots were able to explain small
+amounts of variance. Our results suggest that alternative scatterplot
+encodings which have previously been shown to influence correlation
+perception and belief-updating can also have effects on behaviour, and
+should be further studied as a low-cost way of influencing behaviour.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{donation_behaviour.bib}
