@@ -1074,9 +1074,9 @@ change over the full range of Likert responses.
 
 With regards to charity rankings, the experimental model also explained 
 significantly more variance than the null ($\chi^2$(`r in_paren(rank_model.df)`) =
-`r printnum(rank_model.Chisq)`, *p* `r printp(rank_model.p, add_equals = TRUE)`)
+`r printnum(rank_model.Chisq)`, *p* `r printp(rank_model.p, add_equals = TRUE)`),
 driven by the fixed effect of charity rank. @fig-donation-lines-2 illustrates 
-how mean donation amounts change over the full range of Likert responses.
+how mean donation amounts change over the three charity rankings.
 
 ```{r}
 #| label: fig-donation-lines
@@ -1208,7 +1208,7 @@ of donation amounts for the two plot types.
 ```{r}
 #| label: tbl-descriptives-donation-by-plot-type
 #| include: true
-#| tbl-cap: "Means and standard deviations of donation amounts for \\textit{standard} and \\textit{alternative} plot types."
+#| tbl-cap: "Means and standard deviations of donation amounts for standard and alternative plot types."
 
 donation_behaviour_tidy_long %>%
   mutate(plot_type = factor(plot_type)) %>%
@@ -1263,7 +1263,7 @@ The effects of participants' charity preference, as measured by the Likert
 rating and charity ranking, are much more influential than those of
 correlation value or plot type. Both to explore this more fully and to 
 investigate any potential interactions between our fixed effects, we build 
-a model where donation ratio is predicted by all 4 dependent variables 
+a model where donation ratio is predicted by all four dependent variables 
 simultaneously. This model explains significantly more variance than a null
 model with no fixed effects ($\chi^2$(`r in_paren(interactions_model.df)`) 
 = `r printnum(interactions_model.Chisq)`, *p*
@@ -1277,7 +1277,7 @@ interaction further in @fig-likert-rank-interactions.
 ```{r}
 #| label: fig-likert-rank-interactions
 #| include: true
-#| fig-cap: Mean donation amounts plotted separately for each charity rank.
+#| fig-cap: Mean donation amounts plotted for each charity rank and Likert rating.
 #| fig-env: "figure*"
 #| fig-asp: 0.6
 
@@ -1433,7 +1433,7 @@ by the vertical distance between the trend lines.
 ```{r}
 #| label: fig-donation-histos
 #| include: true
-#| fig-cap: "Histograms for of donation decisions for each charity rank and Likert rating. Note the distributions in each case, including the very small number of donation decisions for the charity rank 1 $\\times$ Likert rating 4 combination."
+#| fig-cap: "Histograms of donation decision counts for each charity rank and Likert rating. Note the distributions in each case, including the very small number of donation decisions for the charity rank 1 $\\times$ Likert rating 4 combination."
 #| fig-env: "figure*"
 #| fig-asp: 0.6
 
@@ -1531,13 +1531,13 @@ and the specific point opacity and size encodings utilised.
 ## Implications for the Design of Effective Advertising Campaigns
 
 Previous work highlights the myriad attributes which may
-predict people's donations to charitable causes [@neumayr_1997; @bekkers_2011;
+predict people's donations to charitable causes [@neumayr_2019; @bekkers_2011;
 @breeze_2013; @berman_2018; @macaskill_2019], and the results of the present
 study show that most variation in donations can be accounted for by preference
 for or against particular charitable concerns. Targeted advertising [@iyer_2005]
 is able to address some of these concerns, but necessarily requires a greater financial
 investment and high workloads -- outlays a charity may not be able to afford.
-The work presented here suggests that small changes in visual features is able to
+The work presented here suggests that small changes in visual features are able to
 cause small changes in donation amounts. Extrapolated out to the \£27.43 billion
 in income derived from donations and legacies that charities received in 2024 [@gov_report], these
 small changes in donations could potentially result in large amounts of increased
@@ -1552,7 +1552,7 @@ real-world consequences (see Section \ref{sec-procedure}), it is impossible to
 know whether our findings would be replicated in a real-world donation scenario.
 Reaction times to different combinations of stimuli suggest that participants processed
 both the standard and alternative scatterplots similarly; regardless, the alternative
-scatterplots may elicit distrust or confusion in participants given their novel
+scatterplots may have elicited distrust or confusion in participants given their novel
 design.
 
 ## Future Work {#sec-future-work}
