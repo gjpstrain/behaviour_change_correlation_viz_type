@@ -1,0 +1,24 @@
+Table 1: "The three chosen charity categories are shown along the first row. Below each is the three candidate fictional charities. The final chosen charity is highlighted in each case using bold type and an asterisk."
+
+Figure 1: "Charity templates for the three chosen fictional charities. Each features a blank central area into which a data visualisation (scatterplot) can be inserted. On the far left is the "Great British Dog Foundation" charity. Below the title, the tagline "5000+ dog lives impacted" can be seen. Below the plotting area, the text "Create an impact. Donate Today." and "www.gbdf.org.uk" can be seen. In the centre is the template for the "Action for a Greener World" charity. Below the title there is the following text: "There is no Planet B. Help protect our environment now". Below the plotting area is the following: "www.gw-action.org.uk" and "27, Anson Rd, Manchester M14 5BJ". On the right is "Good Samaritans" charity. Below the title reads "Break the silence, start the conversation". Below the plotting area reads "Reach out today at www.helpline.tgs.co.uk".
+
+Figure 2: "Two rows of three scatterplots each are shown. The leftmost column features and r value of 0.2, the middle an r value of 0.5, and the right an r value of 0.8. The top row is labelled "Alternative Pots", and features plots whose points decrease in size and opacity as a function of residual distance. The bottom row is labelled "Standard Plots", and features standard scatterplots with conventional point opacities and sizes."
+
+Figure 3: "An example of an experimental trial. The letters A to E are used to illustrate the different parts of the trial screen, including the text reminders, total count, trial counter, stimuli, and donation amount boxes."
+
+Figure 4: "A pair of plots. On the left is mean donation amounts plotted by Likert rating. The y axis shows mean donation amounts between 20 and 60, while the x axis shows Likert ratings 1 to 7. Donation amounts increase mostly linearly with Likert rating. The plot on the right has the same y axis, but instead shows charity ranks on the x axis. Again, donation amounts increase linearly from rank 3 to rank 1."
+
+Table 2: "Means and SDs for each correlation value."
+
+Table 3: "Means and SDs for standard and alternative scatterplot types."
+
+Figure 5: "A line graph showing mean donation amounts for each Likert rating. Three lines are plotted, one for each of the three charity ranks. In red, the 1st charity rank line. This line starts around mean donation amount = 60 and Likert rating 3. It goes to a peak at Likert rating 4, then drops back down before ending around mean donation amount 63 at Likert rating 7. Next, a blue line for charity rank 2. This line starts around mean donation amount 55 and Likert rating 2. It drops slightly at Likert rating 3, before slowly rising to a mean donation amount of around 55 for Likert rating 7. Finally, a green line for charity rank 3. It begins around mean donation amount = 17 and Likert rating one, and slowly rises to a mean donation amount of around 40 by Likert rating 7."
+
+Table 4: "Marginal effects for the large interaction model are shown in this table."
+
+Table 5: "Reaction time statistics for different combinations of stimuli."
+
+Figure 6: "Histograms of donation decision counts for each charity Likert rating and rank, similarly to Figure 5. The colour schema is the same. An annotation is used to show that for charity rank 1 / Likert rating 4, only 360 donation decisions were observed. Charity ranks 2 and 3 feature nearly normal distributions, whereas for charity rank 1, donation decisions rise linearly with Likert rating."
+
+
+

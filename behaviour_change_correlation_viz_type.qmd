@@ -130,7 +130,7 @@ acm-metadata:
     - crowdsourced
   
 abstract: |
-  Data visualisation represented an untapped resource with regards to changing behaviour. Small changes in the visual character of scatterplots has been shown to affect perceptions of correlation and the extent to which people update their beliefs. Here, we test whether these changes can penetrate cognition to change the ways people behaviour. In a fully-reproducible study, we demonstrate that scatterplots optimised for correlation perception can also drive behaviour in an charitable donation paradigm. We discuss the implications of our findings for the use of data visualisations in advertising, and suggest future work with regards to behaviour change after visualisation viewing.
+  Data visualisation represents an untapped resource with regards to changing behaviour. Small changes in the visual character of scatterplots has been shown to affect perceptions of correlation and the extent to which people update their beliefs. Here, we test whether these changes can influence cognition to change the ways people behaviour. In a fully-reproducible study, we demonstrate that scatterplots optimised for correlation perception can also drive behaviour in an charitable donation paradigm. We discuss the implications of our findings for the use of data visualisations in advertising, and suggest future work with regards to behaviour change after visualisation viewing.
 ---
 
 ```{r}
@@ -503,8 +503,8 @@ change [@strain_2025]. In addition to providing new options to designers who
 wish to highlight different visualisation features, studies such as these can 
 provide insight into how data concepts are interpreted more generally.
 
-Testing whether visualisation modifications such as these are able to reach 
-past cognition to affect what people actually do is a much harder problem to 
+Testing whether visualisation modifications such as these are able to affect not
+only cognition, but also subsequent behaviour is a much harder problem to 
 solve. To this end, we present a single, crowdsourced, online experiment 
 that situates novel scatterplot visualisation techniques in charity
 infographics. We use a forced donation task, whereby participants must share 
@@ -546,7 +546,7 @@ truncation [@bradley_2025; @mckinley_2026], and line characteristics affect
 judgements of global means in line charts [@moritz_2023].
 
 There is also a body of literature that provides evidence that perceptual 
-effects may penetrate and influence cognition.
+effects may influence cognition.
 Scatterplots featuring points with varying opacities and sizes can affect the 
 levels to which viewers update their beliefs [@strain_2025], risk information
 presented graphically can increase stated risk-avoidant behaviour 
@@ -576,11 +576,8 @@ necessarily difficult; lab or online testing may fail to induce enough of
 a sense of realism to extract actual behaviour, while longitudinal testing 
 is difficult and expensive to carry out. In the present study, we use a 
 deception technique to elicit participants' real behavioural 
-intentions.
-
-<!-- however we acknowledge that this may not be actually reflective  -->
-<!-- and propose future work to further test interventions of this kind in Section  -->
-<!-- \ref{sec-future-work}. -->
+intentions, which have been shown to be a moderate predictor of actual behaviour
+[@webb_2006; conner_2022].
 
 ## Donation Behaviour {#sec-donation-behaviour}
 
@@ -805,19 +802,19 @@ stimulus.
   \centering
     \begin{subfigure}[t]{0.3\textwidth}
       \includegraphics[width=\linewidth]{stimuli/charity_templates/dog_rescue.png}
-      \caption{Dog Rescue and Re-housing Charity}
+      \caption{Dog Rescue and Re-housing Charity.}
     \end{subfigure}
 \hfill
     \begin{subfigure}[t]{0.3\textwidth}
       \includegraphics[width=\linewidth]{stimuli/charity_templates/greener_world.png}
-      \caption{Environmental Protection Charity}
+      \caption{Environmental Protection Charity.}
     \end{subfigure}
 \hfill
     \begin{subfigure}[t]{0.3\textwidth}
       \includegraphics[width=\linewidth]{stimuli/charity_templates/samaritans.png}
-      \caption{Mental Health Helpline Charity}
+      \caption{Mental Health Helpline Charity.}
     \end{subfigure}
-  \caption{Charity templates based on the three selected fictional charities}
+  \caption{Charity templates based on the three selected fictional charities.}
   \label{fig-templates}
 \end{figure*}
 ```
@@ -1061,6 +1058,7 @@ account all fixed effects and the potential interactions between them. This mode
 provides more conservative estimates; we therefore use the `marginaleffects`
 package [@arel-bundock_2024] with this model to calculate marginal effects over 
 the full ranges of each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
+A summary of hypotheses and 
 
 To test the first hypothesis, that participants will donate greater proportions 
 of money to charities that they prefer, we built a pair of models whereby the 
