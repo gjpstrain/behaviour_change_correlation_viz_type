@@ -21,7 +21,7 @@ execute:
   message: false
   include: false
 bibliography: donation_behaviour.bib
-title: Donation Behaviour in an Online Visualisation Experiment
+title: Using Data Visualisation to Influence Donation Behaviour
 # if short-title is defined, then it's used
 # short-title: 
 author:
@@ -577,7 +577,7 @@ a sense of realism to extract actual behaviour, while longitudinal testing
 is difficult and expensive to carry out. In the present study, we use a 
 deception technique to elicit participants' real behavioural 
 intentions, which have been shown to be a moderate predictor of actual behaviour
-[@webb_2006; conner_2022].
+[@webb_2006; @conner_2022].
 
 ## Donation Behaviour {#sec-donation-behaviour}
 
@@ -1058,7 +1058,18 @@ account all fixed effects and the potential interactions between them. This mode
 provides more conservative estimates; we therefore use the `marginaleffects`
 package [@arel-bundock_2024] with this model to calculate marginal effects over 
 the full ranges of each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
-A summary of hypotheses and 
+All hypotheses received support; each is provided below.
+
+```{=latex}
+
+\definecolor{nicegreen}{HTML}{3EB489}
+
+\hspace{0pt}
+\begin{tcolorbox}[colback=nicegreen, colframe=gray!50, boxrule=0.5pt]
+  H\textsubscript{1}: participants will donate more money to charities that they prefer, as tested by Likert scales and a charity ranking.
+\end{tcolorbox}
+\hspace{0pt}
+```
 
 To test the first hypothesis, that participants will donate greater proportions 
 of money to charities that they prefer, we built a pair of models whereby the 
@@ -1141,6 +1152,18 @@ correlation_comp_model <- comparison(correlation_model)
 anova_results(correlation_model, correlation_comp_model)
 ```
 
+```{=latex}
+
+\definecolor{nicegreen}{HTML}{3EB489}
+
+\hspace{0pt}
+\begin{tcolorbox}[colback=nicegreen, colframe=gray!50, boxrule=0.5pt]
+  H\textsubscript{2}: participants will donate more money to charities whose infographics feature scatterplots with higher \textit{r} values.
+\end{tcolorbox}
+\hspace{0pt}
+```
+
+
 To investigate the second hypothesis, that participants will donate more money 
 to charity infographics that feature scatterplots with higher *r* values, we built a model where 
 the donation ratio is predicted by the difference in *r* value between the two 
@@ -1194,14 +1217,30 @@ plot_type_comp_model <- comparison(plot_type_model)
 anova_results(plot_type_model, plot_type_comp_model)
 ```
 
+```{=latex}
+
+\definecolor{nicegreen}{HTML}{3EB489}
+
+\hspace{0pt}
+\begin{tcolorbox}[colback=nicegreen, colframe=gray!50, boxrule=0.5pt]
+  H\textsubscript{3}: participants' donation amounts will be affected (non-directionally) by the type (standard or alternative) of scatterplot displayed.
+\end{tcolorbox}
+\hspace{0pt}
+```
+
 Finally, to investigate the third hypothesis, that participants' donation 
 amounts would be affected by the type of scatterplot used in the infographics 
 (standard or alternative), we built a model where donation ratio is 
 predicted by the type of plot used. The experimental model explained 
 significantly more variance when compared to a null model without the fixed 
 effect of plot type ($\chi^2$(`r in_paren(plot_type_model.df)`) = 
-`r printnum(plot_type_model.Chisq)`, *p* `r printp(plot_type_model.p, add_equals = TRUE)`). @tbl-descriptives-donation-by-plot-type shows means and standard deviations
-of donation amounts for the two plot types.
+`r printnum(plot_type_model.Chisq)`, *p* `r printp(plot_type_model.p, add_equals = TRUE)`). 
+@tbl-descriptives-donation-by-plot-type shows means and standard deviations
+of donation amounts for the two plot types, with participants donating significantly
+more to charities represented by infographics that used alternative scatterplots. 
+Despite only explaining a small amount of the variance in donations, this finding
+has significant implications for the design of data visualisations that are intending
+to drive behaviour change.
 
 ```{r}
 #| label: tbl-descriptives-donation-by-plot-type
@@ -1374,8 +1413,7 @@ cat(x)
 # Discussion {#sec-discussions}
 
 All three hypotheses were supported in this experiment. Participants' donation
-decisions were significantly affected by their thoughts and feelings about
-the charitable concerns, by the correlation displayed in each infographic, and
+decisions were significantly affected by their subjective views of the importance of the charitable concerns, by the correlation displayed in each infographic, and
 by the type of scatterplot employed. These results add to evidence that preference
 is the strongest predictor of donation [@breeze_2013; @berman_2018; @macaskill_2019],
 and the finding that higher *r* values in plots increased donation amounts
@@ -1396,7 +1434,7 @@ a view to full implementation.
 
 In line with previous work [@breeze_2013; @berman_2018], participants gave a 
 significantly greater proportion of money to charities that they preferred, as 
-measured by Likert scales and a charity rank (see @fig-donation-lines). This finding was in opposition to
+measured by Likert scales and a charity rank (see @fig-donation-lines). This finding is in opposition to
 that of She and Sanfey [@she_2023], from whom the charity categories, Likert rating,
 and ranking were taken. In their study, participants were asked to play a binary choice
 dictator game in which they could also assign money to themselves. As our primary
@@ -1425,7 +1463,7 @@ this. When a charity is ranked 2^nd^ or 3^rd^, the distribution of donation deci
 approaches normal, albeit with different central tendencies. However, when a charity
 is ranked 1^st^, the distribution climbs to a peak at the top rating on the 
 Likert scale. The peak at Likert rating 4 $\times$ 1^st^ charity rank is actually driven
-by a very small number of responses, meaning the interaction is most likely driven
+by a very small number of high-value donation responses, meaning the interaction is most likely driven
 by the vertical distance between the trend lines.
 
 ```{r}
@@ -1584,7 +1622,7 @@ scatterplot design on the propensity to donate money in an online forced-choice
 donation experiment. We collected a range of donation-relevant participant characteristics,
 and showed that while charity preference was able to explain most of the variation
 in donation amounts, the statistics communicated in scatterplots (correlation) and
-the visual character of those scatterplots were able to explain small amounts of
+the visual character of those scatterplots were able to explain small but meaningful amounts of
 variance. Our results suggest that alternative scatterplot encodings which have
 previously been shown to influence correlation perception and belief-updating can
 also have effects on behaviour, and should be further studied as a low-cost way of
