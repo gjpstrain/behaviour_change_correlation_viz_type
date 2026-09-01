@@ -78,7 +78,7 @@ acm-metadata:
   # comment this out to build a draft version
   final: true
   # comment this out to specify detailed document options
-  acmart-options: sigconf
+  acmart-options: anonymous, review
   # acm preamble information
   copyright-year: 2027
   acm-year: 2027
@@ -130,7 +130,9 @@ acm-metadata:
     - crowdsourced
   
 abstract: |
-  Data visualisation represents an untapped resource with regards to changing behaviour. Small changes in the visual character of scatterplots has been shown to affect perceptions of correlation and the extent to which people update their beliefs. Here, we test whether these changes can influence cognition to change the ways people behaviour. In a fully-reproducible study, we demonstrate that scatterplots optimised for correlation perception can also drive behaviour in an charitable donation paradigm. We discuss the implications of our findings for the use of data visualisations in advertising, and suggest future work with regards to behaviour change after visualisation viewing.
+  This paper examines whether optimising scatterplots to support correlation perception can influence financial decision-making. Previous research has shown that relatively small changes in the visual design of scatterplots can affect perceived correlation and the extent to which people update their beliefs. Here we test whether such perceptual effects extend beyond cognition to influence subsequent behaviour.
+
+  In a fully reproducible study using a charitable donation paradigm, we show that scatterplots optimised for correlation perception also influence behavioural outcomes. These findings indicate that visual design choices have practical consequences for domains in which data visualisations are used to inform judgement, persuasion, and decision-making. We discuss the implications for the use of data visualisations in advertising and identify future directions for research on behaviour change following exposure to visual information.
 ---
 
 ```{r}
