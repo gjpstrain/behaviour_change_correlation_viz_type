@@ -1171,7 +1171,6 @@ anova_results(correlation_model, correlation_comp_model)
 \hspace{0pt}
 ```
 
-
 To investigate the second hypothesis, that participants will donate more money 
 to charity infographics that feature scatterplots with higher *r* values, we built a model where 
 the donation ratio is predicted by the difference in *r* value between the two 
@@ -1322,7 +1321,7 @@ interaction further in @fig-likert-rank-interactions.
 ```{r}
 #| label: fig-likert-rank-interactions
 #| include: true
-#| fig-cap: Mean donation amounts plotted for each charity rank and Likert rating.
+#| fig-cap: "Mean donation amounts plotted for each charity rank and Likert rating. Note the peak in donation amount at charity rank 1 $\\times$ Likert rating 4."
 #| fig-env: "figure*"
 #| fig-asp: 0.6
 
