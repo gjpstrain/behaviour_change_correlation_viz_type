@@ -834,7 +834,13 @@ viewers of scatterplots contextualised as part of news items [@strain_2025] when
 compared to traditional plots. To test whether such effects can be extended to
 change behaviours, we use the same technique here. In the alternative scatterplot
 condition, point opacity and size is reduced as a function of residual magnitude 
-using equation 1. We chose to use three Pearson's *r* values; 0.2, 0.5, and 0.8. If participants 
+using equation 1. To facilitate comparison to previous work also examining
+alternatively designed scatterplots [@strain_2023; @strain_2023a; @strain_2024; @strain_2025],
+we elect to use the same scatterplot
+generation protocol in the present study. This includes the number of scatterplot
+points (n = 128), the value of *b* chosen for equation 1 (0.25), and the size scaling
+factor and opacity floor used to increase point visibility.
+We chose to use three Pearson's *r* values; 0.2, 0.5, and 0.8. If participants 
 are engaging with the visualisations and using them to inform their donation
 decisions, then plots featuring higher *r* values should attract greater 
 proportions of donated money. If the effects on perception and belief change 
