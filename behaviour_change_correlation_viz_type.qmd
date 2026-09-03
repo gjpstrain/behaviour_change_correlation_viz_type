@@ -130,7 +130,7 @@ acm-metadata:
     - crowdsourced
   
 abstract: |
-  This paper examines whether optimising scatterplots to support correlation perception can influence financial decision-making. Previous research has shown that relatively small changes in the visual design of scatterplots can affect perceived correlation and the extent to which people update their beliefs. Here we test whether such perceptual effects extend beyond cognition to influence subsequent behaviour.
+  This paper examines whether optimising scatterplots to support correlation perception can influence financial decision-making. Previous research has shown that relatively small changes in the visual design of scatterplots can affect perceived correlation and the extent to which people update their beliefs. Here we test whether such perceptual effects not only impact beliefs, but are also able to influence subsequent behaviours.
 
   In a fully reproducible study using a charitable donation paradigm, we show that scatterplots optimised for correlation perception also influence behavioural outcomes. These findings indicate that visual design choices have practical consequences for domains in which data visualisations are used to inform judgement, persuasion, and decision-making. We discuss the implications for the use of data visualisations in advertising and identify future directions for research on behaviour change following exposure to visual information.
 ---
@@ -476,8 +476,8 @@ anova_results <- function(model, cmpr_model) {
 
 Can data visualisation be used to change the ways people behave?
 Far from being solely used by academics and professionals, data visualisations
-are now an everyday part of many people's lives. From health visualisations
-during the COVID-19 pandemic, to visualisations illustrating statistics in live 
+are now an everyday part of many people's lives. From visualisations of health
+data during the COVID-19 pandemic, to those illustrating statistics in live 
 sports reporting, the ability of data visualisation to scaffold understanding 
 of numerical data has led to widespread adoption across scientific and health 
 communication, news media, and policy making. Traditionally, data visualisation 
@@ -506,7 +506,7 @@ wish to highlight different visualisation features, studies such as these can
 provide insight into how data concepts are interpreted more generally.
 
 Testing whether visualisation modifications such as these are able to affect not
-only cognition, but also subsequent behaviour is a much harder problem to 
+only how we perceive data, but also our subsequent actions is a much harder problem to 
 solve. To this end, we present a single, crowdsourced, online experiment 
 that situates novel scatterplot visualisation techniques in charity
 infographics. We use a forced donation task, whereby participants must share 
@@ -641,7 +641,8 @@ where participants are asked to provide a numerical estimate of correlation
 [@strahan_1978; @bobko_1979; @cleveland_1982; @lane_1985; @lauer_1989; 
 @collyer_1990; @meyer_1992], and in those asking participants to estimate
 correlation via a bisection task [@rensink_2017]. The underestimation is 
-particularly pronounced for 0.2 < *r* < 0.6.
+particularly pronounced for bivariate data with Pearson's *r* in the range 
+0.2 < *r* < 0.6.
 
 Partially inspired by evidence that estimates of means can be biased by 
 changing the opacities and sizes of scatterplot points [@hong_2022], recent work aiming 
@@ -662,7 +663,7 @@ row of @fig-raw-example-plots. In addition to being able to manipulate estimates
 of correlation, there is also evidence that the same technique can change the 
 extent to which participants update their beliefs about the levels of
 relatedness between a pair of variables [@strain_2025]. While the perceptual
-and cognitive effects of scatterplot visualisation techniques such as these have
+and effects on belief of scatterplot visualisation techniques such as these have
 been demonstrated, it remains to be seen whether they can additionally affect behavioural intention.
 
 # Hypotheses {#sec-hypotheses}
@@ -1098,7 +1099,7 @@ how mean donation amounts change over the three charity rankings.
 ```{r}
 #| label: fig-donation-lines
 #| include: true
-#| fig-cap: "Mean donation amounts plotted by (a) Likert ratings, averaged across each charity rank, and (b) charity rank, averaged across all Likert ratings. In line with H\\textsubscript{1}, donation amounts increase with participants' ratings of charity importance and as participants rank charities more highly."
+#| fig-cap: "Mean donation amounts plotted by (a) Likert ratings, averaged across each charity rank, and (b) charity rank, averaged across all Likert ratings. 95\\% Confidence Intervals are included as error bars. In line with H\\textsubscript{1}, donation amounts increase with participants' ratings of charity importance and as participants rank charities more highly."
 #| fig-subcap:
 #|   - "Mean donation amounts plotted by Likert ratings."
 #|   - "Mean donation amounts plotted by charity rank."
@@ -1107,9 +1108,13 @@ how mean donation amounts change over the three charity rankings.
 
 donation_behaviour_tidy_long %>%
   group_by(charity_likert) %>%
-  summarise(mean_amount = mean(amount, na.mr = TRUE), .groups = "drop") %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            ci_amount = 1.96 * sd(amount, na.rm = TRUE) / sqrt(sum(!is.na(amount))),
+            .groups = "drop") %>%
   ggplot(aes(x = charity_likert, y = mean_amount)) +
   geom_line(group = 1) +
+  geom_errorbar(aes(ymin = mean_amount - ci_amount, ymax = mean_amount + ci_amount),
+                width = 0) +
   theme_ggdist() +
   theme(axis.text = element_markdown(size = 15),
         axis.title = element_markdown(size = 17)) +
@@ -1118,13 +1123,17 @@ donation_behaviour_tidy_long %>%
 
 donation_behaviour_tidy_long %>%
   group_by(charity_rank) %>%
-  summarise(mean_amount = mean(amount, na.mr = TRUE), .groups = "drop") %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            ci_amount = 1.96 * sd(amount, na.rm = TRUE) / sqrt(sum(!is.na(amount))),
+            .groups = "drop") %>%
   mutate(charity_rank = recode(charity_rank,
                                "1" = "1^st^",
                                "2" = "2^nd^",
                                "3" = "3^rd^")) %>%
   ggplot(aes(x = charity_rank, y = mean_amount)) +
   geom_line(group = 1) +
+  geom_errorbar(aes(ymin = mean_amount - ci_amount, ymax = mean_amount + ci_amount),
+                width = 0) +
   theme_ggdist() +
   theme(axis.text = element_markdown(size = 15),
         axis.title = element_markdown(size = 17)) +
@@ -1321,13 +1330,15 @@ interaction further in @fig-likert-rank-interactions.
 ```{r}
 #| label: fig-likert-rank-interactions
 #| include: true
-#| fig-cap: "Mean donation amounts plotted for each charity rank and Likert rating. Note the peak in donation amount at charity rank 1 $\\times$ Likert rating 4."
+#| fig-cap: "Mean donation amounts plotted for each charity rank and Likert rating. 95\\% Confidence Intervals are included as error bars. Note the peak in donation amount at charity rank 1 $\\times$ Likert rating 4."
 #| fig-env: "figure*"
 #| fig-asp: 0.6
 
 donation_behaviour_tidy_long %>%
   group_by(charity_rank, charity_likert) %>%
-  summarise(mean_amount = mean(amount, na.rm = TRUE), .groups = "drop") %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            ci_amount = 1.96 * sd(amount, na.rm = TRUE) / sqrt(sum(!is.na(amount))),
+            .groups = "drop") %>%
   complete(charity_rank, charity_likert, fill = list(mean_amount = NA)) %>%
   mutate(charity_rank = factor(charity_rank, levels = 1:3)) %>%
     mutate(charity_rank = recode(charity_rank,
@@ -1336,7 +1347,9 @@ donation_behaviour_tidy_long %>%
                                "3" = "3^rd^")) %>%
   ggplot(aes(x = charity_likert, y = mean_amount, colour = charity_rank, group = charity_rank)) +
   geom_line(linewidth = 1) +
-  geom_point(size = 2) +
+  #geom_point(size = 2) +
+  geom_errorbar(aes(ymin = mean_amount - ci_amount, ymax = mean_amount + ci_amount),
+                width = 0) +
   scale_colour_brewer(palette = "Set1", name = "Charity Rank") +
   scale_x_discrete(limits = as.character(1:7)) +
   labs(x = "Charity Likert Rating", y = "Mean Donation Amount") +
@@ -1558,7 +1571,7 @@ they were making their donation decisions.
 As in previous work examining the effects of alternative scatterplot design on
 belief updating [@strain_2025], we found significant differences in donation 
 amounts between standard and alternative scatterplots. Again, this finding 
-suggests that visual features in scatterplots are cognitively integrated into
+suggests that visual features in scatterplots are integrated into
 participants' donation decisions. Examining the mean reaction times for different
 types of trial in @tbl-RT-by-trial, we can see that reaction times are consistent
 across trial types, including when two alternative scatterplots were presented,
@@ -1632,7 +1645,7 @@ in donation amounts, the statistics communicated in scatterplots (correlation) a
 the visual character of those scatterplots were able to explain small but meaningful amounts of
 variance. Our results suggest that alternative scatterplot encodings which have
 previously been shown to influence correlation perception and belief-updating can
-also have effects on behaviour, and should be further studied as a low-cost way of
+also have effects on financial choices, and should be further studied as a low-cost way of
 influencing behaviour.
 
 # References {.unnumbered}

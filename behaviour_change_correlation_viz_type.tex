@@ -322,7 +322,8 @@ correlation perception can influence financial decision-making. Previous
 research has shown that relatively small changes in the visual design of
 scatterplots can affect perceived correlation and the extent to which
 people update their beliefs. Here we test whether such perceptual
-effects extend beyond cognition to influence subsequent behaviour.
+effects not only impact beliefs, but are also able to influence
+subsequent behaviours.
 
 In a fully reproducible study using a charitable donation paradigm, we
 show that scatterplots optimised for correlation perception also
@@ -387,7 +388,7 @@ information.
 Can data visualisation be used to change the ways people behave? Far
 from being solely used by academics and professionals, data
 visualisations are now an everyday part of many people's lives. From
-health visualisations during the COVID-19 pandemic, to visualisations
+visualisations of health data during the COVID-19 pandemic, to those
 illustrating statistics in live sports reporting, the ability of data
 visualisation to scaffold understanding of numerical data has led to
 widespread adoption across scientific and health communication, news
@@ -420,17 +421,17 @@ different visualisation features, studies such as these can provide
 insight into how data concepts are interpreted more generally.
 
 Testing whether visualisation modifications such as these are able to
-affect not only cognition, but also subsequent behaviour is a much
-harder problem to solve. To this end, we present a single, crowdsourced,
-online experiment that situates novel scatterplot visualisation
-techniques in charity infographics. We use a forced donation task,
-whereby participants must share money between charities represented by
-infographics including standard and alternatively-designed scatterplots,
-and collect and analyse participants' charity preferences. We build a
-range of models to show that while preference for charitable concerns is
-responsible for most of the variance in donation behaviour, both the
-data displayed in the plot and the alternative scatterplot point
-encoding have significant effects.
+affect not only how we perceive data, but also our subsequent actions is
+a much harder problem to solve. To this end, we present a single,
+crowdsourced, online experiment that situates novel scatterplot
+visualisation techniques in charity infographics. We use a forced
+donation task, whereby participants must share money between charities
+represented by infographics including standard and
+alternatively-designed scatterplots, and collect and analyse
+participants' charity preferences. We build a range of models to show
+that while preference for charitable concerns is responsible for most of
+the variance in donation behaviour, both the data displayed in the plot
+and the alternative scatterplot point encoding have significant effects.
 
 \section{Related Work}\label{sec-related-work}
 
@@ -570,7 +571,8 @@ to provide a numerical estimate of correlation
 \citep{strahan_1978, bobko_1979, cleveland_1982, lane_1985, lauer_1989, collyer_1990, meyer_1992},
 and in those asking participants to estimate correlation via a bisection
 task \citep{rensink_2017}. The underestimation is particularly
-pronounced for 0.2 \textless{} \emph{r} \textless{} 0.6.
+pronounced for bivariate data with Pearson's \emph{r} in the range 0.2
+\textless{} \emph{r} \textless{} 0.6.
 
 Partially inspired by evidence that estimates of means can be biased by
 changing the opacities and sizes of scatterplot points
@@ -592,7 +594,7 @@ top row of Figure~\ref{fig-raw-example-plots}. In addition to being able
 to manipulate estimates of correlation, there is also evidence that the
 same technique can change the extent to which participants update their
 beliefs about the levels of relatedness between a pair of variables
-\citep{strain_2025}. While the perceptual and cognitive effects of
+\citep{strain_2025}. While the perceptual and effects on belief of
 scatterplot visualisation techniques such as these have been
 demonstrated, it remains to be seen whether they can additionally affect
 behavioural intention.
@@ -980,9 +982,10 @@ charity rank.}
 
 \caption{\label{fig-donation-lines}Mean donation amounts plotted by (a)
 Likert ratings, averaged across each charity rank, and (b) charity rank,
-averaged across all Likert ratings. In line with H\textsubscript{1},
-donation amounts increase with participants' ratings of charity
-importance and as participants rank charities more highly.}
+averaged across all Likert ratings. 95\% Confidence Intervals are
+included as error bars. In line with H\textsubscript{1}, donation
+amounts increase with participants' ratings of charity importance and as
+participants rank charities more highly.}
 
 \end{figure*}%
 
@@ -1099,8 +1102,9 @@ Figure~\ref{fig-likert-rank-interactions}.
 }
 
 \caption{\label{fig-likert-rank-interactions}Mean donation amounts
-plotted for each charity rank and Likert rating. Note the peak in
-donation amount at charity rank 1 \(\times\) Likert rating 4.}
+plotted for each charity rank and Likert rating. 95\% Confidence
+Intervals are included as error bars. Note the peak in donation amount
+at charity rank 1 \(\times\) Likert rating 4.}
 
 \end{figure*}%
 
@@ -1245,9 +1249,9 @@ As in previous work examining the effects of alternative scatterplot
 design on belief updating \citep{strain_2025}, we found significant
 differences in donation amounts between standard and alternative
 scatterplots. Again, this finding suggests that visual features in
-scatterplots are cognitively integrated into participants' donation
-decisions. Examining the mean reaction times for different types of
-trial in Table~\ref{tbl-RT-by-trial}, we can see that reaction times are
+scatterplots are integrated into participants' donation decisions.
+Examining the mean reaction times for different types of trial in
+Table~\ref{tbl-RT-by-trial}, we can see that reaction times are
 consistent across trial types, including when two alternative
 scatterplots were presented, when two standard scatterplots were
 presented, and when two different types were presented. With regards to
@@ -1329,7 +1333,7 @@ the visual character of those scatterplots were able to explain small
 but meaningful amounts of variance. Our results suggest that alternative
 scatterplot encodings which have previously been shown to influence
 correlation perception and belief-updating can also have effects on
-behaviour, and should be further studied as a low-cost way of
+financial choices, and should be further studied as a low-cost way of
 influencing behaviour.
 
 \bibliographystyle{ACM-Reference-Format}
