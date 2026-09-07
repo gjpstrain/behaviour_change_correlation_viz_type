@@ -628,7 +628,7 @@ that charity preference had no effect on donation amounts in an online
 dictator game-style study. The disagreement here motivated the collection 
 of charity preference ratings and rankings in the present study.
 
-## Correlation Perception & Modified Scatterplots {#sec-corr-percept}
+## Correlation Perception and Modified Scatterplots {#sec-corr-percept}
 
 In addition to testing whether data visualisation can influence donation 
 decisions, we also aim to test a recently developed scatterplot 
@@ -721,7 +721,7 @@ each trial also featured two linked responses. For modelling purposes,
 each pair of linked responses was reduced to a donation ratio between the
 left and right infographics. This ratio, in range $[0,1]$ exists on a 
 beta distribution. In its standard form, beta regression cannot handle values 
-of precisely 0 or 1 [@ferrari_2004]. Smithson & Verkuilen [@smithson_2006]
+of precisely 0 or 1 [@ferrari_2004]. Smithson and Verkuilen [@smithson_2006]
 proposed transforming values at the boundary of the distribution to force 
 it into $(0,1)$. This method has faced criticism for actively distorting the 
 data, so we instead chose to use Kubinec's ordered beta regression 
@@ -738,7 +738,7 @@ Three charitable concerns were chosen for the experiment. Initially, we
 intended to use the five charitable concerns provided in She and Sanfey,
 2023 [@she_2023]. These were:
 
-1.  Dog Rescue/Re-housing.
+1.  Dog Rescue and Re-housing.
 2.  Environmental Protection.
 3.  Mental Health Helpline.
 4.  Education in Disadvantaged Communities.
@@ -839,7 +839,7 @@ using equation 1. To facilitate comparison to previous work also examining
 alternatively designed scatterplots [@strain_2023; @strain_2023a; @strain_2024; @strain_2025],
 we elect to use the same scatterplot
 generation protocol in the present study. This includes the number of scatterplot
-points (n = 128), the value of *b* chosen for equation 1 (0.25), and the size scaling
+points (n = 128), and the size scaling
 factor and opacity floor used to increase point visibility.
 We chose to use three Pearson's *r* values; 0.2, 0.5, and 0.8. If participants 
 are engaging with the visualisations and using them to inform their donation
@@ -937,7 +937,7 @@ gender identity. Using Likert scales, participants were then asked to
 indicate how important the three chosen charitable concerns were to them
 (Dog Rescue and Re-Housing, Environmental Protection, and Mental Health 
 Helpline). Each Likert scale featured seven points, and was anchored at
-points 1 and 7 with "Not at all important" and "Extremely important". 
+points 1 and 7 with "Not at all important" and "Extremely important" labels. 
 Participants then used a drag-and-drop interface to rank the three 
 charitable concerns. Following the pre-experimental tests, participants
 were then asked to complete eight rounds of the Remote Associated Test 
@@ -1067,7 +1067,12 @@ account all fixed effects and the potential interactions between them. This mode
 provides more conservative estimates; we therefore use the `marginaleffects`
 package [@arel-bundock_2024] with this model to calculate marginal effects over 
 the full ranges of each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
-All hypotheses received support; each is provided below.
+In order to account for the beta distribution of the dependent
+variable (see Section \ref{sec-modelling}), all modelling uses a collapsed per-trial ratio 
+of left to right donation amounts. To increase interpretability, however, descriptive
+statistics, including relevant tables and visualisations, use uncollapsed donation
+means. All hypotheses received support and each is provided below prior to the reporting of
+relevant results. 
 
 ```{=latex}
 
@@ -1370,40 +1375,42 @@ marginal_effects_df <- avg_slopes(interactions_model) %>%
   as_tibble() %>%
   mutate(
     estimate  = estimate  * case_when(
-      term == "likert_diff_c"      ~ 12,
-      term == "rank_diff_c"        ~ 4,
-      term == "correlation_diff_c" ~ 0.6,
-      term == "plot_type_diff_c"   ~ 2
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
     ),
     std.error = std.error * case_when(
-      term == "likert_diff_c"      ~ 12,
-      term == "rank_diff_c"        ~ 4,
-      term == "correlation_diff_c" ~ 0.6,
-      term == "plot_type_diff_c"   ~ 2
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
     ),
     conf.low  = conf.low  * case_when(
-      term == "likert_diff_c"      ~ 12,
-      term == "rank_diff_c"        ~ 4,
-      term == "correlation_diff_c" ~ 0.6,
-      term == "plot_type_diff_c"   ~ 2
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
     ),
     conf.high = conf.high * case_when(
-      term == "likert_diff_c"      ~ 12,
-      term == "rank_diff_c"        ~ 4,
-      term == "correlation_diff_c" ~ 0.6,
-      term == "plot_type_diff_c"   ~ 2
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
     ),
     term = recode(term,
       likert_diff_c      = "Relative Likert Rating",
       rank_diff_c        = "Relative Rank Position",
       correlation_diff_c = "Relative Correlation",
       plot_type_diff_c   = "Relative Plot Type"),
-    `95\\% CI` = paste0("[", round(conf.low, 3), ", ", round(conf.high, 3), "]")) %>%
+    `95\\% CI` = paste0("[", round(conf.low, 1), ", ", round(conf.high, 1), "]"),
+    estimate  = round(estimate, 1),
+    std.error = round(std.error, 1)) %>%
   rename(`\\textit{p}` = "p.value") %>%
   mutate(`\\textit{p}` = scales::pvalue(`\\textit{p}`)) %>%
   arrange(desc(estimate)) %>%
-  select(term, estimate, std.error, statistic, `\\textit{p}`, `95\\% CI`)
-
+  select(term, `Estimate (\\%)` = estimate, `Std. Error (\\%)` = std.error,
+         statistic, `\\textit{p}`, `95\\% CI (\\%)` = `95\\% CI`)
 
 x <- kbl(
   marginal_effects_df,
@@ -1443,16 +1450,16 @@ which have previously been shown to affect correlation estimates and belief upda
 (point opacity and size) are also able to alter donation behaviour. Despite only
 being responsible for a small amount of donation behaviour change
 (see Table \ref{tbl-marginal-effects-interactions}), the huge amounts involved in charitable
-donations [@gov_report] mean that these findings represent a large 
+donations [@gov_report] mean that these findings represent an 
 opportunity to significantly increase donation amounts without having to tailor
 the design of advertising campaigns to different demographic groups. As this
 experiment represents a behavioural proxy, further work would be required to more
 fully explore the relationship between data visualisation and donation behaviour with
 a view to full implementation.
 
-## Donation Behaviour & Charity Preferences
+## Donation Behaviour and Charity Preferences
 
-In line with previous work [@breeze_2013; @berman_2018], participants gave a 
+In line with some previous work [@breeze_2013; @berman_2018], participants gave a 
 significantly greater proportion of money to charities that they preferred, as 
 measured by Likert scales and a charity rank (see @fig-donation-lines). This finding is in opposition to
 that of She and Sanfey [@she_2023], from whom the charity categories, Likert rating,
@@ -1592,10 +1599,10 @@ predict people's donations to charitable causes [@neumayr_2019; @bekkers_2011;
 study show that most variation in donations can be accounted for by preference
 for or against particular charitable concerns. Targeted advertising [@iyer_2005]
 is able to address some of these concerns, but necessarily requires a greater financial
-investment and high workloads -- outlays a charity may not be able to afford.
+investment and higher workloads -- outlays a charity may not be able to afford.
 The work presented here suggests that small changes in visual features are able to
 cause small changes in donation amounts. Extrapolated out to the \£27.43 billion
-in income derived from donations and legacies that charities received in 2024 [@gov_report], these
+in income derived from donations and legacies that UK  charities received in 2024 [@gov_report], these
 small changes in donations could potentially result in large amounts of increased
 income for no additional outlay.
 
@@ -1626,19 +1633,19 @@ study would have to take place longitudinally.
 Due to the relative novelty of testing visualisations such as those described in
 this study, we elected to maintain congruence between the visualisations and the 
 messaging in the infographics. Future work may wish to test to what extent the
-effect of visualisations persists when text-based messaging is in opposition to
+effect of visualisation persists when text-based messaging is in opposition to
 it.
 
 Finally, future work should explore people's thoughts and feelings about alternative
 visualisation types. There is no reason for this to be restricted to alternatively
 designed scatterplots, and there is a wide range of data visualisations that would be
 unfamiliar to the majority of laypeople. It may be that any advantages of 
-unfamiliar visualisations is outweighed by feelings of distrust in them.
+unfamiliar visualisations are outweighed by feelings of distrust in them.
 
 # Conclusion {#sec-conclusion}
 
 In a fully-reproducible experiment, we investigated the effects of alternative
-scatterplot design on the propensity to donate money in an online forced-choice
+scatterplot design on the propensity to donate money in an online 
 donation experiment. We collected a range of donation-relevant participant characteristics,
 and showed that while charity preference was able to explain most of the variation
 in donation amounts, the statistics communicated in scatterplots (correlation) and

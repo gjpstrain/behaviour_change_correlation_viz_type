@@ -556,7 +556,7 @@ preference had no effect on donation amounts in an online dictator
 game-style study. The disagreement here motivated the collection of
 charity preference ratings and rankings in the present study.
 
-\subsection{Correlation Perception \& Modified
+\subsection{Correlation Perception and Modified
 Scatterplots}\label{sec-corr-percept}
 
 In addition to testing whether data visualisation can influence donation
@@ -668,7 +668,7 @@ modelling purposes, each pair of linked responses was reduced to a
 donation ratio between the left and right infographics. This ratio, in
 range \([0,1]\) exists on a beta distribution. In its standard form,
 beta regression cannot handle values of precisely 0 or 1
-\citep{ferrari_2004}. Smithson \& Verkuilen \citep{smithson_2006}
+\citep{ferrari_2004}. Smithson and Verkuilen \citep{smithson_2006}
 proposed transforming values at the boundary of the distribution to
 force it into \((0,1)\). This method has faced criticism for actively
 distorting the data, so we instead chose to use Kubinec's ordered beta
@@ -690,7 +690,7 @@ intended to use the five charitable concerns provided in She and Sanfey,
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Dog Rescue/Re-housing.
+  Dog Rescue and Re-housing.
 \item
   Environmental Protection.
 \item
@@ -784,16 +784,16 @@ of residual magnitude using equation 1. To facilitate comparison to
 previous work also examining alternatively designed scatterplots
 \citep{strain_2023, strain_2023a, strain_2024, strain_2025}, we elect to
 use the same scatterplot generation protocol in the present study. This
-includes the number of scatterplot points (n = 128), the value of
-\emph{b} chosen for equation 1 (0.25), and the size scaling factor and
-opacity floor used to increase point visibility. We chose to use three
-Pearson's \emph{r} values; 0.2, 0.5, and 0.8. If participants are
-engaging with the visualisations and using them to inform their donation
-decisions, then plots featuring higher \emph{r} values should attract
-greater proportions of donated money. If the effects on perception and
-belief change seen previously with scatterplots of the type featured in
-the alternative condition can be extended to change behaviour, then
-alternative scatterplots should elicit greater donations.
+includes the number of scatterplot points (n = 128), and the size
+scaling factor and opacity floor used to increase point visibility. We
+chose to use three Pearson's \emph{r} values; 0.2, 0.5, and 0.8. If
+participants are engaging with the visualisations and using them to
+inform their donation decisions, then plots featuring higher \emph{r}
+values should attract greater proportions of donated money. If the
+effects on perception and belief change seen previously with
+scatterplots of the type featured in the alternative condition can be
+extended to change behaviour, then alternative scatterplots should
+elicit greater donations.
 
 Each scatterplot was positively correlated, and featured identical
 \(x\)-axis labels regarding donation amount. Each charity's \(y\)-axis
@@ -845,14 +845,14 @@ scales, participants were then asked to indicate how important the three
 chosen charitable concerns were to them (Dog Rescue and Re-Housing,
 Environmental Protection, and Mental Health Helpline). Each Likert scale
 featured seven points, and was anchored at points 1 and 7 with ``Not at
-all important'' and ``Extremely important''. Participants then used a
-drag-and-drop interface to rank the three charitable concerns. Following
-the pre-experimental tests, participants were then asked to complete
-eight rounds of the Remote Associated Test (RAT), which acted as a
-filler task to prevent carryover effects \citep{she_2023}. Participants
-were given 15 seconds for each round of the RAT, and were not required
-to answer. Participants were given instructions, including the
-following:
+all important'' and ``Extremely important'' labels. Participants then
+used a drag-and-drop interface to rank the three charitable concerns.
+Following the pre-experimental tests, participants were then asked to
+complete eight rounds of the Remote Associated Test (RAT), which acted
+as a filler task to prevent carryover effects \citep{she_2023}.
+Participants were given 15 seconds for each round of the RAT, and were
+not required to answer. Participants were given instructions, including
+the following:
 
 \hspace{0pt}
 \begin{tcolorbox}[colback=gray!10, colframe=gray!50, boxrule=0.5pt]
@@ -925,8 +925,13 @@ account all fixed effects and the potential interactions between them.
 This model provides more conservative estimates; we therefore use the
 \texttt{marginaleffects} package \citep{arel-bundock_2024} with this
 model to calculate marginal effects over the full ranges of each fixed
-effect in Table \ref{tbl-marginal-effects-interactions}. All hypotheses
-received support; each is provided below.
+effect in Table \ref{tbl-marginal-effects-interactions}. In order to
+account for the beta distribution of the dependent variable (see Section
+\ref{sec-modelling}), all modelling uses a collapsed per-trial ratio of
+left to right donation amounts. To increase interpretability, however,
+descriptive statistics, including relevant tables and visualisations,
+use uncollapsed donation means. All hypotheses received support and each
+is provided below prior to the reporting of relevant results.
 
 \definecolor{nicegreen}{HTML}{3EB489}
 
@@ -1116,10 +1121,10 @@ at charity rank 1 \(\times\) Likert rating 4.}
 \toprule
 Parameter & $\Delta$ proportion donated (\%) & SE & $z$ & $p$ & 95\% CI\\
 \midrule
-Relative Likert Rating & 0.70 & 0.02 & 40.54 & <0.001 & {}[0.663, 0.73]\\
-Relative Rank Position & 0.09 & 0.01 & 14.92 & <0.001 & {}[0.081, 0.106]\\
-Relative Correlation & 0.04 & 0.00 & 12.51 & <0.001 & {}[0.032, 0.044]\\
-Relative Plot Type & 0.03 & 0.00 & 5.43 & <0.001 & {}[0.017, 0.037]\\
+Relative Likert Rating & 69.6 & 1.7 & 40.54 & <0.001 & {}[66.3, 73]\\
+Relative Rank Position & 9.4 & 0.6 & 14.92 & <0.001 & {}[8.1, 10.6]\\
+Relative Correlation & 3.8 & 0.3 & 12.51 & <0.001 & {}[3.2, 4.4]\\
+Relative Plot Type & 2.7 & 0.5 & 5.43 & <0.001 & {}[1.7, 3.7]\\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1141,17 +1146,17 @@ size) are also able to alter donation behaviour. Despite only being
 responsible for a small amount of donation behaviour change (see Table
 \ref{tbl-marginal-effects-interactions}), the huge amounts involved in
 charitable donations \citep{gov_report} mean that these findings
-represent a large opportunity to significantly increase donation amounts
+represent an opportunity to significantly increase donation amounts
 without having to tailor the design of advertising campaigns to
 different demographic groups. As this experiment represents a
 behavioural proxy, further work would be required to more fully explore
 the relationship between data visualisation and donation behaviour with
 a view to full implementation.
 
-\subsection{Donation Behaviour \& Charity
-Preferences}\label{donation-behaviour-charity-preferences}
+\subsection{Donation Behaviour and Charity
+Preferences}\label{donation-behaviour-and-charity-preferences}
 
-In line with previous work \citep{breeze_2013, berman_2018},
+In line with some previous work \citep{breeze_2013, berman_2018},
 participants gave a significantly greater proportion of money to
 charities that they preferred, as measured by Likert scales and a
 charity rank (see Figure~\ref{fig-donation-lines}). This finding is in
@@ -1274,13 +1279,13 @@ and the results of the present study show that most variation in
 donations can be accounted for by preference for or against particular
 charitable concerns. Targeted advertising \citep{iyer_2005} is able to
 address some of these concerns, but necessarily requires a greater
-financial investment and high workloads -- outlays a charity may not be
-able to afford. The work presented here suggests that small changes in
-visual features are able to cause small changes in donation amounts.
+financial investment and higher workloads -- outlays a charity may not
+be able to afford. The work presented here suggests that small changes
+in visual features are able to cause small changes in donation amounts.
 Extrapolated out to the £27.43 billion in income derived from donations
-and legacies that charities received in 2024 \citep{gov_report}, these
-small changes in donations could potentially result in large amounts of
-increased income for no additional outlay.
+and legacies that UK charities received in 2024 \citep{gov_report},
+these small changes in donations could potentially result in large
+amounts of increased income for no additional outlay.
 
 \subsection{Limitations}\label{limitations}
 
@@ -1311,26 +1316,26 @@ viewing, such a study would have to take place longitudinally.
 Due to the relative novelty of testing visualisations such as those
 described in this study, we elected to maintain congruence between the
 visualisations and the messaging in the infographics. Future work may
-wish to test to what extent the effect of visualisations persists when
+wish to test to what extent the effect of visualisation persists when
 text-based messaging is in opposition to it.
 
 Finally, future work should explore people's thoughts and feelings about
 alternative visualisation types. There is no reason for this to be
 restricted to alternatively designed scatterplots, and there is a wide
 range of data visualisations that would be unfamiliar to the majority of
-laypeople. It may be that any advantages of unfamiliar visualisations is
-outweighed by feelings of distrust in them.
+laypeople. It may be that any advantages of unfamiliar visualisations
+are outweighed by feelings of distrust in them.
 
 \section{Conclusion}\label{sec-conclusion}
 
 In a fully-reproducible experiment, we investigated the effects of
 alternative scatterplot design on the propensity to donate money in an
-online forced-choice donation experiment. We collected a range of
-donation-relevant participant characteristics, and showed that while
-charity preference was able to explain most of the variation in donation
-amounts, the statistics communicated in scatterplots (correlation) and
-the visual character of those scatterplots were able to explain small
-but meaningful amounts of variance. Our results suggest that alternative
+online donation experiment. We collected a range of donation-relevant
+participant characteristics, and showed that while charity preference
+was able to explain most of the variation in donation amounts, the
+statistics communicated in scatterplots (correlation) and the visual
+character of those scatterplots were able to explain small but
+meaningful amounts of variance. Our results suggest that alternative
 scatterplot encodings which have previously been shown to influence
 correlation perception and belief-updating can also have effects on
 financial choices, and should be further studied as a low-cost way of
