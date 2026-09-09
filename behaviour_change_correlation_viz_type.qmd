@@ -169,11 +169,8 @@ options(knitr.kable.NA = "")
 
 ```{r}
 #| label: lazyload-cache
+
 if (!params$eval_models){ lazyload_cache_dir("behaviour_change_correlation_viz_type_cache/pdf") }
-
-# temp command to load models for writing
-
-lazyload_cache_dir("behaviour_change_correlation_viz_type_cache/pdf")
 ```
 
 ```{r}
@@ -1440,7 +1437,8 @@ cat(x)
 # Discussion {#sec-discussions}
 
 All three hypotheses were supported in this experiment. Participants' donation
-decisions were significantly affected by their subjective views of the importance of the charitable concerns, by the correlation displayed in each infographic, and
+decisions were significantly affected by their subjective views of the importance
+of the charitable concerns, by the correlation displayed in each infographic, and
 by the type of scatterplot employed. These results add to evidence that preference
 is the strongest predictor of donation [@breeze_2013; @berman_2018; @macaskill_2019],
 and the finding that higher *r* values in plots increased donation amounts
@@ -1533,14 +1531,6 @@ donation_behaviour_tidy_long %>%
         legend.position = "none",
         strip.text.y = element_text(angle = 0))
 ```
-
-<!-- A potential explanation for this finding may be derived -->
-<!-- from the range-frequency theory [@parducci_1963]. In short, this theory describes -->
-<!-- how subjective judgements of the same stimulus can differ based on the context -->
-<!-- in which they are presented; an item weighing 50g would be described as heavy -->
-<!-- when presented amongst a series of items weighing less than 50g, but would be -->
-<!-- described as light when presented amongst a different series of items weighing -->
-<!-- more than 50g. -->
 
 ## Effects of Visualisations on Behaviour
 
