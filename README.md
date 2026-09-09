@@ -12,11 +12,11 @@ Once participants have been paid or excluded, use the `anonymisation.R` script i
 
 NB: Aside from anonymisation, data are provided *as-is*. The **wrangle** function *must* be run to make the dataset usable.
 
-### Analysis Within a Fully-Reproducible Computational Environment
+## Analysis Within a Fully-Reproducible Computational Environment
 
 Resources are provided for the full reproduction of the computational environment (R, Rstudio, and package versions) that was used for data wrangling, visualisation, statistical modelling, and reporting.
 
-## Using Podman
+### Using Podman
 
 To begin, clone this repository to your local machine. With a [Podman machine started](https://podman.io/docs/installation) in the background, use a terminal (or cmd on Windows) to navigate to the cloned repository and type the following command:
 
@@ -30,7 +30,7 @@ Then, type:
 
 ```podman run --rm -p 8787:8787 -e PASSWORD=password -e RUNROOTLESS=false donation_behaviour```
 
-## Using Docker
+### Using Docker
 
 To begin, clone this repository to your local machine. With [Docker desktop](https://docs.docker.com/desktop/) running in the background, use a terminal (or cmd on Windows) to navigate to the cloned repository and type the following command:
 
@@ -48,7 +48,7 @@ Then, type:
 
 Once the container is running, open a web browser and type `localhost:8787` in the address bar. Enter the username `rstudio` and the password `password`. This will generate a fully functioning Rstudio session running from the Podman container.
 
-### Re-creating the manuscript
+## Re-creating the manuscript
 
 Opening `donation_behaviour_correlation_viz_type.qmd` and using the 'Knit' button (or shift+k) will allow you to re-create a .pdf of the manuscript.
 
@@ -69,7 +69,7 @@ Files used in generating manuscript:
 
 Knitting the manuscript may take some time depending on the performance of your computer.
 
-### Other Files
+## Other Files
 
  - `item_preparation.R`: script to generate all experimental items, practice items, and visual masks.
 
