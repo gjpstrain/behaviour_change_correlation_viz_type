@@ -2,7 +2,7 @@
 
 Files, data, and scripts required to fully recreate our study investigating how donation behaviour in an online experiment can be influenced by scatterplot design.
 
-This paper can be accessed here:  placeholder
+This paper can be accessed here:  placeholder for final published link.
 
 ## Data
 
@@ -16,6 +16,8 @@ NB: Aside from anonymisation, data are provided *as-is*. The **wrangle** functio
 
 Resources are provided for the full reproduction of the computational environment (R, Rstudio, and package versions) that was used for data wrangling, visualisation, statistical modelling, and reporting.
 
+## Using Podman
+
 To begin, clone this repository to your local machine. With a [Podman machine started](https://podman.io/docs/installation) in the background, use a terminal (or cmd on Windows) to navigate to the cloned repository and type the following command:
 
 ```podman build -t donation_behaviour  .```
@@ -27,6 +29,22 @@ If you're using a machine with an ARM processor, such as Apple Silicon, use the 
 Then, type:
 
 ```podman run --rm -p 8787:8787 -e PASSWORD=password -e RUNROOTLESS=false donation_behaviour```
+
+## Using Docker
+
+To begin, clone this repository to your local machine. With [Docker desktop](https://docs.docker.com/desktop/) running in the background, use a terminal (or cmd on Windows) to navigate to the cloned repository and type the following command:
+
+```docker build -t donation_behaviour  .```
+
+If you're using a machine with an ARM processor, such as Apple Silicon, use the following command to build an image:
+
+```docker buildx build --platform linux/amd64 -t donation_behaviour .```
+
+Then, type:
+
+```docker run --rm -p 8787:8787 -e PASSWORD=password donation_behaviour```
+
+***
 
 Once the container is running, open a web browser and type `localhost:8787` in the address bar. Enter the username `rstudio` and the password `password`. This will generate a fully functioning Rstudio session running from the Podman container.
 
@@ -43,7 +61,7 @@ Files used in generating manuscript:
  - `donation_behaviour_correlation_viz_type.qmd`: Full Quarto markdown script including text and all code.
  - `donation_behaviour_correlation_viz_type_cache/pdf`: folder containing cached models.
  - `data` 
-	- `candidate_charities.csv`: used for generating Table X.
+	- `candidate_charities.csv`: used for generating Table 1.
 	- `exp_data_final.csv`: the raw data taken from Pavlovia.
 	- `exp_trials.csv`: the data used to run the experiment.
  - `donation_behaviour.bib` for referencing.
