@@ -1,0 +1,1515 @@
+
+---
+
+```{r}
+#| label: setup
+
+# load in libraries
+
+library(tidyverse)
+library(MASS)
+library(scales)
+library(lme4)
+library(kableExtra)
+library(papaja)
+library(qwraps2)
+library(lmerTest)
+library(ggdist)
+library(ggpubr)
+library(conflicted)
+library(ggtext)
+library(Matrix)
+library(janitor)
+library(effectsize)
+library(glmmTMB)
+library(car)
+library(marginaleffects)
+
+# fix conflicts now using the conflicted package
+
+conflicts_prefer(dplyr::select(), dplyr::filter(), lme4::lmer(),
+                 dplyr::recode(), lme4::findbars())
+
+options(knitr.kable.NA = "")
+```
+
+```{r}
+#| label: lazyload-cache
+
+if (!params$eval_models){ lazyload_cache_dir("behaviour_change_correlation_viz_type_cache/pdf") }
+```
+
+```{r}
+#| label: load-data
+# load in data csv for main experiment, remove the "__participant" column now 
+
+anon_file <- read_csv("data/exp_data_final.csv", guess_max = 17000) # we need a higher guess_max for read_csv to correctly interpret column data types
+```
+
+```{r}
+#| label: wrangle-data
+## NB: With the exception of anonymization, data are provided as-is from 
+## pavlovia (survey tool). Wrangling functions *must* be run first to make
+## the data sets usable
+
+# extract demographic information
+
+wrangle <- function(anon_file) {
+  
+  demographics <- anon_file %>%
+    filter(!is.na(age_textbox.text)) %>%
+    select(matches(c("participant",
+                     "age_textbox.text",
+                     "gender_slider.response")))
+  
+  time_taken <- anon_file %>%
+    filter(!is.na(final.stopped)) %>%
+    select(c("participant", "final.stopped"))
+  
+  charity_opinions <- anon_file %>%
+    select(c("participant",
+             "c1_slider.response",
+             "c2_slider.response",
+             "c3_slider.response")) %>%
+    filter(!is.na(c1_slider.response)) %>%
+    rename("dog_rescue_likert"  = "c1_slider.response",
+           "environment_likert" = "c2_slider.response",
+           "helpline_likert"    = "c3_slider.response")
+  
+  charity_rankings <- anon_file %>%
+    select(c("participant",
+             "donation_behaviour_survey.block_1/question1")) %>%
+    rename("ranking" = "donation_behaviour_survey.block_1/question1") %>%
+    filter(!is.na(ranking)) %>%
+    mutate(
+      ranking_list = ranking %>%
+        str_remove_all('\\[|\\]|"') %>%
+        str_squish() %>%
+        str_split(",\\s*"),
+      dog_rescue_rank  = map_int(ranking_list, ~ which(.x == "Item 1")),
+      helpline_rank    = map_int(ranking_list, ~ which(.x == "Item 2")),
+      environment_rank = map_int(ranking_list, ~ which(.x == "Item 3"))
+    ) %>%
+    select(-c("ranking", "ranking_list"))
+  
+  # participant x charity likert/rank lookup (for joining later)
+  charity_lookup <- anon_file %>%
+    full_join(charity_opinions, by = "participant") %>%
+    full_join(charity_rankings, by = "participant") %>%
+    select(participant,
+           dog_rescue_likert, environment_likert, helpline_likert,
+           dog_rescue_rank,   environment_rank,   helpline_rank) %>%
+    distinct() %>%
+    pivot_longer(
+      cols          = -participant,
+      names_to      = c("charity_key", ".value"),
+      names_pattern = "(.+)_(likert|rank)"
+    ) %>%
+    mutate(
+      charity = factor(recode(charity_key,
+                              dog_rescue  = "dog_rescue",
+                              environment = "greener_world",
+                              helpline    = "samaritans"))
+    ) %>%
+    select(participant, charity, likert, rank) %>%
+    mutate(
+      likert = factor(likert, levels = 1:7, ordered = TRUE),
+      rank   = factor(rank,   levels = 1:3, ordered = TRUE)
+    )
+  
+  # main trial-level data — one row per participant x trial
+  anon_file %>%
+    select(c("participant",
+             "trial_id",
+             "left_charity",
+             "right_charity",
+             "left_plot_type",
+             "right_plot_type",
+             "left_correlation",
+             "right_correlation",
+             "same_plot_type",
+             "same_correlation",
+             "tb1.text",
+             "tb3.text",
+             "exp_trials.started",
+             "exp_trials.stopped")) %>%
+    rename("left_amount"  = "tb1.text",
+           "right_amount" = "tb3.text") %>%
+    mutate(
+      left_amount  = as.numeric(gsub("[^0-9.-]", "", left_amount)),
+      right_amount = as.numeric(gsub("[^0-9.-]", "", right_amount)),
+      left_correlation = recode(left_correlation,
+                                `1` = 0.2, `2` = 0.5, `3` = 0.8),
+      right_correlation = recode(right_correlation,
+                                 `1` = 0.2, `2` = 0.5, `3` = 0.8)
+    ) %>%
+    mutate(across(c(left_amount, right_amount), ~ replace_na(., 0))) %>%
+    filter(trial_id < 109) %>%
+    mutate(
+      total_amount   = left_amount + right_amount,
+      prop_left      = if_else(total_amount == 0, 0.5, left_amount / total_amount),
+      left_plot_type  = factor(left_plot_type,  levels = c("Norm", "Alt")),
+      right_plot_type = factor(right_plot_type, levels = c("Norm", "Alt")),
+      left_charity    = factor(left_charity),
+      right_charity   = factor(right_charity)
+    ) %>%
+    full_join(demographics,     by = "participant") %>%
+    full_join(time_taken,       by = "participant") %>%
+    full_join(charity_opinions, by = "participant") %>%
+    full_join(charity_rankings, by = "participant") %>%
+    left_join(
+      charity_lookup %>% rename(
+        left_charity        = charity,
+        left_charity_likert = likert,
+        left_charity_rank   = rank
+      ),
+      by = c("participant", "left_charity")
+    ) %>%
+    # join right-charity likert/rank preferences
+    left_join(
+      charity_lookup %>% rename(
+        right_charity        = charity,
+        right_charity_likert = likert,
+        right_charity_rank   = rank
+      ),
+      by = c("participant", "right_charity")
+    ) %>%
+    mutate(
+      likert_diff   = as.numeric(left_charity_likert) - as.numeric(right_charity_likert),
+      rank_diff     = (4 - as.numeric(left_charity_rank)) - (4 - as.numeric(right_charity_rank)),
+      likert_diff_c = likert_diff - mean(likert_diff, na.rm = TRUE),
+      rank_diff_c   = rank_diff   - mean(rank_diff,   na.rm = TRUE),
+      correlation_diff   = left_correlation - right_correlation,
+      correlation_diff_c = correlation_diff - mean(correlation_diff, na.rm = TRUE),
+      plot_type_diff = as.numeric(left_plot_type) - as.numeric(right_plot_type),
+      plot_type_diff_c = plot_type_diff - mean(plot_type_diff, na.rm = TRUE,),
+      trial_RT = exp_trials.stopped - exp_trials.started,
+      combo = case_when(
+        same_plot_type & left_plot_type == "Norm" ~ "same_standard",
+        same_plot_type & left_plot_type == "Alt"  ~ "same_alt",
+      TRUE ~ "different_plots"
+    )) %>%
+    filter(total_amount == 100) %>%     # remove trials where total != 100 (errors)
+    assign(paste0(unique(anon_file$expName), "_tidy"),
+           value = ., envir = .GlobalEnv)
+}
+
+wrangle(anon_file)
+
+# create long df for later summary stats
+
+donation_behaviour_tidy_long <- donation_behaviour_tidy %>%
+  pivot_longer(
+    cols = c(left_charity, right_charity,
+             left_plot_type, right_plot_type,
+             left_correlation, right_correlation,
+             left_amount, right_amount,
+             left_charity_likert, right_charity_likert,
+             left_charity_rank, right_charity_rank),
+    names_to      = c("side", ".value"),
+    names_pattern = "(left|right)_(.*)"
+  ) %>%
+  mutate(side = factor(side, levels = c("left", "right")))
+
+
+# extract demographics and time taken info for rendering in text
+
+gender <- distinct(donation_behaviour_tidy, participant,
+                   .keep_all = TRUE) %>%
+  group_by(gender_slider.response) %>%
+  summarise(sum = n()) %>%
+  pivot_wider(names_from = gender_slider.response,
+              values_from = sum) %>%
+  clean_names()
+
+age <- distinct(donation_behaviour_tidy, participant,
+                .keep_all = TRUE) %>%
+  summarise(mean = mean(age_textbox.text, na.rm = TRUE),
+            sd = sd(age_textbox.text, na.rm = TRUE))
+
+time_taken <- distinct(donation_behaviour_tidy, participant,
+                .keep_all = TRUE) %>%
+  summarise(mean = mean(final.stopped/60, na.rm = TRUE),
+            sd = sd(final.stopped/60, na.rm = TRUE))
+
+# define functions used throughout
+
+## example scatterplot function
+
+plot_example_function <- function (df, t = NULL, o, s, title_size) {
+  
+  p <- ggplot(df, aes(x = V1, y = V2)) +
+    scale_alpha_identity() +
+    scale_size_identity() +
+    geom_point(aes(size = (s + 0.7),
+                   alpha = o), shape = 16)  +
+    theme_classic() +
+    theme(axis.text = element_blank(),
+          plot.margin = unit(c(0,0,0.4,0), "cm"),
+          legend.position = "none",
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.line = element_line(linewidth = 0.25))
+  
+  if (!is.null(t)) {
+    p <- p +
+      labs(title = t) +
+      theme(plot.title = element_markdown(size = title_size, vjust = -0.1, hjust = 0.5),
+            plot.margin = unit(c(0.4, 0, 0.4, 0), "cm"))
+  }
+  p
+}
+
+## slopes function to create df for plot example function
+
+prepare_slopes <- function (my_desired_r) {
+  
+  set.seed(1234)
+  
+  my_sample_size = 128
+  
+  mean_variable_1 = 0
+  sd_variable_1 = 1
+  
+  mean_variable_2 = 0
+  sd_variable_2 = 1
+  
+  mu <- c(mean_variable_1, mean_variable_2) 
+  
+  myr <- my_desired_r * sqrt(sd_variable_1) * sqrt(sd_variable_2)
+  
+  mysigma <- matrix(c(sd_variable_1, myr, myr, sd_variable_2), 2, 2) 
+  
+  corr_data = as_tibble(mvrnorm(my_sample_size, mu, mysigma, empirical = TRUE))
+  
+  corr_model <- lm(V2 ~ V1, data = corr_data)
+  
+  my_residuals <- abs(residuals(corr_model))
+  
+  data_with_resid <- round(cbind(corr_data, my_residuals), 2)
+  
+  slopes <- data_with_resid %>%
+    mutate(slope_linear = my_residuals/3.2) %>%
+    mutate(slope_0.25 = 1-(0.25)^my_residuals) %>%
+    mutate(slope_inverted = (1 + (0.25)^ my_residuals)-1) %>%
+    mutate(slope_inverted_floored = pmax(0.1,(1+(0.25)^my_residuals)-1)) 
+  
+  return(slopes)
+}
+
+## comparison function
+
+comparison <- function(model) {
+  
+  parens <- function(x) paste0("(",x,")")
+  onlyBars <- function(form) reformulate(sapply(findbars(form),
+                                              function(x)  parens(deparse(x))),
+                                       response=".")
+  onlyBars(formula(model))
+  cmpr_model <- update(model,onlyBars(formula(model)))
+  
+  return(cmpr_model)
+  
+}
+
+# anova results function
+
+anova_results <- function(model, cmpr_model) {
+  
+  model_name <- deparse(substitute(model))
+  
+  if (class(model) == "buildmer") model <- model@model
+  if (class(cmpr_model) == "buildmer") cmpr_model <- cmpr_model@model
+    
+  anova_output <- anova(model, cmpr_model)
+
+  assign(paste0(model_name, ".Chisq"),
+         anova_output$Chisq[2],
+         envir = .GlobalEnv)
+  assign(paste0(model_name, ".df"),
+         anova_output$Df[2],
+         envir = .GlobalEnv)
+  assign(paste0(model_name, ".p"),
+         anova_output$`Pr(>Chisq)`[2],
+         envir = .GlobalEnv)
+}
+```
+
+# Introduction {#sec-intro}
+
+Can data visualisation be used to change the ways people behave?
+Far from being solely used by academics and professionals, data visualisations
+are now an everyday part of many people's lives. From visualisations of health
+data during the COVID-19 pandemic, to those illustrating statistics in live 
+sports reporting, the ability of data visualisation to scaffold understanding 
+of numerical data has led to widespread adoption across scientific and health 
+communication, news media, and policy making. Traditionally, data visualisation 
+design has been technician-led; designers often prefer software defaults 
+[@haber_2016; @petrescu_2024], rely on personal knowledge as opposed to design 
+theory [@parsons_2020], and rely on oversimplified guidance that fails to
+properly link design guidelines to actual human perception and cognition 
+[@patterson_2014]. The result of this disconnect is a landscape saturated 
+with misleading visualisations [@wtf_2026]; whether due to intentional 
+deception [@pandey_2015] or a lack of understanding, it is clear that there is 
+a need for more work studying how we design visualisations based on established 
+perceptual and cognitive phenomena.
+
+Part of designing visualisations in such a way is understanding how small 
+variations in them, of the kind that might traditionally be thought of as 
+purely aesthetic choice, can change the perceptions, cognitions, and behaviours 
+of those who view them. Recent work investigating a novel form of scatterplot
+point encoding found that lowering the opacity and size of scatterplots points 
+as a function of residual error, both separately [@strain_2023; @strain_2023a]
+and together [@strain_2024], can have significant effects on perceptions of 
+correlation. These techniques were used to correct for a historic 
+underestimation bias, and have additionally been shown to affect the degree to
+which people's beliefs about the levels of relatedness between a variable pair 
+change [@strain_2025]. In addition to providing new options to designers who 
+wish to highlight different visualisation features, studies such as these can 
+provide insight into how data concepts are interpreted more generally.
+
+Testing whether visualisation modifications such as these are able to affect not
+only how we perceive data, but also our subsequent actions is a much harder problem to 
+solve. To this end, we present a single, crowdsourced, online experiment 
+that situates novel scatterplot visualisation techniques in charity
+infographics. We use a forced donation task, whereby participants must share 
+money between charities represented by infographics including standard and 
+alternatively-designed scatterplots, and collect and analyse participants' 
+charity preferences. We build a range of models to show that while preference 
+for charitable concerns is responsible for most of the variance in 
+donation behaviour, both the data displayed in the plot and the alternative 
+scatterplot point encoding have significant effects.
+
+# Related Work {#sec-related-work}
+
+We begin this section by reviewing the literature at the intersection 
+of data visualisation and behaviour change. We then explore our chosen 
+behaviour-change paradigm, donation behaviour, particularly in response to 
+infographics and other forms of informative advertising. This section 
+concludes by reviewing the modified scatterplots used to elicit behaviour
+change, followed by a statement of our hypotheses.
+
+## Behaviour and Data Visualisation {#sec-behaviour-data-viz}
+
+Data visualisation, broadly defined as the practice of presenting information 
+in a visual modality [@hinterberger_2009], is widely relied upon for the 
+communication of simple and complex statistical and numerical data and concepts.
+From infographics designed to promote health behaviours to complex multiclass 
+scatterplot matrices used for exploratory data analysis in machine learning 
+paradigms, pictorial representations of data are ubiquitous. On a base level,
+their popularity speaks to the human tendency to represent our world visually.
+Despite this, there is relatively little literature exploring how data
+visualisation may affect the ways people behave. Clearly, there is the assumption (or hope), that data visualisations are able 
+to affect behaviour to a certain degree. If this were not the case, they would 
+not be displayed in hospitals to promote health behaviours or by environmental
+charities to promote green behaviours. There is a wealth of evidence suggesting
+that data visualisations in different forms can affect perceptions of
+underlying data; varying the sizes and opacities of scatterplot points can change
+perceptions of correlation [@strain_2023; @strain_2023a; @strain_2024], 
+perceptions of data magnitudes and ratio are affected by axis orientations and
+truncation [@bradley_2025; @mckinley_2026], and line characteristics affect 
+judgements of global means in line charts [@moritz_2023].
+
+There is also a body of literature that provides evidence that perceptual 
+effects may influence cognition.
+Scatterplots featuring points with varying opacities and sizes can affect the 
+levels to which viewers update their beliefs [@strain_2025], risk information
+presented graphically can increase stated risk-avoidant behaviour 
+[@stone_1997; @schirillo_2005], and data visualisation can be used to increase
+decision-making performance [@cheong_2016; @padilla_2018]. Given evidence
+that data visualisation can, in some contexts, be more persuasive than the 
+equivalent information presented in a tabular format [@pandey_2014], it 
+remains to be seen whether perceptual and cognitive effects of data visualisation 
+can drive differences in behaviour.
+
+There is some evidence that effects such as those described above are driven
+by data visualisation promoting higher levels of engagement with the underlying data.
+Rudolph et al. [@rudolph_2009] found that the use of a visual analytics tool
+was able to increase levels of task engagement and learning, resulting in better
+financial decision-making amongst non-expert participants when compared to
+those presented only with tabular data, while Fu et al. [@fu_2025] found that 
+static and dynamic visualisation promoted higher levels of learning motivation 
+and engagement with algorithm learning amongst students. In a 
+longitudinal study of participant-created 'vernacular visualisations', Abos and 
+Franco [@abos_2024] found use of visualisation to be beneficial for participants 
+with regards to forming and maintaining sustainable food waste habits. This 
+improvement was attributed to increased engagement with the self-created 
+visualisation format.
+
+Testing real behaviour change in response to visualisation viewing is
+necessarily difficult; lab or online testing may fail to induce enough of 
+a sense of realism to extract actual behaviour, while longitudinal testing 
+is difficult and expensive to carry out. In the present study, we use a 
+deception technique to elicit participants' real behavioural 
+intentions, which have been shown to be a moderate predictor of actual behaviour
+[@webb_2006; @conner_2022].
+
+## Donation Behaviour {#sec-donation-behaviour}
+
+With around 32% of the UK charity sector's income coming from donations
+and legacies [@gov_report], reaching new donors and persuading 
+them to give more represents a key part of running a successful charity 
+[@sargeant_2001; @wymer_2006], as efficient spending on advertising and other
+fundraising activities leaves more money to be spent on charitable activities.
+Data visualisation, which has been shown in some contexts to be more 
+persuasive than textual information [@pandey_2014] and able to affect the levels
+to which people change their beliefs [@karduni_2021; @markant_2023; @strain_2025],
+is an untapped resource with regards to creating more effective advertising materials.
+
+The literature on donation behaviour is generally focused on the characteristics 
+of donors, and often makes a distinction between choosing to donate at all and 
+the amount donated. Green and Webb [@green_1997] used factor analysis
+and an interdisciplinary literature review to identify seven factors associated 
+with charitable giving behaviour. Five of these were motivations for giving, 
+and include altruism, negative state relief, and social exchange. Gittell and 
+Tebaldi [@gittell_2006] identify economic, religious, and demographic 
+factors influencing giving rates, with higher levels of personal income, 
+protestantism, and education positively impacting donations. More recently, 
+Neumayr and Handy [@neumayr_2019] identified subjective dispositions, 
+such as trust, empathic concern, and religious affiliation as predictive of 
+the decision to donate (but not the amount); what they term *human resources*,
+such as income and education level, impact both the decision to donate and 
+the amounts people choose to give. Bekkers and Wiepking [@bekkers_2011] 
+provide a detailed review of the person-specific mechanisms that drive 
+charitable giving. Despite this literature, it remains difficult to design 
+donation-eliciting campaigns that appeal across the range of personal
+characteristics that may motivate donation behaviour.
+
+The weight of evidence generally points towards donation decisions being 
+strongly influenced by personal preferences of charities and charitable 
+concerns, although the literature is not in full agreement. In a qualitative 
+study of 60 donors, Breeze [@breeze_2013] found that donors are more 
+likely to give to charities that they personally like and that align with
+their values. Berman et al. [@berman_2018], in a quantitative study 
+designed to increase donation amounts using principles of effective altruism 
+[@macaskill_2019], found that participants donated more to charities that
+they preferred, even when transparently more effective options were made 
+available to them; this was explained as being a result of emotional 
+connection to the cause being valued over rational decision making and 
+reasoned argument. In opposition, She and Sanfey [@she_2023] found
+that charity preference had no effect on donation amounts in an online 
+dictator game-style study. The disagreement here motivated the collection 
+of charity preference ratings and rankings in the present study.
+
+## Correlation Perception and Modified Scatterplots {#sec-corr-percept}
+
+In addition to testing whether data visualisation can influence donation 
+decisions, we also aim to test a recently developed scatterplot 
+visualisation technique. Scatterplots, which are primarily used to visualise
+the correlation between pairs of variables, are a widely used type of data 
+visualisation [@tufte_1983]. Historically, there has been evidence of a bias
+in correlation estimation in scatterplots; positive correlation is routinely 
+underestimated. This finding has been replicated in direct estimation paradigms, 
+where participants are asked to provide a numerical estimate of correlation 
+[@strahan_1978; @bobko_1979; @cleveland_1982; @lane_1985; @lauer_1989; 
+@collyer_1990; @meyer_1992], and in those asking participants to estimate
+correlation via a bisection task [@rensink_2017]. The underestimation is 
+particularly pronounced for bivariate data with Pearson's *r* in the range 
+0.2 < *r* < 0.6.
+
+Partially inspired by evidence that estimates of means can be biased by 
+changing the opacities and sizes of scatterplot points [@hong_2022], recent work aiming 
+to correct for this bias has been successful. Strain et al.
+[@strain_2023; @strain_2023a; @strain_2024] systematically varied the
+opacities and sizes of scatterplot points to manipulate perceptions of 
+correlation in crowdsourced online experiments. Using equation 1 to relate 
+point opacity and size to residual error, they were able to achieve 
+significant amounts of correction, suggesting that correlation perception
+may be related to point salience.
+
+\begin{equation}
+  point_{size/opacity} = 1 - 0.25^{residual}
+\end{equation}
+
+Examples of scatterplots that use these modifications can be seen on the top
+row of @fig-raw-example-plots. In addition to being able to manipulate estimates 
+of correlation, there is also evidence that the same technique can change the 
+extent to which participants update their beliefs about the levels of
+relatedness between a pair of variables [@strain_2025]. While the perceptual
+and effects on belief of scatterplot visualisation techniques such as these have
+been demonstrated, it remains to be seen whether they can additionally affect behavioural intention.
+
+# Hypotheses {#sec-hypotheses}
+
+We formulate the first hypothesis based on previous evidence that people 
+will donate more money to charitable concerns that they prefer:
+
+- H~1~: participants will donate more money to charities that they prefer,
+as tested by Likert scales and a charity ranking.
+
+Owing to evidence that strong relationships portrayed in scatterplots can
+induce belief change in viewers, and that features of data visualisations 
+can have effects on viewers' thoughts and attitudes, we formulate the second hypothesis:
+
+- H~2~: participants will donate more money to charities whose infographics 
+feature scatterplots with higher *r* values.
+
+Finally, in light of evidence that modified scatterplots can produce higher
+estimates of correlation and greater levels of belief change regarding
+relatedness, we formulate the third  hypothesis. This hypothesis is non-directional
+due to small effects sizes reported in a previous study that utilised these techniques
+[@strain_2024; @strain_2025]:
+
+- H~3~: participants' donation amounts will be affected (non-directionally)
+by the type (standard or alternative) of scatterplot displayed.
+
+# Methodology {#sec-methods}
+
+In this section we begin by discussing our research methods, including the 
+open and reproducible research practices we used and the modelling paradigms
+utilised in our analyses. We then detail the design of our stimuli, the 
+design of the experiment, the experimental procedure, and participant recruitment 
+and characteristics.
+  
+## Open Research {#sec-open-research}
+
+The experiment was conducted according the principles of open and reproducible
+research [@ayris_2018]. Hypotheses and analysis plans were pre-registered with
+the Open Science Framework (OSF)[^1]. All data and analysis code are included 
+in a GitHub repository[^2], which also contains instructions for building a 
+Podman container [@heon_2018] that reproduces the computational environment 
+in which the paper was written. By capturing package versions and dependencies 
+using the `renv` package [@ushey_2026] in R, this container allows for full 
+replication of all stimuli, figures, analyses, and the paper itself. Ethical 
+approval was granted by *removed for anon*.
+
+[^1]: https://osf.io/kywt9/overview?view_only=1f677775eb80467dae61c7502bc3305f
+
+[^2]: https://anonymous.4open.science/r/behaviour_change_correlation_viz_type-FAF1/README.md
+
+## Modelling {#sec-modelling}
+
+Each experimental trial featured two stimuli. As participants were asked to
+split 100 dollars between the two charities displayed in the infographics, 
+each trial also featured two linked responses. For modelling purposes, 
+each pair of linked responses was reduced to a donation ratio between the
+left and right infographics. This ratio, in range $[0,1]$ exists on a 
+beta distribution. In its standard form, beta regression cannot handle values 
+of precisely 0 or 1 [@ferrari_2004]. Smithson and Verkuilen [@smithson_2006]
+proposed transforming values at the boundary of the distribution to force 
+it into $(0,1)$. This method has faced criticism for actively distorting the 
+data, so we instead chose to use Kubinec's ordered beta regression 
+[@kubinec_2022], which allows for the building of a single model that takes 
+into account the continuous $(0,1)$ range and the $[0,1]$ bounds. These models
+were fitted using the `glmmTMB` package (version 1.1.14 [@mcgillycuddy_2025]). All models 
+featured random intercepts for both participants and experimental items.
+
+## Stimuli {#sec-stimuli}
+
+### Charities {#sec-stimuli-charities}
+
+Three charitable concerns were chosen for the experiment. Initially, we 
+intended to use the five charitable concerns provided in She and Sanfey,
+2023 [@she_2023]. These were:
+
+1.  Dog Rescue and Re-housing.
+2.  Environmental Protection.
+3.  Mental Health Helpline.
+4.  Education in Disadvantaged Communities.
+5.  Support for Homeless Individuals.
+
+Due to our inclusion of different correlations and scatterplot types,
+the use of five charity categories would have resulted in an unfeasibly 
+large number of experimental trials. Concerns about participant fatigue and 
+experimental length led us to use only the first three charity categories for 
+the present experiment. After deciding on the three charity categories, one
+author created candidate fictional charities for each. Two authors then decided 
+on a single fictional charity for each category. Table \ref{tbl-candidate-charities} 
+shows the candidate charities for each charity category. The final chosen charity 
+is highlighted in each case.
+
+```{r}
+#| results: asis
+#| include: true
+
+table_df <- read_csv("data/candidate_charities.csv")
+
+x <- kbl(
+  table_df,
+  booktabs = TRUE,
+  escape = FALSE,
+  caption = "\\label{tbl-candidate-charities}The three chosen charity categories, along with the candidate fictional charities for each. The final chosen charity for each category is marked in bold and with an asterisk in each case."
+) %>%
+  as.character()
+
+x <- gsub(
+  "\\\\begin\\{table\\}",
+  "\\\\begin{table*}",
+  x
+)
+
+x <- gsub(
+  "\\\\end\\{table\\}",
+  "\\\\end{table*}",
+  x
+)
+
+cat(x)
+```
+
+### Charity Templates {#sec-stimuli-charity-templates}
+
+For each of the three selected charities, we developed a corresponding 
+infographic to be presented during the experimental trials. These infographics
+were designed to appear realistic and included fictional charity-specific details,
+such as taglines, email addresses, website links, physical addresses, and impact 
+metrics (e.g., "5000 + Dog Lives Impacted"). In addition, the infographics contained 
+secondary background graphics that corresponded to the theme of the charity 
+being represented. Each charity template was designed by a single author using
+Canva (www.canva.com) and checked by co-authors. Each template featured a blank
+central space into which the scatterplot visualisations (see @fig-raw-example-plots) 
+were later inserted. Figure \ref{fig-templates} shows the charity templates used.
+Each infographic featured a scatterplot visualisation positioned centrally, 
+which served as the primary visual element and the main focus of the experimental
+stimulus.
+
+```{=latex}
+
+\begin{figure*}
+  \centering
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/dog_rescue.png}
+      \caption{Dog Rescue and Re-housing Charity.}
+    \end{subfigure}
+\hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/greener_world.png}
+      \caption{Environmental Protection Charity.}
+    \end{subfigure}
+\hfill
+    \begin{subfigure}[t]{0.3\textwidth}
+      \includegraphics[width=\linewidth]{stimuli/charity_templates/samaritans.png}
+      \caption{Mental Health Helpline Charity.}
+    \end{subfigure}
+  \caption{Charity templates based on the three selected fictional charities.}
+  \label{fig-templates}
+\end{figure*}
+```
+
+### Scatterplot Visualisations {#sec-stimuli-visualisations}
+
+Previous work has shown that changes to the opacities and sizes of scatterplot 
+points can induce changes in perceptions of correlation in viewers
+[@strain_2023; @strain_2023a; @strain_2024]. In particular, lowering the opacity
+and size of points as a function of residual magnitude is able to bias
+estimates of correlation upwards and partially correct for an observed 
+underestimation bias in positively correlated scatterplots. The same techniques 
+have also been shown to be able to induce greater levels of belief change in 
+viewers of scatterplots contextualised as part of news items [@strain_2025] when
+compared to traditional plots. To test whether such effects can be extended to
+change behaviours, we use the same technique here. In the alternative scatterplot
+condition, point opacity and size is reduced as a function of residual magnitude 
+using equation 1. To facilitate comparison to previous work also examining
+alternatively designed scatterplots [@strain_2023; @strain_2023a; @strain_2024; @strain_2025],
+we elect to use the same scatterplot
+generation protocol in the present study. This includes the number of scatterplot
+points (n = 128), and the size scaling
+factor and opacity floor used to increase point visibility.
+We chose to use three Pearson's *r* values; 0.2, 0.5, and 0.8. If participants 
+are engaging with the visualisations and using them to inform their donation
+decisions, then plots featuring higher *r* values should attract greater 
+proportions of donated money. If the effects on perception and belief change 
+seen previously with scatterplots of the type featured in the alternative
+condition can be extended to change behaviour, then alternative scatterplots
+should elicit greater donations.
+
+Each scatterplot was positively correlated, and featured identical $x$-axis
+labels regarding donation amount. Each charity's $y$-axis label related to a 
+realistic outcome variable for the particular charity category featured.
+Examples of standard and alternative scatterplots for each *r* value 
+used can be seen in @fig-raw-example-plots, while full charity template + 
+scatterplot visualisation examples can be seen in Figure \ref{fig-templates}.
+
+```{r}
+#| label: fig-raw-example-plots
+#| include: true
+#| fig-env: "figure*"
+#| fig-cap: "Scatterplots for each of the three \\textit{r} values. Separate rows are provided for the alternative (top) and standard (bottom) conditions."
+#| fig-asp: 0.7
+
+## manually prepare slopes for example plots
+
+slopes_02 <- prepare_slopes(0.2)
+slopes_05 <- prepare_slopes(0.5)
+slopes_08 <- prepare_slopes(0.8)
+
+# prepare plotted rows
+
+row_1 <- ggarrange(plot_example_function(slopes_02,
+                                         "*r* = 0.2",
+                                         (1-slopes_02$slope_0.25),
+                                         (1-slopes_02$slope_0.25), 10),
+                   plot_example_function(slopes_05,
+                                         "*r* = 0.5",
+                                         (1-slopes_05$slope_0.25),
+                                         (1-slopes_05$slope_0.25), 10),
+                   plot_example_function(slopes_08,
+                                         "*r* = 0.8",
+                                         (1-slopes_08$slope_0.25),
+                                         (1-slopes_08$slope_0.25), 10),
+                   
+                   nrow = 1) %>%
+  annotate_figure(left = gridtext::richtext_grob("Alternative Plots", rot = 90,
+                                                 gp = grid::gpar(fontsize = 12)))
+
+row_2 <- ggarrange(plot_example_function(slopes_02,
+                                         NULL,
+                                         1,
+                                         0.2, 7),
+                   plot_example_function(slopes_05,
+                                         NULL,
+                                         1,
+                                         0.2, 7),
+                   plot_example_function(slopes_08,
+                                         NULL,
+                                         1,
+                                         0.2, 7),
+                   
+                   nrow = 1) %>%
+  annotate_figure(left = gridtext::richtext_grob("Standard Plots", rot = 90,
+                                                 gp = grid::gpar(fontsize = 12)))
+
+
+ggarrange(row_1, row_2, ncol = 1, heights = c(1.2, 1)) # put rows together
+
+```
+
+## Design {#sec-design}
+
+We employed a fully within-subjects design. With 18 unique plots 
+(3 charities $\times$ 3 correlation values $\times$ 2 plot types), all
+unique combinations would result in $\binom{18}{2} = 153$ pairs. To 
+decrease the task load on participants, we removed the 45 trials which
+featured the same charity for a final total of 108 experimental trials. 
+Participants viewed all 108 experimental trials, along with 6 attention 
+check trials, in a fully-randomised order. Our dependent variable was the
+amount of money participants assigned to the left and right charity 
+infographics on a per-trial basis. The experiment, including all stimuli, 
+materials, and instructions, are hosted on GitLab[^3].
+
+[^3]: removed for anon.
+
+## Procedure {#sec-procedure}
+
+The experiment was built using PsychoPy [@peirce_2019] and is hosted on 
+Pavlovia.org. Participants were instructed to only complete the experiment
+on desktop or laptop computers. Each participant first viewed the participant 
+information sheet and provided consent by checking boxes next to consent 
+statements. Consent was required in order to progress through the experiment.
+They were asked to provide their age in a free text box, followed by their
+gender identity. Using Likert scales, participants were then asked to
+indicate how important the three chosen charitable concerns were to them
+(Dog Rescue and Re-Housing, Environmental Protection, and Mental Health 
+Helpline). Each Likert scale featured seven points, and was anchored at
+points 1 and 7 with "Not at all important" and "Extremely important" labels. 
+Participants then used a drag-and-drop interface to rank the three 
+charitable concerns. Following the pre-experimental tests, participants
+were then asked to complete eight rounds of the Remote Associated Test 
+(RAT), which acted as a filler task to prevent carryover effects [@she_2023]. 
+Participants were given 15 seconds for each round of the RAT, and were not 
+required to answer. Participants were given instructions, including the following:
+
+```{=latex}
+\hspace{0pt}
+\begin{tcolorbox}[colback=gray!10, colframe=gray!50, boxrule=0.5pt]
+...
+\newline
+  5. We encourage you to make assignments as if it were your own money.
+  \newline
+  6. To help you get into this mindset, the research team have decided to donate money to real-life charities based on the totals donated by all participants over the course of the experiment.
+  \newline
+  7. Once the experiment has concluded, you will receive an email detailing how the research team have split the money and which charities have been donated to.
+  \newline
+  ...
+\end{tcolorbox}
+\hspace{0pt}
+```
+
+Participants were informed that this was a deception following conclusion of the
+experiment. Following instructions, the experiment began. In a series of 108 
+experimental trials, participants were asked to split 100 dollars between two 
+charity infographics. Presentation order was randomised, including 6 attention 
+check trials which explicitly asked participants to assign 100 dollars to either 
+the left (n = 3) or the right (n = 3) charity infographic. An example of an
+experimental trial can be seen in @fig-example-trial. After completing all trials, 
+participants were debriefed regarding the deception employed and thanked for their participation.
+
+```{r}
+#| label: fig-example-trial
+#| fig-env: "figure*"
+#| include: true
+#| out-width: "100%"
+#| fig-cap: "An example of an experimental trial. Illustrated are the reminder to use all available money (A), the display of the current total (B), the trial counter (C), the left infographic and allocation box (D), and the right infographic and allocation box (E)."
+
+knitr::include_graphics("graphics/example_trial.png")
+```
+
+## Participants {#sec-participants}
+
+Participants were recruited using Prolific [@prolific]. English fluency and 
+normal or corrected-to-normal vision were required, as well as having not 
+previously taken part in any of the research team's previous studies into 
+scatterplot visualisations (references withheld for anon). In an effort to 
+improve data quality, strict pre-screening criteria were also employed 
+[@peer_2021]; participants were required to have previously completed at 
+least 100 studies on the platform, and were required to have been accepted 
+on at least 99% of them. Data were collected from 174 participants. 10 
+failed more than 3 out of 6 attention checks, meaning their submissions
+were rejected in accordance with our pre-registration[^4]. Data from the 
+remaining 164 participants were included in the full analysis 
+(`r printnum(gender$male, digits = 2)` male, `r printnum(gender$female, digits = 2)`
+female, and `r printnum(gender$non_binary, digits = 2)` non-binary). 
+Participants' mean age was `r printnum(age$mean, digits = 1)` (SD =
+`r printnum(age$sd, digits = 1)`). Participants took a mean of 
+`r printnum(time_taken$mean, digits = 1)` minutes to complete the 
+experiment (SD = `r printnum(time_taken$sd)`).
+
+[^4]: The pre-registration states that 150 participants would be recruited. 
+Additional participants were recruited due to an oversight, however all 
+conclusions and statistical results are identical when run with 164 or 150 participants.
+
+# Results {#sec-results}
+
+```{r}
+#| label: model-charity-likert
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+likert_model <- glmmTMB(prop_left ~ likert_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-charity-likert-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+likert_comp_model <- comparison(likert_model)
+```
+
+```{r}
+#| label: anova-charity-likert
+
+anova_results(likert_model, likert_comp_model)
+```
+
+<!----------------------------------------------------------------------------->
+
+```{r}
+#| label: model-charity-rank
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+rank_model <- glmmTMB(prop_left ~ rank_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-charity-rank-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+rank_comp_model <- comparison(rank_model)
+```
+
+```{r}
+#| label: anova-charity-rank
+
+anova_results(rank_model, rank_comp_model)
+```
+
+<!----------------------------------------------------------------------------->
+
+All analyses were conducted using R (version `r paste0(R.version$major, ".", R.version$minor)` 
+[@r_core]). Each hypothesis is first tested using a model that only includes the 
+fixed effect of interest. A full interaction model is then fitted taking into 
+account all fixed effects and the potential interactions between them. This model
+provides more conservative estimates; we therefore use the `marginaleffects`
+package (version 1.0.0 [@arel-bundock_2024]) with this model to calculate marginal effects over 
+the full ranges of each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
+In order to account for the beta distribution of the dependent
+variable (see Section \ref{sec-modelling}), all modelling uses a collapsed per-trial ratio 
+of left to right donation amounts. To increase interpretability, however, descriptive
+statistics, including relevant tables and visualisations, use uncollapsed donation
+means. All hypotheses received support and each is provided below prior to the reporting of
+relevant results. 
+
+```{=latex}
+
+\definecolor{nicegreen}{HTML}{3EB489}
+
+\hspace{0pt}
+\begin{tcolorbox}[colback=nicegreen, colframe=gray!50, boxrule=0.5pt]
+  H\textsubscript{1}: participants will donate more money to charities that they prefer, as tested by Likert scales and a charity ranking.
+\end{tcolorbox}
+\hspace{0pt}
+```
+
+To test the first hypothesis, that participants will donate greater proportions 
+of money to charities that they prefer, we built a pair of models whereby the 
+ratio of donations is predicted by the differences in Likert ratings of charities 
+and their ranks. With regards to the Likert ratings, the experimental model
+explained significantly more variance than the null 
+($\chi^2$(`r in_paren(likert_model.df)`) = `r printnum(likert_model.Chisq)`,
+*p* `r printp(likert_model.p, add_equals = TRUE)`), driven by the fixed effect
+of Likert rating. @fig-donation-lines-1 illustrates how mean donation amounts 
+change over the full range of Likert responses.
+
+With regards to charity rankings, the experimental model also explained 
+significantly more variance than the null ($\chi^2$(`r in_paren(rank_model.df)`) =
+`r printnum(rank_model.Chisq)`, *p* `r printp(rank_model.p, add_equals = TRUE)`),
+driven by the fixed effect of charity rank. @fig-donation-lines-2 illustrates 
+how mean donation amounts change over the three charity rankings.
+
+```{r}
+#| label: fig-donation-lines
+#| include: true
+#| fig-cap: "Mean donation amounts plotted by (a) Likert ratings, averaged across each charity rank, and (b) charity rank, averaged across all Likert ratings. 95\\% Confidence Intervals are included as error bars. In line with H\\textsubscript{1}, donation amounts increase with participants' ratings of charity importance and as participants rank charities more highly."
+#| fig-subcap:
+#|   - "Mean donation amounts plotted by Likert ratings."
+#|   - "Mean donation amounts plotted by charity rank."
+#| layout-ncol: 2
+#| fig-env: "figure*"
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_likert) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            ci_amount = 1.96 * sd(amount, na.rm = TRUE) / sqrt(sum(!is.na(amount))),
+            .groups = "drop") %>%
+  ggplot(aes(x = charity_likert, y = mean_amount)) +
+  geom_line(group = 1) +
+  geom_errorbar(aes(ymin = mean_amount - ci_amount, ymax = mean_amount + ci_amount),
+                width = 0) +
+  theme_ggdist() +
+  theme(axis.text = element_markdown(size = 15),
+        axis.title = element_markdown(size = 17)) +
+  labs(x = "Likert Rating (/7)",
+       y = "Mean Donation Amount")
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            ci_amount = 1.96 * sd(amount, na.rm = TRUE) / sqrt(sum(!is.na(amount))),
+            .groups = "drop") %>%
+  mutate(charity_rank = recode(charity_rank,
+                               "1" = "1^st^",
+                               "2" = "2^nd^",
+                               "3" = "3^rd^")) %>%
+  ggplot(aes(x = charity_rank, y = mean_amount)) +
+  geom_line(group = 1) +
+  geom_errorbar(aes(ymin = mean_amount - ci_amount, ymax = mean_amount + ci_amount),
+                width = 0) +
+  theme_ggdist() +
+  theme(axis.text = element_markdown(size = 15),
+        axis.title = element_markdown(size = 17)) +
+  labs(x = "Charity Rank",
+       y = "Mean Donation Amount") +
+  scale_x_discrete(limits = rev)
+```
+
+<!----------------------------------------------------------------------------->
+
+```{r}
+#| label: model-r-values
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+correlation_model <- glmmTMB(prop_left ~ correlation_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-r-values-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+correlation_comp_model <- comparison(correlation_model)
+```
+
+```{r}
+#| label: anova-r-values
+
+anova_results(correlation_model, correlation_comp_model)
+```
+
+```{=latex}
+
+\definecolor{nicegreen}{HTML}{3EB489}
+
+\hspace{0pt}
+\begin{tcolorbox}[colback=nicegreen, colframe=gray!50, boxrule=0.5pt]
+  H\textsubscript{2}: participants will donate more money to charities whose infographics feature scatterplots with higher \textit{r} values.
+\end{tcolorbox}
+\hspace{0pt}
+```
+
+To investigate the second hypothesis, that participants will donate more money 
+to charity infographics that feature scatterplots with higher *r* values, we built a model where 
+the donation ratio is predicted by the difference in *r* value between the two 
+infographics in each trial. The experimental model explained significantly more
+variance when compared to a null model without the fixed effect of *r* value
+($\chi^2$(`r in_paren(correlation_model.df)`) = `r printnum(correlation_model.Chisq)`,
+*p* `r printp(correlation_model.p, add_equals = TRUE)`), driven by the 
+significant main effect of *r* value. @tbl-donation-by-r shows means and
+standard deviations of donation amounts for each of the three *r* values used.
+
+```{r}
+#| label: tbl-donation-by-r
+#| include: true
+#| tbl-cap: "Means and standard deviations of donation amounts for each \\textit{r} value used."
+
+donation_behaviour_tidy_long %>%
+  mutate(correlation = factor(correlation)) %>%
+  group_by(correlation) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            sd_amount = sd(amount, na.rm = TRUE)) %>%
+  kable(format = "latex", booktabs = TRUE, digits = 1,
+        col.names = c("", "Mean", "SD")) %>%
+  kable_styling(latex_options = c("hold_position")) %>%
+  add_header_above(c("Correlation Value" = 1, "Donation" = 2))
+```
+
+<!----------------------------------------------------------------------------->
+
+```{r}
+#| label: model-plot-type
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+plot_type_model <- glmmTMB(prop_left ~ plot_type_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-plot-type-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+plot_type_comp_model <- comparison(plot_type_model)
+```
+
+```{r}
+#| label: anova-plot-type
+
+anova_results(plot_type_model, plot_type_comp_model)
+```
+
+```{=latex}
+
+\definecolor{nicegreen}{HTML}{3EB489}
+
+\hspace{0pt}
+\begin{tcolorbox}[colback=nicegreen, colframe=gray!50, boxrule=0.5pt]
+  H\textsubscript{3}: participants' donation amounts will be affected (non-directionally) by the type (standard or alternative) of scatterplot displayed.
+\end{tcolorbox}
+\hspace{0pt}
+```
+
+Finally, to investigate the third hypothesis, that participants' donation 
+amounts would be affected by the type of scatterplot used in the infographics 
+(standard or alternative), we built a model where donation ratio is 
+predicted by the type of plot used. The experimental model explained 
+significantly more variance when compared to a null model without the fixed 
+effect of plot type ($\chi^2$(`r in_paren(plot_type_model.df)`) = 
+`r printnum(plot_type_model.Chisq)`, *p* `r printp(plot_type_model.p, add_equals = TRUE)`). 
+@tbl-descriptives-donation-by-plot-type shows means and standard deviations
+of donation amounts for the two plot types, with participants donating significantly
+more to charities represented by infographics that used alternative scatterplots. 
+Despite only explaining a small amount of the variance in donations, this finding
+has significant implications for the design of data visualisations that are intending
+to drive behaviour change.
+
+```{r}
+#| label: tbl-descriptives-donation-by-plot-type
+#| include: true
+#| tbl-cap: "Means and standard deviations of donation amounts for standard and alternative plot types."
+
+donation_behaviour_tidy_long %>%
+  mutate(plot_type = factor(plot_type)) %>%
+  group_by(plot_type) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            sd_amount = sd(amount, na.rm = TRUE)) %>%
+  mutate(plot_type = recode(plot_type,
+                            "Norm" = "Standard",
+                            "Alt" = "Alternative")) %>%
+  kable(format = "latex", booktabs = TRUE, digits = 1,
+        col.names = c("", "Mean", "SD")) %>%
+  kable_styling(latex_options = c("hold_position")) %>%
+  add_header_above(c("Plot Type" = 1, "Donation" = 2))
+```
+
+<!----------------------------------------------------------------------------->
+
+```{r}
+#| label: model-interactions
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+interactions_model <- glmmTMB(prop_left ~ likert_diff_c * rank_diff_c
+                            * correlation_diff_c * plot_type_diff_c +
+                              (1 | participant) + (1 | trial_id),
+                            family = ordbeta(),
+                            data = donation_behaviour_tidy)
+```
+
+```{r}
+#| label: model-interactions-comparison
+#| eval: !expr params$eval_models
+#| cache: !expr params$eval_models
+
+interactions_comp_model <- comparison(plot_type_model)
+```
+
+```{r}
+#| label: anova-interactions
+
+anova_results(interactions_model, interactions_comp_model)
+```
+
+```{r}
+#| label: get-omni-anova-interactions
+
+aov_out_interactions <- car::Anova(interactions_model, type = 3)
+aov_apa_interactions <- apa_print(aov_out_interactions)
+```
+
+The effects of participants' charity preference, as measured by the Likert 
+rating and charity ranking, are much more influential than those of
+correlation value or plot type. Both to explore this more fully and to 
+investigate any potential interactions between our fixed effects, we build 
+a model where donation ratio is predicted by all four dependent variables 
+simultaneously. This model explains significantly more variance than a null
+model with no fixed effects ($\chi^2$(`r in_paren(interactions_model.df)`) 
+= `r printnum(interactions_model.Chisq)`, *p*
+`r printp(interactions_model.p, add_equals = TRUE)`). The only significant 
+interaction found by this model is that between charity rank and Likert
+ratings (`r aov_apa_interactions$full_result$likert_diff_c_rank_diff_c`). 
+Given that we anticipate more highly ranked charities to be awarded higher
+Likert ratings, this is an expected finding, however we explore the 
+interaction further in @fig-likert-rank-interactions.
+
+```{r}
+#| label: fig-likert-rank-interactions
+#| include: true
+#| fig-cap: "Mean donation amounts plotted for each charity rank and Likert rating. 95\\% Confidence Intervals are included as error bars. Note the peak in donation amount at charity rank 1 $\\times$ Likert rating 4."
+#| fig-env: "figure*"
+#| fig-asp: 0.6
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank, charity_likert) %>%
+  summarise(mean_amount = mean(amount, na.rm = TRUE),
+            ci_amount = 1.96 * sd(amount, na.rm = TRUE) / sqrt(sum(!is.na(amount))),
+            .groups = "drop") %>%
+  complete(charity_rank, charity_likert, fill = list(mean_amount = NA)) %>%
+  mutate(charity_rank = factor(charity_rank, levels = 1:3)) %>%
+    mutate(charity_rank = recode(charity_rank,
+                               "1" = "1^st^",
+                               "2" = "2^nd^",
+                               "3" = "3^rd^")) %>%
+  ggplot(aes(x = charity_likert, y = mean_amount, colour = charity_rank, group = charity_rank)) +
+  geom_line(linewidth = 1) +
+  #geom_point(size = 2) +
+  geom_errorbar(aes(ymin = mean_amount - ci_amount, ymax = mean_amount + ci_amount),
+                width = 0) +
+  scale_colour_brewer(palette = "Set1", name = "Charity Rank") +
+  scale_x_discrete(limits = as.character(1:7)) +
+  labs(x = "Charity Likert Rating", y = "Mean Donation Amount") +
+  theme_ggdist() +
+  annotate(geom = "text", label = '"1"^"st"', x = 7.25, y = 63, parse = TRUE) +
+  annotate(geom = "text", label = '"2"^"nd"', x = 7.25, y = 55.5, parse = TRUE) +
+  annotate(geom = "text", label = '"3"^"rd"', x = 7.25, y = 44.5, parse = TRUE) +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = c(0.1,0.8),
+        legend.text = element_markdown())
+```
+
+```{r}
+#| results: asis
+#| include: true
+
+marginal_effects_df <- avg_slopes(interactions_model) %>%
+  as_tibble() %>%
+  mutate(
+    estimate  = estimate  * case_when(
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
+    ),
+    std.error = std.error * case_when(
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
+    ),
+    conf.low  = conf.low  * case_when(
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
+    ),
+    conf.high = conf.high * case_when(
+      term == "likert_diff_c"      ~ 12   * 100,
+      term == "rank_diff_c"        ~ 4    * 100,
+      term == "correlation_diff_c" ~ 0.6  * 100,
+      term == "plot_type_diff_c"   ~ 2    * 100
+    ),
+    term = recode(term,
+      likert_diff_c      = "Relative Likert Rating",
+      rank_diff_c        = "Relative Rank Position",
+      correlation_diff_c = "Relative Correlation",
+      plot_type_diff_c   = "Relative Plot Type"),
+    `95\\% CI` = paste0("[", round(conf.low, 1), ", ", round(conf.high, 1), "]"),
+    estimate  = round(estimate, 1),
+    std.error = round(std.error, 1)) %>%
+  rename(`\\textit{p}` = "p.value") %>%
+  mutate(`\\textit{p}` = scales::pvalue(`\\textit{p}`)) %>%
+  arrange(desc(estimate)) %>%
+  select(term, `Estimate (\\%)` = estimate, `Std. Error (\\%)` = std.error,
+         statistic, `\\textit{p}`, `95\\% CI (\\%)` = `95\\% CI`)
+
+x <- kbl(
+  marginal_effects_df,
+  booktabs = TRUE,
+  escape = FALSE,
+  digits = c(2,2,2,2,2,2),
+  col.names = c("Parameter", "$\\Delta$ proportion donated (\\%)", "SE", "$z$", "$p$", "95\\% CI"),
+  caption = "\\label{tbl-marginal-effects-interactions}In lieu of a measure of effect sizes, we provide the total change in the proportion of money donated to the left-hand charity across the full range of each fixed effect, along with the associated statistics."
+) %>%
+  as.character()
+
+x <- gsub(
+  "\\\\begin\\{table\\}",
+  "\\\\begin{table*}",
+  x
+)
+
+x <- gsub(
+  "\\\\end\\{table\\}",
+  "\\\\end{table*}",
+  x
+)
+
+cat(x)
+```
+
+# Discussion {#sec-discussions}
+
+All three hypotheses were supported in this experiment. Participants' donation
+decisions were significantly affected by their subjective views of the importance
+of the charitable concerns, by the correlation displayed in each infographic, and
+by the type of scatterplot employed. These results add to evidence that preference
+is the strongest predictor of donation [@breeze_2013; @berman_2018; @macaskill_2019],
+and the finding that higher *r* values in plots increased donation amounts
+suggests that participants used the data visualisations when making their decisions.
+Not only are data visualisations incorporated into donation decisions, visual features
+which have previously been shown to affect correlation estimates and belief updating
+(point opacity and size) are also able to alter donation behaviour. Despite only
+being responsible for a small amount of donation behaviour change
+(see Table \ref{tbl-marginal-effects-interactions}), the huge amounts involved in charitable
+donations [@gov_report] mean that these findings represent an 
+opportunity to significantly increase donation amounts without having to tailor
+the design of advertising campaigns to different demographic groups. As this
+experiment represents a behavioural proxy, further work would be required to more
+fully explore the relationship between data visualisation and donation behaviour with
+a view to full implementation.
+
+## Donation Behaviour and Charity Preferences
+
+In line with some previous work [@breeze_2013; @berman_2018], participants gave a 
+significantly greater proportion of money to charities that they preferred, as 
+measured by Likert scales and a charity rank (see @fig-donation-lines). This finding is in opposition to
+that of She and Sanfey [@she_2023], from whom the charity categories, Likert rating,
+and ranking were taken. In their study, participants were asked to play a binary choice
+dictator game in which they could also assign money to themselves. As our primary
+interest is in the effects of data visualisations on donation behaviour, we elected
+not to recreate this measure, which could explain the differences in findings 
+between the two studies.
+
+@fig-donation-lines-1 and @fig-donation-lines-2 show the mostly linear positive
+relationships between donation amounts and Likert scale ratings and charity
+rankings respectively. The model, however, reveals an interaction, which
+is visualised in @fig-likert-rank-interactions. Visual inspection of
+@fig-likert-rank-interactions suggests two possible sources for this interaction:
+(1) the clear peak at Likert rating 4 that is seen only for the 1^st^ charity rank, or
+(2) the vertical separation between trend lines for ranks 1, 2, and 3. When 
+participants ranked a particular
+charity 1^st^, their donation amount is maximal when their Likert rating is at
+the midpoint of the scale. When a charity is ranked 2^nd^ or 3^rd^ however, the 
+relationship between donation amount and Likert scale rating is more linear.
+The mean donation amounts in @fig-likert-rank-interactions do not take into account
+the number of donation decisions for each combination of Likert scale rating and
+charity rank, meaning that a very small number of high-value donations associated with
+Likert rating 4 $\times$ 1^st^ charity rank may have skewed the descriptive
+statistics. Examining the distributions of donation decisions separately
+for each charity rank and Likert scale rating in @fig-donation-histos illustrates
+this. When a charity is ranked 2^nd^ or 3^rd^, the distribution of donation decisions
+approaches normal, albeit with different central tendencies. However, when a charity
+is ranked 1^st^, the distribution climbs to a peak at the top rating on the 
+Likert scale. The peak at Likert rating 4 $\times$ 1^st^ charity rank is actually driven
+by a very small number of high-value donation responses, meaning the interaction is most likely driven
+by the vertical distance between the trend lines.
+
+```{r}
+#| label: fig-donation-histos
+#| include: true
+#| fig-cap: "Histograms of donation decision counts for each charity rank and Likert rating. Note the distributions in each case, including the very small number of donation decisions for the charity rank 1 $\\times$ Likert rating 4 combination."
+#| fig-env: "figure*"
+#| fig-asp: 0.6
+
+donation_behaviour_tidy_long %>%
+  group_by(charity_rank, charity_likert) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  complete(charity_rank, charity_likert, fill = list(count = 0)) %>%
+  mutate(charity_rank = factor(charity_rank, levels = 1:3)) %>%
+  mutate(charity_rank = recode(charity_rank,
+                               "1" = '"1"^"st"',
+                               "2" = '"2"^"nd"',
+                               "3" = '"3"^"rd"')) %>%
+  ggplot(aes(x = charity_likert, y = count, fill = charity_rank)) +
+  geom_col(colour = "white", width = 1) +
+  scale_fill_brewer(palette = "Set1", name = "Charity Rank") +
+  scale_x_discrete(limits = as.character(1:7)) +
+  facet_wrap(~ charity_rank, ncol = 1, labeller = label_parsed, strip.position = "right") +
+  labs(x = "Charity Likert Rating", y = "Number of Donation Decisions") +
+  geom_curve(
+    data = data.frame(charity_rank = '"1"^"st"', x = 5.5, y_end_offset = 5),
+    aes(x = 3, y = 2500, xend = 4, yend = 500),
+    inherit.aes = FALSE,
+    curvature = -0.2,
+    arrow = arrow(length = unit(0.2, "cm")),
+    colour = "black"
+  ) +
+  geom_text(
+    data = data.frame(charity_rank = '"1"^"st"'),
+    aes(x = 2.6, y = 2500, label = "n = 360\ndonations"),
+    inherit.aes = FALSE, size = 3.5
+  ) +
+  theme_ggdist() +
+  theme(panel.grid.minor = element_blank(),
+        legend.position = "none",
+        strip.text.y = element_text(angle = 0))
+```
+
+## Effects of Visualisations on Behaviour
+
+```{r}
+#| label: tbl-RT-by-trial
+#| include: true
+#| tbl-cap: Mean reaction times (RT) for trials featuring two different scatterplots, two alternative scatterplots, and two standard scatterplots.
+
+donation_behaviour_tidy %>%
+  select(c("combo", "trial_RT")) %>%
+  group_by(combo) %>%
+  summarise(mean = mean(trial_RT), sd = sd(trial_RT)) %>%
+  rename("Mean RT" = "mean",
+         "Trial Type" = "combo",
+         "SD" = "sd") %>%
+  mutate("Trial Type" = recode(`Trial Type`,
+                               different_plots = "Different Plot Types",
+                               same_alt = "Same Plot: Alternative",
+                               same_standard = "Same Plot: Standard")) %>%
+  kbl(format = "latex",
+      booktabs = TRUE,
+      digits = c(2,2))
+```
+
+As predicted, participants donated more money to charities that featured 
+scatterplots with higher *r* values. If participants had paid no attention 
+to the data visualisations present,
+and relied only on their pre-existing attitudes about the charitable concerns
+contained in the visualisations, then we would not expect to see a difference
+in donations between scatterplots with different *r* values. The finding that
+donations vary significantly between *r* values (see @tbl-donation-by-r) 
+suggests that the data visualisations were being utilised by participants when 
+they were making their donation decisions.
+
+As in previous work examining the effects of alternative scatterplot design on
+belief updating [@strain_2025], we found significant differences in donation 
+amounts between standard and alternative scatterplots. Again, this finding 
+suggests that visual features in scatterplots are integrated into
+participants' donation decisions. Examining the mean reaction times for different
+types of trial in @tbl-RT-by-trial, we can see that reaction times are consistent
+across trial types, including when two alternative scatterplots were presented,
+when two standard scatterplots were presented, and when two different types 
+were presented. With regards to a dual-processing account [@padilla_2018], similar
+reaction times suggest that the stimuli are being processed in similar ways by
+participants. Evidence that correlation is perceived rapidly by viewers of
+scatterplots [@rensink_2014] suggests that, in the case of the present experiment,
+participants were spending more time to make a more informed decision, yet were
+still significantly influenced by both the *r* value of the plot in question
+and the specific point opacity and size encodings utilised.
+
+## Implications for the Design of Effective Advertising Campaigns
+
+Previous work highlights the myriad attributes which may
+predict people's donations to charitable causes [@neumayr_2019; @bekkers_2011;
+@breeze_2013; @berman_2018; @macaskill_2019], and the results of the present
+study show that most variation in donations can be accounted for by preference
+for or against particular charitable concerns. Targeted advertising [@iyer_2005]
+is able to address some of these concerns, but necessarily requires a greater financial
+investment and higher workloads -- outlays a charity may not be able to afford.
+The work presented here suggests that small changes in visual features are able to
+cause small changes in donation amounts. Extrapolated out to the \£27.43 billion
+in income derived from donations and legacies that UK  charities received in 2024 [@gov_report], these
+small changes in donations could potentially result in large amounts of increased
+income for no additional outlay.
+
+## Limitations
+
+The biggest limitation of the present study lies in whether or not participants
+acted as they would when choosing where to donate their own money. While we made efforts to
+lead participants to believe that their choices in the experiment would have 
+real-world consequences (see Section \ref{sec-procedure}), it is impossible to
+know whether our findings would be replicated in a real-world donation scenario.
+Reaction times to different combinations of stimuli suggest that participants processed
+both the standard and alternative scatterplots similarly; regardless, the alternative
+scatterplots may have elicited distrust or confusion in participants given their novel
+design.
+
+## Future Work {#sec-future-work}
+
+Before techniques such as those described in the present study can be used in 
+the real world, future work must determine whether they are able to cause the
+same effects in a naturalistic setting. Testing this would require collaboration
+with an organisation seeking donations, such as a charity, and the implementation
+of an Online Controlled Experiment, such as a form of A/B testing [@kohavi_2023].
+In such a scenario, donation amounts would be monitored while visitors to a website would
+be randomly presented with either standard or alternative scatterplots. Due to the
+difficulty in linking donations to advertisement/visualisation viewing, such a 
+study would have to take place longitudinally. 
+
+Due to the relative novelty of testing visualisations such as those described in
+this study, we elected to maintain congruence between the visualisations and the 
+messaging in the infographics. Future work may wish to test to what extent the
+effect of visualisation persists when text-based messaging is in opposition to
+it.
+
+Finally, future work should explore people's thoughts and feelings about alternative
+visualisation types. There is no reason for this to be restricted to alternatively
+designed scatterplots, and there is a wide range of data visualisations that would be
+unfamiliar to the majority of laypeople. It may be that any advantages of 
+unfamiliar visualisations are outweighed by feelings of distrust in them.
+
+# Conclusion {#sec-conclusion}
+
+In a fully-reproducible experiment, we investigated the effects of alternative
+scatterplot design on the propensity to donate money in an online 
+donation experiment. We collected a range of donation-relevant participant characteristics,
+and showed that while charity preference was able to explain most of the variation
+in donation amounts, the statistics communicated in scatterplots (correlation) and
+the visual character of those scatterplots were able to explain small but meaningful amounts of
+variance. Our results suggest that alternative scatterplot encodings which have
+previously been shown to influence correlation perception and belief-updating can
+also have effects on financial choices, and should be further studied as a low-cost way of
+influencing behaviour.
+
+# References {.unnumbered}

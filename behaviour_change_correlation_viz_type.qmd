@@ -78,12 +78,12 @@ acm-metadata:
   # comment this out to build a draft version
   final: true
   # comment this out to specify detailed document options
-  acmart-options: anonymous, review
+  acmart-options: anonymous, review, manuscript
   # acm preamble information
   copyright-year: 2027
   acm-year: 2027
   copyright: cc
-  doi: 10.1145/3706598.3713809
+  doi: 
   conference-acronym: "CHI'27"
   conference-name: CHI Conference on Human Factors in Computing Systems
     
