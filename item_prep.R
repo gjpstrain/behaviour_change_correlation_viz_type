@@ -259,7 +259,7 @@ pairs <- pairs %>%
   mutate(
     left_path  = gsub("stimuli/final_plots", "exp_resources/stimuli", left_path,  fixed = TRUE),
     right_path = gsub("stimuli/final_plots", "exp_resources/stimuli", right_path, fixed = TRUE)
-  ) # replace with final path for psychopy experiment
+  ) 
 
 instructions <- rep("Please complete the charity assignment. Make sure you use all your cash.",
                     times = 108) # instructions
