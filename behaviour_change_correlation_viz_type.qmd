@@ -724,7 +724,7 @@ it into $(0,1)$. This method has faced criticism for actively distorting the
 data, so we instead chose to use Kubinec's ordered beta regression 
 [@kubinec_2022], which allows for the building of a single model that takes 
 into account the continuous $(0,1)$ range and the $[0,1]$ bounds. These models
-were fitted using the `glmmTMB` package [@mcgillycuddy_2025]. All models 
+were fitted using the `glmmTMB` package (version 1.1.14 [@mcgillycuddy_2025]). All models 
 featured random intercepts for both participants and experimental items.
 
 ## Stimuli {#sec-stimuli}
@@ -1062,7 +1062,7 @@ All analyses were conducted using R (version `r paste0(R.version$major, ".", R.v
 fixed effect of interest. A full interaction model is then fitted taking into 
 account all fixed effects and the potential interactions between them. This model
 provides more conservative estimates; we therefore use the `marginaleffects`
-package [@arel-bundock_2024] with this model to calculate marginal effects over 
+package (version 1.0.0 [@arel-bundock_2024]) with this model to calculate marginal effects over 
 the full ranges of each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
 In order to account for the beta distribution of the dependent
 variable (see Section \ref{sec-modelling}), all modelling uses a collapsed per-trial ratio 

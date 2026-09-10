@@ -113,7 +113,8 @@
 \usepackage{float}
 \usepackage{colortbl}
 \usepackage{pdflscape}
-\usepackage{tabu}
+\usepackage{tabularx}
+\usepackage{xltabular}
 \usepackage{threeparttable}
 \usepackage{threeparttablex}
 \usepackage[normalem]{ulem}
@@ -675,8 +676,9 @@ distorting the data, so we instead chose to use Kubinec's ordered beta
 regression \citep{kubinec_2022}, which allows for the building of a
 single model that takes into account the continuous \((0,1)\) range and
 the \([0,1]\) bounds. These models were fitted using the
-\texttt{glmmTMB} package \citep{mcgillycuddy_2025}. All models featured
-random intercepts for both participants and experimental items.
+\texttt{glmmTMB} package (version 1.1.14 \citep{mcgillycuddy_2025}). All
+models featured random intercepts for both participants and experimental
+items.
 
 \subsection{Stimuli}\label{sec-stimuli}
 
@@ -923,10 +925,11 @@ hypothesis is first tested using a model that only includes the fixed
 effect of interest. A full interaction model is then fitted taking into
 account all fixed effects and the potential interactions between them.
 This model provides more conservative estimates; we therefore use the
-\texttt{marginaleffects} package \citep{arel-bundock_2024} with this
-model to calculate marginal effects over the full ranges of each fixed
-effect in Table \ref{tbl-marginal-effects-interactions}. In order to
-account for the beta distribution of the dependent variable (see Section
+\texttt{marginaleffects} package (version 1.0.0
+\citep{arel-bundock_2024}) with this model to calculate marginal effects
+over the full ranges of each fixed effect in Table
+\ref{tbl-marginal-effects-interactions}. In order to account for the
+beta distribution of the dependent variable (see Section
 \ref{sec-modelling}), all modelling uses a collapsed per-trial ratio of
 left to right donation amounts. To increase interpretability, however,
 descriptive statistics, including relevant tables and visualisations,
