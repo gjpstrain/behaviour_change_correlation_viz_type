@@ -681,7 +681,8 @@ feature scatterplots with higher *r* values.
 Finally, in light of evidence that modified scatterplots can produce higher
 estimates of correlation and greater levels of belief change regarding
 relatedness, we formulate the third  hypothesis. This hypothesis is non-directional
-due to small effects sizes reported in a previous study that utilised these techniques:
+due to small effects sizes reported in a previous study that utilised these techniques
+[@strain_2024; @strain_2025]:
 
 - H~3~: participants' donation amounts will be affected (non-directionally)
 by the type (standard or alternative) of scatterplot displayed.
