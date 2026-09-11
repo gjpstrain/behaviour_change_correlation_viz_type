@@ -16,22 +16,6 @@ NB: Aside from anonymisation, data are provided *as-is*. The **wrangle** functio
 
 Resources are provided for the full reproduction of the computational environment (R, Rstudio, and package versions) that was used for data wrangling, visualisation, statistical modelling, and reporting.
 
-### Using Podman
-
-To begin, clone this repository to your local machine. With a [Podman machine started](https://podman.io/docs/installation) in the background, use a terminal (or cmd on Windows) to navigate to the cloned repository and type the following command:
-
-```podman build -t donation_behaviour  .```
-
-If you're using a machine with an ARM processor, such as Apple Silicon, use the following command to build an image:
-
-```podman buildx build --platform linux/amd64 -t donation_behaviour .```
-
-Then, type:
-
-```podman run --rm -p 8787:8787 -e PASSWORD=password -e RUNROOTLESS=false donation_behaviour```
-
-### Using Docker
-
 To begin, clone this repository to your local machine. With [Docker desktop](https://docs.docker.com/desktop/) running in the background, use a terminal (or cmd on Windows) to navigate to the cloned repository and type the following command:
 
 ```docker build -t donation_behaviour  .```
