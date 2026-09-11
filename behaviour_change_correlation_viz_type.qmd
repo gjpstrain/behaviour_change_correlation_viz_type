@@ -707,7 +707,7 @@ using the `renv` package [@ushey_2026] in R, this container allows for full
 replication of all stimuli, figures, analyses, and the paper itself. Ethical 
 approval was granted by *removed for anon*.
 
-[^1]: https://osf.io/kywt9/overview?view_only=1f677775eb80467dae61c7502bc3305f
+[^1]: https://osf.io/bmg5z/overview?view_only=bf13e77a9df849709919a2a9d6501d4b
 
 [^2]: https://anonymous.4open.science/r/behaviour_change_correlation_viz_type-FAF1/README.md
 
