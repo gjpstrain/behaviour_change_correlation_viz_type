@@ -542,7 +542,7 @@ underlying data; varying the sizes and opacities of scatterplot points can chang
 perceptions of correlation [@strain_2023; @strain_2023a; @strain_2024], 
 perceptions of data magnitudes and ratio are affected by axis orientations and
 truncation [@bradley_2025; @mckinley_2026], and line characteristics affect 
-judgements of global means in line charts [@moritz_2023].
+judgements of global means in line charts [@moritz_2024].
 
 There is also a body of literature that provides evidence that perceptual 
 effects may influence cognition.
