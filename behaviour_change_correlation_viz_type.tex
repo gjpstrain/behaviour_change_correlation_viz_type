@@ -1,6 +1,31 @@
-\documentclass[anonymous, review, manuscript]{acmart}
-
-
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  authoryear,
+  preprint,
+  3p]{elsarticle}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \IfFileExists{microtype.sty}{% use microtype if available
   \usepackage[]{microtype}
@@ -16,54 +41,30 @@
 }{% if KOMA class
   \KOMAoptions{parskip=half}}
 \makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
 
-%%
-%% This is file `sample-manuscript.tex',
-%% generated with the docstrip utility.
-%%
-%% The original source files were:
-%%
-%% samples.dtx  (with options: `manuscript')
-%% 
-%% IMPORTANT NOTICE:
-%% 
-%% For the copyright see the source file.
-%% 
-%% Any modified versions of this file must be renamed
-%% with new filenames distinct from sample-manuscript.tex.
-%% 
-%% For distribution of the original source see the terms
-%% for copying and modification in the file samples.dtx.
-%% 
-%% This generated file may be distributed as long as the
-%% original source files, as listed above, are part of the
-%% same distribution. (The sources need not necessarily be
-%% in the same archive or directory.)
-%%
-%%
-%% Commands for TeXCount
-%TC:macro \cite [option:text,text]
-%TC:macro \citep [option:text,text]
-%TC:macro \citet [option:text,text]
-%TC:envir table 0 1
-%TC:envir table* 0 1
-%TC:envir tabular [ignore] word
-%TC:envir displaymath 0 word
-%TC:envir math 0 word
-%TC:envir comment 0 0
-%%
-%%
-%% The first command in your LaTeX source must be the \documentclass command.
-
-
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
-
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-
-%% PANDOC PREAMBLE BEGINS
 
 \usepackage{longtable,booktabs,array}
 \newcounter{none} % for unnumbered tables
@@ -103,6 +104,9 @@
 
 
 
+ 
+\usepackage[]{natbib}
+\bibliographystyle{elsarticle-harv}
 
 
 \usepackage{booktabs}
@@ -121,7 +125,6 @@
 \usepackage{makecell}
 \usepackage{xcolor}
 \usepackage{tcolorbox}
-\definecolor{mypink}{RGB}{219, 48, 122}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -163,160 +166,70 @@
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
-%% PANDOC PREAMBLE ENDS
-
-\setlength{\parindent}{10pt}
-\setlength{\parskip}{0pt}
-
+\journal{International Journal of Human-Computer Studies}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
 \hypersetup{
   pdftitle={Using Data Visualisation to Influence Donation Behaviour},
   pdfauthor={Gabriel Strain; Aadityaa Mehrotra; Caroline Jay; Paul A. Warren; Andrew J. Stewart},
+  pdfkeywords={\xmpquote{donation
+behaviour}, \xmpquote{scatterplot}, \xmpquote{crowdsourced}},
   colorlinks=true,
   linkcolor={blue},
   filecolor={Maroon},
   citecolor={Blue},
-  urlcolor={red},
-  pdfcreator={LaTeX via pandoc, via quarto}}
-
-%% \BibTeX command to typeset BibTeX logo in the docs
-\AtBeginDocument{%
-  \providecommand\BibTeX{{%
-    Bib\TeX}}}
-
-%% Rights management information.  This information is sent to you
-%% when you complete the rights form.  These commands have SAMPLE
-%% values in them; it is your responsibility as an author to replace
-%% the commands and values with those provided to you when you
-%% complete the rights form.
-\setcopyright{cc}
-\copyrightyear{2027}
-\acmYear{2027}
-\acmDOI{}
-
-%% These commands are for a PROCEEDINGS abstract or paper.
-\acmConference[CHI'27]{CHI Conference on Human Factors in Computing
-Systems}{April 26-May 1, 2027}{Pittsburgh, USA}
-\acmPrice{}
-%%
-%%  Uncomment \acmBooktitle if the title of the proceedings is different
-%%  from ``Proceedings of ...''!
-%%
-
-\acmISBN{}
-
-%% Submission ID.
-%% Use this when submitting an article to a sponsored event. You'll
-%% receive a unique submission ID from the organizers
-%% of the event, and this ID should be used as the parameter to this command.
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
 
 
-%%
-%% For managing citations, it is recommended to use bibliography
-%% files in BibTeX format.
-%%
-%% You can then either use BibTeX with the ACM-Reference-Format style,
-%% or BibLaTeX with the acmnumeric or acmauthoryear sytles, that include
-%% support for advanced citation of software artefact from the
-%% biblatex-software package, also separately available on CTAN.
-%%
-%% Look at the sample-*-biblatex.tex files for templates showcasing
-%% the biblatex styles.
-%%
-
-%%
-%% The majority of ACM publications use numbered citations and
-%% references.  The command \citestyle{authoryear} switches to the
-%% "author year" style.
-%%
-%% If you are preparing content for an event
-%% sponsored by ACM SIGGRAPH, you must use the "author year" style of
-%% citations and references.
-%% Uncommenting
-%% the next command will enable that style.
-%%\citestyle{acmauthoryear}
-
-
-
-%% end of the preamble, start of the body of the document source.
+\setlength{\parindent}{6pt}
 \begin{document}
 
-
-%%
-%% The "title" command has an optional parameter,
-%% allowing the author to define a "short title" to be used in page headers.
+\begin{frontmatter}
 \title{Using Data Visualisation to Influence Donation Behaviour}
+\author[1]{Gabriel Strain%
+\corref{cor1}%
+}
+ \ead{gabriel.strain@manchester.ac.uk} 
+\author[1]{Aadityaa Mehrotra%
+%
+}
+ \ead{aadityaa.mehrotra@student.manchester.ac.uk} 
+\author[1]{Caroline Jay%
+%
+}
+ \ead{caroline.jay@manchester.ac.uk} 
+\author[2]{Paul A. Warren%
+%
+}
+ \ead{paul.warren@manchester.ac.uk} 
+\author[1]{Andrew J. Stewart%
+%
+}
+ \ead{andrew.j.stewart@manchester.ac.uk} 
 
-%%
-%% The "author" command and its associated commands are used to define
-%% the authors and their affiliations.
-%% Of note is the shared affiliation of the first two authors, and the
-%% "authornote" and "authornotemark" commands
-%% used to denote shared contribution to the research.
+\affiliation[1]{organization={University of Manchester, Department of
+Computer Science, Faculty of Science and
+Engineering},addressline={Oxford Road},city={Manchester},country={United
+Kingdom},countrysep={,},postcode={M13 9PL},postcodesep={}}
+\affiliation[2]{organization={University of Manchester, Division of
+Psychology, Communication and Human Neuroscience, School of Health
+Sciences, Faculty of Biology, Medicine, and Health},addressline={Oxford
+Road},city={Manchester},country={United
+Kingdom},countrysep={,},postcode={M13 9PL},postcodesep={}}
+
+\cortext[cor1]{Corresponding author}
 
 
-  \author{Gabriel Strain}
-  \orcid{0000-0002-4769-9221}
-            \affiliation{%
-                  \institution{Department of Computer Science, Faculty
-of Science and Engineering, University of Manchester}
-                          \streetaddress{Oxford Road}
-                          \city{Manchester}
-                                  \country{United Kingdom}
-                          \postcode{M13 9PL}
-              }
-        \author{Aadityaa Mehrotra}
-  \orcid{0009-0003-9344-6000}
-            \affiliation{%
-                  \institution{Department of Computer Science, Faculty
-of Science and Engineering, University of Manchester}
-                          \streetaddress{Oxford Road}
-                          \city{Manchester}
-                                  \country{United Kingdom}
-                          \postcode{M13 9PL}
-              }
-        \author{Caroline Jay}
-  \orcid{0000-0002-6080-1382}
-            \affiliation{%
-                  \institution{Department of Computer Science, Faculty
-of Science and Engineering, University of Manchester}
-                          \streetaddress{Oxford Road}
-                          \city{Manchester}
-                                  \country{United Kingdom}
-                          \postcode{M13 9PL}
-              }
-        \author{Paul A. Warren}
-  \orcid{0000-0002-4071-7650}
-            \affiliation{%
-                  \institution{Division of Psychology, Communication and
-Human Neuroscience, School of Health Sciences, Faculty of Biology,
-Medicine, and Health, University of Manchester}
-                          \streetaddress{Oxford Road}
-                          \city{Manchester}
-                                  \country{United Kingdom}
-                          \postcode{M13 9PL}
-              }
-        \author{Andrew J. Stewart}
-  \orcid{0000-0002-9795-4104}
-            \affiliation{%
-                  \institution{Department of Computer Science, Faculty
-of Science and Engineering, University of Manchester}
-                          \streetaddress{Oxford Road}
-                          \city{Manchester}
-                                  \country{United Kingdom}
-                          \postcode{M13 9PL}
-              }
-      
-%% By default, the full list of authors will be used in the page
-%% headers. Often, this list is too long, and will overlap
-%% other information printed in the page headers. This command allows
-%% the author to define a more concise list
-%% of authors' names for this purpose.
-%\renewcommand{\shortauthors}{Trovato et al.}
-\renewcommand{\shortauthors}{Strain et al.}
 
-%%  
-%% The abstract is a short summary of the work to be presented in the
-%% article.
+
+
+        
 \begin{abstract}
 This paper examines whether optimising scatterplots to support
 correlation perception can influence financial decision-making. Previous
@@ -333,56 +246,19 @@ design choices have practical consequences for domains in which data
 visualisations are used to inform judgement, persuasion, and
 decision-making. We discuss the implications for the use of data
 visualisations in advertising and identify future directions for
-research on behaviour change following exposure to visual
-information.    
+research on behaviour change following exposure to visual information.
 \end{abstract}
 
-%%
-%% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
-%% Please copy and paste the code instead of the example below.
-%%
-\begin{CCSXML}
-<ccs2012>
- <concept>
-  <concept_id>10003120.10003145</concept_id>
-  <concept_desc>Human-centered computing~Visualization</concept_desc>
-  <concept_significance>500</concept_significance>
- </concept>
- <concept>
-  <concept_id>10003120.10003145.10011769</concept_id>
-  <concept_desc>Human-centered computing~Empirical studies in visualization</concept_desc>
-  <concept_significance>500</concept_significance>
- </concept>
- <concept>
-  <concept_id>10003120.10003145.10011770</concept_id>
-  <concept_desc>Human-centered computing~Visualization design and evaluation methods</concept_desc>
-  <concept_significance>300</concept_significance>
- </concept>
- <concept>
-  <concept_id>10003120.10003121.10011748</concept_id
-  <concept_desc>Human-centered computing~Empirical studies in HCI</concept_desc>
-  <concept_significance>500</concept_significance>
- </concept>
-</ccs2012>
-\end{CCSXML}
-
-\ccsdesc[500]{Human-centered computing~Visualization}
-\ccsdesc[500]{Human-centered computing~Empirical studies in visualization}
-\ccsdesc[300]{Human-centered computing~Visualization design and evaluation methods}
-\ccsdesc[500]{Human-centered computing~Empirical studies in HCI}
-
-%%
-%% Keywords. The author(s) should pick words that accurately describe
-%% the work being presented. Separate the keywords with commas.
-\keywords{donation behaviour, scatterplot, crowdsourced}
 
 
-%%
-%% This command processes the author and affiliation and title
-%% information and builds the first part of the formatted document.
-\maketitle
 
-\setlength{\parskip}{-0.1pt}
+
+\begin{keyword}
+    donation behaviour \sep scatterplot \sep 
+    crowdsourced
+\end{keyword}
+\end{frontmatter}
+    
 
 \section{Introduction}\label{sec-intro}
 
@@ -1346,19 +1222,10 @@ correlation perception and belief-updating can also have effects on
 financial choices, and should be further studied as a low-cost way of
 influencing behaviour.
 
-\bibliographystyle{ACM-Reference-Format}
+
+\renewcommand\refname{References}
 \bibliography{donation_behaviour.bib}
 
-%% begin pandoc before-bib
-%% end pandoc before-bib
-%% begin pandoc biblio
-%% end pandoc biblio
-%% begin pandoc include-after
-%% end pandoc include-after
-%% begin pandoc after-body
-%% end pandoc after-body
+
 
 \end{document}
-\endinput
-%%
-%% End of file `sample-manuscript.tex'.
