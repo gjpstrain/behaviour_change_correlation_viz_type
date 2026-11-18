@@ -703,11 +703,12 @@ Docker container [@boettiger_2015] that reproduces the computational environment
 in which the paper was written. By capturing package versions and dependencies 
 using the `renv` package [@ushey_2026] in R, this container allows for full 
 replication of all stimuli, figures, analyses, and the paper itself. Ethical 
-approval was granted by *removed for anon*.
+approval was granted by the University of Manchester's Proportionate University
+Research Ethics Committee (Reference: 2026-26031-46636).
 
-[^1]: https://osf.io/bmg5z/overview?view_only=bf13e77a9df849709919a2a9d6501d4b
+[^1]: https://osf.io/bmg5z
 
-[^2]: https://anonymous.4open.science/r/behaviour_change_correlation_viz_type-FAF1/README.md
+[^2]: https://github.com/gjpstrain/behaviour_change_correlation_viz_type
 
 ## Modelling {#sec-modelling}
 
@@ -920,7 +921,7 @@ amount of money participants assigned to the left and right charity
 infographics on a per-trial basis. The experiment, including all stimuli, 
 materials, and instructions, are hosted on GitLab[^3].
 
-[^3]: removed for anon.
+[^3]: https://pavlovia.org/Strain/donation_behaviour
 
 ## Procedure {#sec-procedure}
 
@@ -982,7 +983,7 @@ knitr::include_graphics("graphics/example_trial.png")
 Participants were recruited using @prolific. English fluency and 
 normal or corrected-to-normal vision were required, as well as having not 
 previously taken part in any of the research team's previous studies into 
-scatterplot visualisations (references withheld for anon). In an effort to 
+scatterplot visualisations [@strain_2023; @strain_2023a; @strain_2024; @strain_2025]. In an effort to 
 improve data quality, strict pre-screening criteria were also employed 
 [@peer_2021]; participants were required to have previously completed at 
 least 100 studies on the platform, and were required to have been accepted 
@@ -1716,5 +1717,11 @@ variance. Our results suggest that alternative scatterplot encodings which have
 previously been shown to influence correlation perception and belief-updating can
 also have effects on financial choices, and should be further studied as a low-cost way of
 influencing behaviour.
+
+# Declaration of generative AI and AI-assisted technologies in the manuscript preparation process. {.unnumbered}
+
+During the preparation of this work the author(s) used [NAME OF TOOL/SERVICE] 
+to [REASON]. After using this tool/service, the author(s) reviewed and edited
+the content as needed and take(s) full responsibility for the content of the published article.
 
 # References {.unnumbered}
