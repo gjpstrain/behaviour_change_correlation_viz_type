@@ -84,7 +84,20 @@ highlights:
   - Visual design choices have consequences for persuasion and decision-making
 
 abstract: |
-  Can optimising scatterplots to support correlation perception also influence financial decision-making? Previous research has shown that relatively small changes in the visual design of scatterplots can affect perceived correlation and the extent to which people update their beliefs. Here, we test whether such perceptual effects not only impact beliefs, but are also able to influence subsequent behaviours. In a fully reproducible online experiment using a charitable donation paradigm, we show that scatterplots optimised for correlation perception also influence behavioural outcomes, and that participants engage with and incorprate data visualisations into their decisions and behaviours. These findings indicate that visual design choices have practical consequences for domains in which data visualisations are used to inform judgement, persuasion, and decision-making. We discuss the implications for the use of data visualisations in advertising and identify future directions for research on behaviour change following exposure to visual information.
+  Can optimising scatterplots to support correlation perception also influence 
+  financial decision-making? Previous research has shown that relatively small 
+  changes in the visual design of scatterplots can affect perceived correlation 
+  and the extent to which people update their beliefs. Here, we test whether such 
+  perceptual effects not only impact beliefs, but are also able to influence 
+  subsequent behaviours. In a fully reproducible online experiment using a 
+  charitable allocation paradigm, we show that scatterplots optimised for correlation
+  perception also influence behavioural outcomes, and that participants engage 
+  with and incorprate data visualisations into their decisions and behaviours. 
+  These findings indicate that visual design choices have practical consequences 
+  for domains in which data visualisations are used to inform judgement, 
+  persuasion, and decision-making. We discuss the implications for the use of
+  data visualisations in advertising and identify future directions for research 
+  on behaviour change following exposure to visual information.
 ---
 
 ```{r}
@@ -260,6 +273,7 @@ wrangle <- function(anon_file) {
       ),
       by = c("participant", "right_charity")
     ) %>%
+    filter(total_amount == 100) %>%     # remove trials where total != 100 (errors)
     mutate(
       likert_diff   = as.numeric(left_charity_likert) - as.numeric(right_charity_likert),
       rank_diff     = (4 - as.numeric(left_charity_rank)) - (4 - as.numeric(right_charity_rank)),
@@ -275,7 +289,6 @@ wrangle <- function(anon_file) {
         same_plot_type & left_plot_type == "Alt"  ~ "same_alt",
       TRUE ~ "different_plots"
     )) %>%
-    filter(total_amount == 100) %>%     # remove trials where total != 100 (errors)
     assign(paste0(unique(anon_file$expName), "_tidy"),
            value = ., envir = .GlobalEnv)
 }
@@ -386,38 +399,66 @@ prepare_slopes <- function (my_desired_r) {
 ## comparison function
 
 comparison <- function(model) {
-  
-  parens <- function(x) paste0("(",x,")")
-  onlyBars <- function(form) reformulate(sapply(findbars(form),
-                                              function(x)  parens(deparse(x))),
-                                       response=".")
-  onlyBars(formula(model))
-  cmpr_model <- update(model,onlyBars(formula(model)))
-  
-  return(cmpr_model)
-  
+
+  reduced_formula <- lme4::subbars(formula(model))
+  reduced_formula <- update(reduced_formula, . ~ 1)
+
+  random_terms <- lme4::findbars(formula(model))
+
+  random_text <- vapply(
+    random_terms,
+    function(x) paste0("(", paste(deparse(x), collapse = ""), ")"),
+    character(1)
+  )
+
+  reduced_formula <- update(
+    reduced_formula,
+    paste(". ~ . +", paste(random_text, collapse = " + "))
+  )
+
+  update(model, formula = reduced_formula)
 }
 
-# anova results function
 
 anova_results <- function(model, cmpr_model) {
-  
-  model_name <- deparse(substitute(model))
-  
-  if (class(model) == "buildmer") model <- model@model
-  if (class(cmpr_model) == "buildmer") cmpr_model <- cmpr_model@model
-    
-  anova_output <- anova(model, cmpr_model)
 
-  assign(paste0(model_name, ".Chisq"),
-         anova_output$Chisq[2],
-         envir = .GlobalEnv)
-  assign(paste0(model_name, ".df"),
-         anova_output$Df[2],
-         envir = .GlobalEnv)
-  assign(paste0(model_name, ".p"),
-         anova_output$`Pr(>Chisq)`[2],
-         envir = .GlobalEnv)
+  model_name <- deparse(substitute(model))
+
+  stopifnot(
+    inherits(model, "glmmTMB"),
+    inherits(cmpr_model, "glmmTMB"),
+    nobs(model) == nobs(cmpr_model)
+  )
+
+  ll_full <- logLik(model)
+  ll_null <- logLik(cmpr_model)
+
+  df_difference <- attr(ll_full, "df") - attr(ll_null, "df")
+
+  stopifnot(df_difference > 0)
+
+  # Put the reduced model first for an easily inspected table.
+  anova_output <- anova(cmpr_model, model)
+
+  assign(
+    paste0(model_name, ".Chisq"),
+    anova_output$Chisq[2],
+    envir = .GlobalEnv
+  )
+
+  assign(
+    paste0(model_name, ".df"),
+    df_difference,
+    envir = .GlobalEnv
+  )
+
+  assign(
+    paste0(model_name, ".p"),
+    anova_output$`Pr(>Chisq)`[2],
+    envir = .GlobalEnv
+  )
+
+  invisible(anova_output)
 }
 ```
 
@@ -458,7 +499,7 @@ Testing whether visualisation modifications such as these are able to affect not
 only how we perceive data, but also our subsequent actions is a much harder problem to 
 solve. To this end, we present a single, crowdsourced, online experiment 
 that situates novel scatterplot visualisation techniques in charity
-infographics. We use a forced donation task, whereby participants must share 
+infographics. We use a forced donation allocation task, whereby participants must share 
 money between charities represented by infographics including standard and 
 alternatively-designed scatterplots, and collect and analyse participants' 
 charity preferences. We build a range of models to show that while preference 
@@ -485,7 +526,8 @@ scatterplot matrices used for exploratory data analysis in machine learning
 paradigms, pictorial representations of data are ubiquitous. On a base level,
 their popularity speaks to the human tendency to represent our world visually.
 Despite this, there is relatively little literature exploring how data
-visualisation may affect the ways people behave. Clearly, there is the assumption (or hope), that data visualisations are able 
+visualisation may affect the ways people behave. 
+Clearly, there is the assumption (or hope), that data visualisations are able 
 to affect behaviour to a certain degree. If this were not the case, they would 
 not be displayed in hospitals to promote health behaviours or by environmental
 charities to promote green behaviours. There is a wealth of evidence suggesting
@@ -540,7 +582,11 @@ fundraising activities leaves more money to be spent on charitable activities.
 Data visualisation, which has been shown in some contexts to be more 
 persuasive than textual information [@pandey_2014] and able to affect the levels
 to which people change their beliefs [@karduni_2021; @markant_2023; @strain_2025],
-is an untapped resource with regards to creating more effective advertising materials.
+is a relatively untapped resource with regards to creating more effective advertising materials.
+Investigations of the use of anthropomorphic visualisation have found limited 
+evidence for their efficacy with regard to increasing donation amounts [@boy_2017; @morais_2021],
+while showing real pictures to potential donors (the so-called *Identifiable
+Victim Effect*) has been shown to have positive effects on donation [@genevsky_2013].
 
 The literature on donation behaviour is generally focused on the characteristics 
 of donors, and often makes a distinction between choosing to donate at all and 
@@ -669,7 +715,9 @@ Each experimental trial featured two stimuli. As participants were asked to
 split 100 dollars between the two charities displayed in the infographics, 
 each trial also featured two linked responses. For modelling purposes, 
 each pair of linked responses was reduced to a donation ratio between the
-left and right infographics. This ratio, in range $[0,1]$ exists on a 
+left and right infographics; a ratio of 1 corresponds to all money being allocated
+to the left charity, while a ratio of 0 corresponds to all money being
+allocated to the right charity. This ratio, in range $[0,1]$ exists on a 
 beta distribution. In its standard form, beta regression cannot handle values 
 of precisely 0 or 1 [@ferrari_2004]. @smithson_2006
 proposed transforming values at the boundary of the distribution to force 
@@ -1251,7 +1299,7 @@ interactions_model <- glmmTMB(prop_left ~ likert_diff_c * rank_diff_c
 #| eval: !expr params$eval_models
 #| cache: !expr params$eval_models
 
-interactions_comp_model <- comparison(plot_type_model)
+interactions_comp_model <- comparison(interactions_model)
 ```
 
 ```{r}
@@ -1321,67 +1369,136 @@ donation_behaviour_tidy_long %>%
 #| results: asis
 #| include: true
 
-marginal_effects_df <- avg_slopes(interactions_model) %>%
+get_centre <- function(raw, centred) {
+
+  offsets <- raw - centred
+  offsets <- offsets[is.finite(offsets)]
+
+  stopifnot(length(offsets) > 0L)
+
+  centre <- mean(offsets)
+
+  stopifnot(max(abs(offsets - centre)) < 1e-8)
+
+  centre
+}
+
+centres <- c(
+  likert_diff_c = get_centre(
+    donation_behaviour_tidy$likert_diff,
+    donation_behaviour_tidy$likert_diff_c
+  ),
+  rank_diff_c = get_centre(
+    donation_behaviour_tidy$rank_diff,
+    donation_behaviour_tidy$rank_diff_c
+  ),
+  correlation_diff_c = get_centre(
+    donation_behaviour_tidy$correlation_diff,
+    donation_behaviour_tidy$correlation_diff_c
+  ),
+  plot_type_diff_c = get_centre(
+    donation_behaviour_tidy$plot_type_diff,
+    donation_behaviour_tidy$plot_type_diff_c
+  )
+)
+
+
+contrast_values <- list(
+  likert_diff_c =
+    c(-6, 6) - centres[["likert_diff_c"]],
+
+  rank_diff_c =
+    c(-2, 2) - centres[["rank_diff_c"]],
+
+  correlation_diff_c =
+    c(-0.6, 0.6) - centres[["correlation_diff_c"]],
+
+  plot_type_diff_c =
+    c(-1, 1) - centres[["plot_type_diff_c"]]
+)
+
+comparison_data <- model.frame(interactions_model)
+
+allocation_contrasts <- marginaleffects::avg_comparisons(
+  interactions_model,
+  variables = contrast_values,
+  newdata = comparison_data,
+  comparison = "difference",
+  type = "response",
+  re.form = NA,
+  conf_level = 0.95
+)
+
+marginal_effects_df <- allocation_contrasts %>%
   as_tibble() %>%
   mutate(
-    estimate  = estimate  * case_when(
-      term == "likert_diff_c"      ~ 12   * 100,
-      term == "rank_diff_c"        ~ 4    * 100,
-      term == "correlation_diff_c" ~ 0.6  * 100,
-      term == "plot_type_diff_c"   ~ 2    * 100
+    across(
+      c(estimate, std.error, conf.low, conf.high),
+      ~ .x * 100
     ),
-    std.error = std.error * case_when(
-      term == "likert_diff_c"      ~ 12   * 100,
-      term == "rank_diff_c"        ~ 4    * 100,
-      term == "correlation_diff_c" ~ 0.6  * 100,
-      term == "plot_type_diff_c"   ~ 2    * 100
-    ),
-    conf.low  = conf.low  * case_when(
-      term == "likert_diff_c"      ~ 12   * 100,
-      term == "rank_diff_c"        ~ 4    * 100,
-      term == "correlation_diff_c" ~ 0.6  * 100,
-      term == "plot_type_diff_c"   ~ 2    * 100
-    ),
-    conf.high = conf.high * case_when(
-      term == "likert_diff_c"      ~ 12   * 100,
-      term == "rank_diff_c"        ~ 4    * 100,
-      term == "correlation_diff_c" ~ 0.6  * 100,
-      term == "plot_type_diff_c"   ~ 2    * 100
-    ),
-    term = recode(term,
-      likert_diff_c      = "Relative Likert Rating",
-      rank_diff_c        = "Relative Rank Position",
+    term = recode(
+      term,
+      likert_diff_c = "Relative Likert Rating",
+      rank_diff_c = "Relative Rank Position",
       correlation_diff_c = "Relative Correlation",
-      plot_type_diff_c   = "Relative Plot Type"),
-    `95\\% CI` = paste0("[", round(conf.low, 1), ", ", round(conf.high, 1), "]"),
-    estimate  = round(estimate, 1),
-    std.error = round(std.error, 1)) %>%
-  rename(`\\textit{p}` = "p.value") %>%
-  mutate(`\\textit{p}` = scales::pvalue(`\\textit{p}`)) %>%
+      plot_type_diff_c = "Relative Plot Type"
+    ),
+    ci_text = sprintf(
+      "[%.1f, %.1f]",
+      conf.low,
+      conf.high
+    ),
+    p_text = scales::pvalue(p.value)
+  ) %>%
   arrange(desc(estimate)) %>%
-  select(term, `Estimate (\\%)` = estimate, `Std. Error (\\%)` = std.error,
-         statistic, `\\textit{p}`, `95\\% CI (\\%)` = `95\\% CI`)
+  select(
+    term,
+    estimate,
+    std.error,
+    statistic,
+    p_text,
+    ci_text
+  )
 
 x <- kbl(
   marginal_effects_df,
+  format = "latex",
   booktabs = TRUE,
   escape = FALSE,
-  digits = c(2,2,2,2,2,2),
-  col.names = c("Parameter", "$\\Delta$ proportion donated (\\%)", "SE", "$z$", "$p$", "95\\% CI"),
-  caption = "\\label{tbl-marginal-effects-interactions}In lieu of a measure of effect size, we provide the total change in the proportion of money donated to the left-hand charity across the full range of each fixed effect, along with the associated statistics."
+  digits = c(0, 1, 1, 2, 0, 0),
+  col.names = c(
+    "Parameter",
+    "$\\Delta$ allocation (pp)",
+    "SE",
+    "$z$",
+    "$p$",
+    "95\\% CI"
+  ),
+  caption = paste0(
+    "\\label{tbl-marginal-effects-interactions}",
+    "Average predicted differences in the share allocated to the ",
+    "left-hand charity in percentage points (pp), over the full theoretical range of",
+    "each predictor. These are:",
+    "Likert rating, $-6$ to $+6$; ",
+    "rank position, $-2$ to $+2$; ",
+    "correlation, $-0.6$ to $+0.6$; ",
+    "and plot type, $-1$ to $+1$. "
+  )
 ) %>%
   as.character()
 
 x <- gsub(
-  "\\\\begin\\{table\\}",
-  "\\\\begin{table*}",
-  x
+  "\\begin{table}",
+  "\\begin{table*}",
+  x,
+  fixed = TRUE
 )
 
 x <- gsub(
-  "\\\\end\\{table\\}",
-  "\\\\end{table*}",
-  x
+  "\\end{table}",
+  "\\end{table*}",
+  x,
+  fixed = TRUE
 )
 
 cat(x)

@@ -237,7 +237,7 @@ relatively small changes in the visual design of scatterplots can affect
 perceived correlation and the extent to which people update their
 beliefs. Here, we test whether such perceptual effects not only impact
 beliefs, but are also able to influence subsequent behaviours. In a
-fully reproducible online experiment using a charitable donation
+fully reproducible online experiment using a charitable allocation
 paradigm, we show that scatterplots optimised for correlation perception
 also influence behavioural outcomes, and that participants engage with
 and incorprate data visualisations into their decisions and behaviours.
@@ -302,8 +302,8 @@ affect not only how we perceive data, but also our subsequent actions is
 a much harder problem to solve. To this end, we present a single,
 crowdsourced, online experiment that situates novel scatterplot
 visualisation techniques in charity infographics. We use a forced
-donation task, whereby participants must share money between charities
-represented by infographics including standard and
+donation allocation task, whereby participants must share money between
+charities represented by infographics including standard and
 alternatively-designed scatterplots, and collect and analyse
 participants' charity preferences. We build a range of models to show
 that while preference for charitable concerns is responsible for most of
@@ -391,9 +391,14 @@ and other fundraising activities leaves more money to be spent on
 charitable activities. Data visualisation, which has been shown in some
 contexts to be more persuasive than textual information
 \citep{pandey_2014} and able to affect the levels to which people change
-their beliefs \citep{karduni_2021, markant_2023, strain_2025}, is an
-untapped resource with regards to creating more effective advertising
-materials.
+their beliefs \citep{karduni_2021, markant_2023, strain_2025}, is a
+relatively untapped resource with regards to creating more effective
+advertising materials. Investigations of the use of anthropomorphic
+visualisation have found limited evidence for their efficacy with regard
+to increasing donation amounts \citep{boy_2017, morais_2021}, while
+showing real pictures to potential donors (the so-called
+\emph{Identifiable Victim Effect}) has been shown to have positive
+effects on donation \citep{genevsky_2013}.
 
 The literature on donation behaviour is generally focused on the
 characteristics of donors, and often makes a distinction between
@@ -544,12 +549,14 @@ Each experimental trial featured two stimuli. As participants were asked
 to split 100 dollars between the two charities displayed in the
 infographics, each trial also featured two linked responses. For
 modelling purposes, each pair of linked responses was reduced to a
-donation ratio between the left and right infographics. This ratio, in
-range \([0,1]\) exists on a beta distribution. In its standard form,
-beta regression cannot handle values of precisely 0 or 1
-\citep{ferrari_2004}. \citet{smithson_2006} proposed transforming values
-at the boundary of the distribution to force it into \((0,1)\). This
-method has faced criticism for actively distorting the data, so we
+donation ratio between the left and right infographics; a ratio of 1
+corresponds to all money being allocated to the left charity, while a
+ratio of 0 corresponds to all money being allocated to the right
+charity. This ratio, in range \([0,1]\) exists on a beta distribution.
+In its standard form, beta regression cannot handle values of precisely
+0 or 1 \citep{ferrari_2004}. \citet{smithson_2006} proposed transforming
+values at the boundary of the distribution to force it into \((0,1)\).
+This method has faced criticism for actively distorting the data, so we
 instead chose to use Kubinec's \citeyearpar{kubinec_2022} ordered beta
 regression, which allows for the building of a single model that takes
 into account the continuous \((0,1)\) range and the \([0,1]\) bounds.
@@ -827,13 +834,13 @@ proportions of money to charities that they prefer, we built a pair of
 models whereby the ratio of donations is predicted by the differences in
 Likert ratings of charities and their ranks. With regards to the Likert
 ratings, the experimental model explained significantly more variance
-than the null (\(\chi^2\)(7) = 4,847.57, \emph{p} \textless{} .001),
+than the null (\(\chi^2\)(1) = 4,847.57, \emph{p} \textless{} .001),
 driven by the fixed effect of Likert rating.
 Figure~\ref{fig-donation-lines-1} illustrates how mean donation amounts
 change over the full range of Likert responses.
 
 With regards to charity rankings, the experimental model also explained
-significantly more variance than the null (\(\chi^2\)(7) = 3,547.23,
+significantly more variance than the null (\(\chi^2\)(1) = 3,547.23,
 \emph{p} \textless{} .001), driven by the fixed effect of charity rank.
 Figure~\ref{fig-donation-lines-2} illustrates how mean donation amounts
 change over the three charity rankings.
@@ -889,7 +896,7 @@ money to charity infographics that feature scatterplots with higher
 by the difference in \emph{r} value between the two infographics in each
 trial. The experimental model explained significantly more variance when
 compared to a null model without the fixed effect of \emph{r} value
-(\(\chi^2\)(7) = 119.92, \emph{p} \textless{} .001), driven by the
+(\(\chi^2\)(1) = 119.92, \emph{p} \textless{} .001), driven by the
 significant main effect of \emph{r} value. Table~\ref{tbl-donation-by-r}
 shows means and standard deviations of donation amounts for each of the
 three \emph{r} values used.
@@ -931,7 +938,7 @@ donation amounts would be affected by the type of scatterplot used in
 the infographics (standard or alternative), we built a model where
 donation ratio is predicted by the type of plot used. The experimental
 model explained significantly more variance when compared to a null
-model without the fixed effect of plot type (\(\chi^2\)(7) = 14.47,
+model without the fixed effect of plot type (\(\chi^2\)(1) = 14.47,
 \emph{p} \textless{} .001).
 Table~\ref{tbl-descriptives-donation-by-plot-type} shows means and
 standard deviations of donation amounts for the two plot types, with
@@ -971,7 +978,7 @@ of correlation value or plot type. Both to explore this more fully and
 to investigate any potential interactions between our fixed effects, we
 build a model where donation ratio is predicted by all four independent
 variables simultaneously. This model explains significantly more
-variance than a null model with no fixed effects (\(\chi^2\)(21) =
+variance than a null model with no fixed effects (\(\chi^2\)(15) =
 5,329.70, \emph{p} \textless{} .001). The only significant interaction
 found by this model is that between charity rank and Likert ratings
 (\(\chi^2(1) = 82.94\), \(p < .001\)). Given that we anticipate more
@@ -996,16 +1003,16 @@ at charity rank 1 \(\times\) Likert rating 4.}
 
 \begin{table*}
 
-\caption{\label{tab:unnamed-chunk-2}\label{tbl-marginal-effects-interactions}In lieu of a measure of effect size, we provide the total change in the proportion of money donated to the left-hand charity across the full range of each fixed effect, along with the associated statistics.}
+\caption{\label{tab:unnamed-chunk-2}\label{tbl-marginal-effects-interactions}Average predicted differences in the share allocated to the left-hand charity in percentage points (pp), over the full theoretical range ofeach predictor. These are:Likert rating, $-6$ to $+6$; rank position, $-2$ to $+2$; correlation, $-0.6$ to $+0.6$; and plot type, $-1$ to $+1$. }
 \centering
 \begin{tabular}[t]{lrrrll}
 \toprule
-Parameter & $\Delta$ proportion donated (\%) & SE & $z$ & $p$ & 95\% CI\\
+Parameter & $\Delta$ allocation (pp) & SE & $z$ & $p$ & 95\% CI\\
 \midrule
-Relative Likert Rating & 69.6 & 1.7 & 40.54 & <0.001 & {}[66.3, 73]\\
-Relative Rank Position & 9.4 & 0.6 & 14.92 & <0.001 & {}[8.1, 10.6]\\
-Relative Correlation & 3.8 & 0.3 & 12.51 & <0.001 & {}[3.2, 4.4]\\
-Relative Plot Type & 2.7 & 0.5 & 5.43 & <0.001 & {}[1.7, 3.7]\\
+Relative Likert Rating & 64.8 & 1.2 & 55.08 & <0.001 & {}[62.5, 67.1]\\
+Relative Rank Position & 10.0 & 0.7 & 14.78 & <0.001 & {}[8.7, 11.4]\\
+Relative Correlation & 8.0 & 0.6 & 12.51 & <0.001 & {}[6.8, 9.3]\\
+Relative Plot Type & 2.8 & 0.5 & 5.40 & <0.001 & {}[1.8, 3.9]\\
 \bottomrule
 \end{tabular}
 \end{table*}
