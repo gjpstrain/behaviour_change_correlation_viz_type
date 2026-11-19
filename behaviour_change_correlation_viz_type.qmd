@@ -504,7 +504,7 @@ money between charities represented by infographics including standard and
 alternatively-designed scatterplots, and collect and analyse participants' 
 charity preferences. We build a range of models to show that while preference 
 for charitable concerns is responsible for most of the variance in 
-donation behaviour, both the data displayed in the plot and the alternative 
+donation allocation behaviour, both the data displayed in the plot and the alternative 
 scatterplot point encoding have significant effects. 
 
 # Related Work {#sec-related-work}
@@ -625,7 +625,7 @@ of charity preference ratings and rankings in the present study.
 
 ## Correlation Perception and Modified Scatterplots {#sec-corr-percept}
 
-In addition to testing whether data visualisation can influence donation 
+In addition to testing whether data visualisation can influence donation allocation
 decisions, we also aim to test a recently developed scatterplot 
 visualisation technique. Scatterplots, which are primarily used to visualise
 the correlation between pairs of variables, are a widely used type of data 
@@ -662,6 +662,9 @@ perception and belief change of scatterplot visualisation techniques such as the
 been demonstrated, it remains to be seen whether they can additionally affect behavioural intention.
 
 # Hypotheses {#sec-hypotheses}
+
+Our experiment seeks to investigate the impact of alternative scatterplot
+design techniques on donation behaviour. 
 
 We formulate the first hypothesis based on previous evidence that people 
 will donate more money to charitable concerns that they prefer:
