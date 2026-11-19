@@ -664,7 +664,13 @@ been demonstrated, it remains to be seen whether they can additionally affect be
 # Hypotheses {#sec-hypotheses}
 
 Our experiment seeks to investigate the impact of alternative scatterplot
-design techniques on donation behaviour. 
+design techniques on donation behaviour. We expected any effects found to be 
+small relative to the effect of other factors (such as charity preference),
+meaning we designed our experiment to capture these small effects. To this end,
+we used a forced donation allocation paradigm, whereby participants had to share
+$100\$$ between two fictional charities based on their infographics such that the
+total was always $100\$$.
+
 
 We formulate the first hypothesis based on previous evidence that people 
 will donate more money to charitable concerns that they prefer:
