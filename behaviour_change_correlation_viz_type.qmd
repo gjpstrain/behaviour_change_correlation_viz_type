@@ -17,6 +17,7 @@ knitr:
   opts_chunk:
     cache_comments: false
     crop: true
+    out-width: "100%"
 
 execute:
   echo: false
@@ -55,16 +56,16 @@ author:
     orcid: 0009-0003-9344-6000
     affiliations:
       - ref: cs
-  - name: Caroline Jay
-    email: caroline.jay@manchester.ac.uk
-    orcid: 0000-0002-6080-1382
-    affiliations:
-      - ref: cs
   - name: Paul A. Warren
     email: paul.warren@manchester.ac.uk
     orcid: 0000-0002-4071-7650
     affiliations:
       - ref: psych
+  - name: Caroline Jay
+    email: caroline.jay@manchester.ac.uk
+    orcid: 0000-0002-6080-1382
+    affiliations:
+      - ref: cs
   - name: Andrew J. Stewart
     email: andrew.j.stewart@manchester.ac.uk
     orcid: 0000-0002-9795-4104
@@ -341,6 +342,7 @@ plot_example_function <- function (df, t = NULL, o, s, title_size) {
           legend.position = "none",
           axis.title.x = element_blank(),
           axis.title.y = element_blank(),
+          axis.ticks = element_blank(),
           axis.line = element_line(linewidth = 0.25))
   
   if (!is.null(t)) {
@@ -650,7 +652,7 @@ Examples of scatterplots that use these modifications can be seen on the top
 row of @fig-raw-example-plots. In addition to being able to manipulate estimates 
 of correlation, there is also evidence that the same technique can change the 
 extent to which participants update their beliefs about the levels of
-relatedness between a pair of variables [@strain_2025]. While the effects on  
+relatedness between a pair of variables [@strain_2025]. While the effects on 
 perception and belief change of scatterplot visualisation techniques such as these have
 been demonstrated, it remains to be seen whether they can additionally affect behavioural intention.
 
@@ -661,8 +663,8 @@ design techniques on donation behaviour. We expected any effects found to be
 small relative to the effect of other factors (such as charity preference),
 meaning we designed our experiment to capture these small effects. To this end,
 we used a forced donation allocation paradigm, whereby participants had to share
-$100\$$ between two fictional charities based on their infographics such that the
-total was always $100\$$. Participants therefore provided two linked outputs per
+$\$100$ between two fictional charities based on their infographics such that the
+total was always $\$100$. Participants therefore provided two linked outputs per
 trial which were reduced to a donation allocation ratio between the left and 
 right-hand charities. We formulate the first hypothesis based on previous evidence that people 
 will donate more money to charitable concerns that they prefer:
@@ -1717,13 +1719,17 @@ previously been shown to influence correlation perception and belief-updating ca
 also have effects on financial choices, and should be further studied as a low-cost way of
 influencing behaviour.
 
+# CRediT authorship contribution statement {.unnumbered}
+
+Gabriel Strain: Conceptualization, Data curation, Formal analysis, Investigation, Methodology, Project administration, Resources, Software, Visualization, Writing - Original Draft, Writing - Review & Editing; Aadityaa Mehrotra: Conceptualization, Resources, Writing - Review & Editing; Paul A. Warren: Conceptualization, Supervision, Writing - Review & Editing; Caroline Jay: Conceptualization, Supervision, Writing - Review & Editing; Andrew J. Stewart: Conceptualization, Supervision, Validation, Writing - Review & Editing.
+
 # Declaration of generative AI and AI-assisted technologies in the manuscript preparation process. {.unnumbered}
 
 During the preparation of this work the authors used Claude and Microsoft Copilot
 to debug analysis code. After using this tool/service, the authors reviewed and edited
 the content as needed and take full responsibility for the content of the published article.
 
-# Acknowledgements
+# Acknowledgements {.unnumbered}
 
 This research did not receive any specific grant from funding agencies in the public,
 commercial, or not-for-profit sectors.
