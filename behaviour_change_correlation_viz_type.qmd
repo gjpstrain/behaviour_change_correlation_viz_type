@@ -76,13 +76,6 @@ keywords:
   - scatterplot
   - crowdsourced
 
-# Draft highlights (max 85 characters each) -- edit freely
-highlights:
-  - Scatterplots optimised for correlation perception shifted donation behaviour
-  - Tests whether perceptual visualisation effects extend to financial decisions
-  - Fully reproducible crowdsourced study using a charitable donation paradigm
-  - Visual design choices have consequences for persuasion and decision-making
-
 abstract: |
   Can optimising scatterplots to support correlation perception also influence 
   financial decision-making? Previous research has shown that relatively small 
@@ -669,10 +662,9 @@ small relative to the effect of other factors (such as charity preference),
 meaning we designed our experiment to capture these small effects. To this end,
 we used a forced donation allocation paradigm, whereby participants had to share
 $100\$$ between two fictional charities based on their infographics such that the
-total was always $100\$$.
-
-
-We formulate the first hypothesis based on previous evidence that people 
+total was always $100\$$. Participants therefore provided two linked outputs per
+trial which were reduced to a donation allocation ratio between the left and 
+right-hand charities. We formulate the first hypothesis based on previous evidence that people 
 will donate more money to charitable concerns that they prefer:
 
 - H~1~: participants will donate more money to charities that they prefer,
@@ -724,9 +716,9 @@ Research Ethics Committee (Reference: 2026-26031-46636).
 Each experimental trial featured two stimuli. As participants were asked to
 split 100 dollars between the two charities displayed in the infographics, 
 each trial also featured two linked responses. For modelling purposes, 
-each pair of linked responses was reduced to a donation ratio between the
-left and right infographics; a ratio of 1 corresponds to all money being allocated
-to the left charity, while a ratio of 0 corresponds to all money being
+each pair of linked responses was reduced to a donation allocation ratio between the
+left and right infographics; a ratio value of 1 corresponds to all money being allocated
+to the left charity, while a value of 0 corresponds to all money being
 allocated to the right charity. This ratio, in range $[0,1]$ exists on a 
 beta distribution. In its standard form, beta regression cannot handle values 
 of precisely 0 or 1 [@ferrari_2004]. @smithson_2006
@@ -927,8 +919,8 @@ featured the same charity for a final total of 108 experimental trials.
 Participants viewed all 108 experimental trials, along with 6 attention 
 check trials, in a fully-randomised order. Our dependent variable was the
 amount of money participants assigned to the left and right charity 
-infographics on a per-trial basis. The experiment, including all stimuli, 
-materials, and instructions, are hosted on GitLab[^3].
+infographics on a per-trial basis, collapsed into a single ratio value.
+The experiment, including all stimuli, materials, and instructions, are hosted on GitLab[^3].
 
 [^3]: https://pavlovia.org/Strain/donation_behaviour
 
@@ -1005,11 +997,11 @@ female, and `r printnum(gender$non_binary, digits = 2)` non-binary).
 Participants' mean age was `r printnum(age$mean, digits = 1)` (SD =
 `r printnum(age$sd, digits = 1)`). Participants took a mean of 
 `r printnum(time_taken$mean, digits = 1)` minutes to complete the 
-experiment (SD = `r printnum(time_taken$sd)`).
+experiment (SD = `r printnum(time_taken$sd, digits = 1)` minutes).
 
 [^4]: The pre-registration states that 150 participants would be recruited. 
-Additional participants were recruited due to an oversight, however all 
-conclusions and statistical results are identical when run with 164 or 150 participants.
+Additional participants were recruited due to an oversight before the data were 
+inspected, and the analysis here is done using the full dataset.
 
 # Results {#sec-results}
 
@@ -1074,8 +1066,7 @@ account all fixed effects and the potential interactions between them. This mode
 provides more conservative estimates; we therefore use the `marginaleffects`
 package [version 1.0.0, @arel-bundock_2024] with this model to calculate marginal effects over 
 the full ranges of each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
-In order to account for the beta distribution of the dependent
-variable (see Section \ref{sec-modelling}), all modelling uses a collapsed per-trial ratio 
+All modelling uses a collapsed per-trial ratio 
 of left to right donation amounts. To increase interpretability, however, descriptive
 statistics, including relevant tables and visualisations, use uncollapsed donation
 means. All hypotheses received support and each is provided below prior to the reporting of
@@ -1488,7 +1479,7 @@ x <- kbl(
     "\\label{tbl-marginal-effects-interactions}",
     "Average predicted differences in the share allocated to the ",
     "left-hand charity in percentage points (pp), over the full theoretical range of",
-    "each predictor. These are:",
+    "each predictor. These are: ",
     "Likert rating, $-6$ to $+6$; ",
     "rank position, $-2$ to $+2$; ",
     "correlation, $-0.6$ to $+0.6$; ",
@@ -1525,7 +1516,7 @@ and the finding that higher *r* values in plots increased donation amounts
 suggests that participants engaged with and used the data visualisations when making their decisions.
 Not only are data visualisations incorporated into donation decisions, visual features
 which have previously been shown to affect correlation estimates and belief updating
-(point opacity and size) are also able to alter donation behaviour. Despite only
+(point opacity and size) are also able to alter donation allocation behaviour. Despite only
 being responsible for a small amount of donation behaviour change
 (see Table \ref{tbl-marginal-effects-interactions}), the huge amounts involved in charitable
 donations [@gov_report] mean that these findings represent an 
@@ -1537,13 +1528,13 @@ a view to full implementation.
 
 ## Donation Behaviour and Charity Preferences
 
-In line with some previous work [@breeze_2013; @berman_2018], participants gave a 
+In line with some previous work [@breeze_2013; @berman_2018], participants allocated a 
 significantly greater proportion of money to charities that they preferred, as 
 measured by Likert scales and a charity rank (see @fig-donation-lines). This finding is in opposition to
 that of @she_2023, from whom the charity categories, Likert rating,
 and ranking were taken. In their study, participants were asked to play a binary choice
 dictator game in which they could also assign money to themselves. As our primary
-interest is in the effects of data visualisations on donation behaviour, we elected
+interest is in the effects of data visualisations on behaviour, we elected
 not to recreate this measure, which could explain the differences in findings 
 between the two studies.
 
@@ -1688,7 +1679,8 @@ know whether our findings would be replicated in a real-world donation scenario.
 Reaction times to different combinations of stimuli suggest that participants processed
 both the standard and alternative scatterplots similarly; regardless, the alternative
 scatterplots may have elicited distrust or confusion in participants given their novel
-design.
+design. Our outcome, the proportion of money allocated to each charity on a per-trial
+basis, also limits the extent to which we can comment on real-life donation scenarios.
 
 ## Future Work {#sec-future-work}
 
@@ -1706,9 +1698,7 @@ Due to the relative novelty of testing visualisations such as those described in
 this study, we elected to maintain congruence between the visualisations and the 
 messaging in the infographics. Future work may wish to test to what extent the
 effect of visualisation persists when text-based messaging is in opposition to
-it.
-
-Finally, future work should explore people's thoughts and feelings about alternative
+it. Finally, future work should explore people's thoughts and feelings about alternative
 visualisation types. There is no reason for this to be restricted to alternatively
 designed scatterplots, and there is a wide range of data visualisations that would be
 unfamiliar to the majority of laypeople. It may be that any advantages of 
@@ -1729,8 +1719,13 @@ influencing behaviour.
 
 # Declaration of generative AI and AI-assisted technologies in the manuscript preparation process. {.unnumbered}
 
-During the preparation of this work the author(s) used [NAME OF TOOL/SERVICE] 
-to [REASON]. After using this tool/service, the author(s) reviewed and edited
-the content as needed and take(s) full responsibility for the content of the published article.
+During the preparation of this work the authors used Claude and Microsoft Copilot
+to debug analysis code. After using this tool/service, the authors reviewed and edited
+the content as needed and take full responsibility for the content of the published article.
+
+# Acknowledgements
+
+This research did not receive any specific grant from funding agencies in the public,
+commercial, or not-for-profit sectors.
 
 # References {.unnumbered}
