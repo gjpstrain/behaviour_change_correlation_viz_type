@@ -1003,7 +1003,7 @@ experiment (SD = `r printnum(time_taken$sd, digits = 1)` minutes).
 
 [^4]: The pre-registration states that 150 participants would be recruited. 
 Additional participants were recruited due to an oversight before the data were 
-inspected, and the analysis here is done using the full dataset.
+inspected, and all analyses are done using the full dataset.
 
 # Results {#sec-results}
 
@@ -1250,7 +1250,7 @@ anova_results(plot_type_model, plot_type_comp_model)
 \hspace{0pt}
 ```
 
-Finally, to investigate the third hypothesis, that participants' donation 
+Finally, to investigate the third hypothesis, that participants' donation allocation
 amounts would be affected by the type of scatterplot used in the infographics 
 (standard or alternative), we built a model where donation ratio is 
 predicted by the type of plot used. The experimental model explained 
