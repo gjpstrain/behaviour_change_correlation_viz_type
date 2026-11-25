@@ -17,9 +17,5 @@ COPY behaviour_change_correlation_viz_type_cache/ ./behaviour_change_correlation
 COPY data/ ./data/
 COPY donation_behaviour.bib ./
 COPY behaviour_change_correlation_viz_type.qmd ./
-COPY ACM-Reference-Format.bst ./
-COPY acmart.cls ./
-
-# install doclicense package to recreate ACM licensing
-
-RUN R -e "tinytex::tlmgr_install('doclicense')"
+COPY elsarticle-harv.bst ./
+COPY elsarticle.cls ./
