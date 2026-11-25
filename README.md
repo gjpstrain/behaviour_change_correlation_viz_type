@@ -30,13 +30,13 @@ Then, type:
 
 ***
 
-Once the container is running, open a web browser and type `localhost:8787` in the address bar. Enter the username `rstudio` and the password `password`. This will generate a fully functioning Rstudio session running from the Podman container.
+Once the container is running, open a web browser and type `localhost:8787` in the address bar. Enter the username `rstudio` and the password `password`. This will generate a fully functioning Rstudio session running from the Docker container.
 
 ## Re-creating the manuscript
 
 Opening `donation_behaviour_correlation_viz_type.qmd` and using the 'Knit' button (or shift+k) will allow you to re-create a .pdf of the manuscript.
 
-IMPORTANT: Models have been cached to increase performance. The cache will not be recognised automatically when using RStudio within the Podman container. eval_models must be set to FALSE in line Y in order to use the cached models. This will prevent knitr from executing the code for each model, but will 'lazyload' all cached models so they can be used in manuscript generation. Setting eval_models to TRUE in line Y will result in all models being re-generated.
+IMPORTANT: Models have been cached to increase performance. The cache will not be recognised automatically when using RStudio within the Docker container. eval_models must be set to FALSE in line 14 in order to use the cached models. This will prevent knitr from executing the code for each model, but will 'lazyload' all cached models so they can be used in manuscript generation. Setting eval_models to TRUE in line Y will result in all models being re-generated.
 
 The manuscript was written using the ACM CHI template.
 
