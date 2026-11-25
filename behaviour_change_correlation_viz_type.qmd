@@ -86,7 +86,7 @@ abstract: |
   subsequent behaviours. In a fully reproducible online experiment using a 
   charitable allocation paradigm, we show that scatterplots optimised for correlation
   perception also influence behavioural outcomes, and that participants engage 
-  with and incorprate data visualisations into their decisions and behaviours. 
+  with and incorporate data visualisations into their decisions and behaviours. 
   These findings indicate that visual design choices have practical consequences 
   for domains in which data visualisations are used to inform judgement, 
   persuasion, and decision-making. We discuss the implications for the use of
@@ -480,15 +480,15 @@ Part of designing visualisations in such a way is understanding how small
 variations in them, of the kind that might traditionally be thought of as 
 purely aesthetic choice, can change the perceptions, cognitions, and behaviours 
 of those who view them. Recent work investigating a novel form of scatterplot
-point encoding found that lowering the opacity and size of scatterplots points 
+point encoding found that lowering the opacity and size of scatterplot points 
 as a function of residual magnitude, both separately [@strain_2023; @strain_2023a]
 and together [@strain_2024], can have significant effects on perceptions of 
-correlation. These techniques were used to correct for a historic 
+correlation. These techniques were used to correct for a longstanding 
 underestimation bias, and have additionally been shown to affect the degree to
 which people's beliefs about the levels of relatedness between a variable pair 
 change [@strain_2025]. In addition to providing new options to designers who 
 wish to highlight different visualisation features, studies such as these can 
-provide insight into how data concepts are interpreted more generally.
+provide insight into how data concepts are interpreted more generally by viewers.
 
 Testing whether visualisation modifications such as these are able to affect not
 only how we perceive data, but also our subsequent actions is a much harder problem to 
@@ -496,8 +496,8 @@ solve. To this end, we present a single, crowdsourced, online experiment
 that situates novel scatterplot visualisation techniques in charity
 infographics. We use a forced donation allocation task, whereby participants must share 
 money between charities represented by infographics including standard and 
-alternatively-designed scatterplots, and collect and analyse participants' 
-charity preferences. We build a range of models to show that while preference 
+alternative scatterplots, and collect and analyse participants' 
+charity preferences and donation allocation behaviours. We build a range of models to show that while preference 
 for charitable concerns is responsible for most of the variance in 
 donation allocation behaviour, both the data displayed in the plot and the alternative 
 scatterplot point encoding have significant effects. 
@@ -509,7 +509,7 @@ of data visualisation and behaviour change. We then explore our chosen
 behaviour-change paradigm, donation behaviour, particularly in response to 
 infographics and other forms of informative advertising. This section 
 concludes by reviewing the modified scatterplots used to elicit behaviour
-change, followed by a statement of our hypotheses.
+change in the present study, followed by a statement of our hypotheses.
 
 ## Behaviour and Data Visualisation {#sec-behaviour-data-viz}
 
@@ -524,8 +524,8 @@ Despite this, there is relatively little literature exploring how data
 visualisation may affect the ways people behave. 
 Clearly, there is the assumption (or hope), that data visualisations are able 
 to affect behaviour to a certain degree. If this were not the case, they would 
-not be displayed in hospitals to promote health behaviours or by environmental
-charities to promote green behaviours. There is a wealth of evidence suggesting
+not be displayed in hospitals to promote positive health behaviours or by environmental
+charities to promote environmentally friendly choices. There is a wealth of evidence suggesting
 that data visualisations in different forms can affect perceptions of
 underlying data; varying the sizes and opacities of scatterplot points can change
 perceptions of correlation [@strain_2023; @strain_2023a; @strain_2024], 
@@ -538,7 +538,7 @@ effects may influence cognition.
 Scatterplots featuring points with varying opacities and sizes can affect the 
 levels to which viewers update their beliefs [@strain_2025], risk information
 presented graphically can increase stated risk-avoidant behaviour 
-[@stone_1997; @schirillo_2005], and data visualisation can be used to increase
+[@stone_1997; @schirillo_2005], and data visualisation can be used to improve
 decision-making performance [@cheong_2016; @padilla_2018]. Given evidence
 that data visualisation can, in some contexts, be more persuasive than the 
 equivalent information presented in a tabular format [@pandey_2014], it 
@@ -548,14 +548,14 @@ can drive differences in behaviour.
 There is some evidence that effects such as those described above are driven
 by data visualisation promoting higher levels of engagement with the underlying data.
 @rudolph_2009 found that the use of a visual analytics tool
-was able to increase levels of task engagement and learning, resulting in better
+was able to increase levels of task engagement and learning, resulting in improved
 financial decision-making amongst non-expert participants when compared to
 those presented only with tabular data, while @fu_2025 found that 
 static and dynamic visualisation promoted higher levels of learning motivation 
 and engagement with algorithm learning amongst students. In a 
 longitudinal study of participant-created 'vernacular visualisations', @abos_2024
-found use of visualisation to be beneficial for participants 
-with regards to forming and maintaining sustainable food waste habits. This 
+found that creating visualisations helped participants develop
+and maintain habits that reduced food waste. This 
 improvement was attributed to increased engagement with the self-created 
 visualisation format.
 
@@ -570,8 +570,8 @@ intentions, which have been shown to be a moderate predictor of actual behaviour
 ## Donation Behaviour {#sec-donation-behaviour}
 
 With around 32% of the UK charity sector's income coming from donations
-and legacies [@gov_report], reaching new donors and persuading 
-them to give more represents a key part of running a successful charity 
+and legacies [@gov_report], reaching new donors and encouraging 
+them to give more is a key part of running a successful charity 
 [@sargeant_2001; @wymer_2006], as efficient spending on advertising and other
 fundraising activities leaves more money to be spent on charitable activities.
 Data visualisation, which has been shown in some contexts to be more 
@@ -588,7 +588,7 @@ of donors, and often makes a distinction between choosing to donate at all and
 the amount donated. @green_1997 used factor analysis
 and an interdisciplinary literature review to identify seven factors associated 
 with charitable giving behaviour. Five of these were motivations for giving, 
-and include altruism, negative state relief, and social exchange. @gittell_2006
+and included altruism, negative state relief, and social exchange. @gittell_2006
 identify economic, religious, and demographic 
 factors influencing giving rates, with higher levels of personal income, 
 protestantism, and education positively impacting donations. More recently, 
@@ -611,7 +611,7 @@ their values. @berman_2018, in a quantitative study
 designed to increase donation amounts using principles of effective altruism 
 [@macaskill_2019], found that participants donated more to charities that
 they preferred, even when transparently more effective options were made 
-available to them; this was explained as being a result of emotional 
+available to them; this was explained as being a result of an emotional 
 connection to the cause being valued over rational decision making and 
 reasoned argument. In opposition, @she_2023 found
 that charity preference had no effect on donation amounts in an online 
@@ -639,7 +639,7 @@ changing the opacities and sizes of scatterplot points [@hong_2022], recent work
 to correct for this bias has been successful. Strain et al.
 [-@strain_2023; -@strain_2023a; -@strain_2024] systematically varied the
 opacities and sizes of scatterplot points to manipulate perceptions of 
-correlation in crowdsourced online experiments. Using equation 1 to relate 
+correlation in crowdsourced online experiments. Using Equation 1 to relate 
 point opacity and size to residual magnitude, they were able to achieve 
 significant amounts of correction, suggesting that correlation perception
 may be related to point salience.
@@ -663,8 +663,8 @@ design techniques on donation behaviour. We expected any effects found to be
 small relative to the effect of other factors (such as charity preference),
 meaning we designed our experiment to capture these small effects. To this end,
 we used a forced donation allocation paradigm, whereby participants had to share
-$\$100$ between two fictional charities based on their infographics such that the
-total was always $\$100$. Participants therefore provided two linked outputs per
+a fixed total of $\$100$ between two fictional charities based
+on their infographics. Participants therefore provided two linked outputs per
 trial which were reduced to a donation allocation ratio between the left and 
 right-hand charities. We formulate the first hypothesis based on previous evidence that people 
 will donate more money to charitable concerns that they prefer:
@@ -672,7 +672,7 @@ will donate more money to charitable concerns that they prefer:
 - H~1~: participants will donate more money to charities that they prefer,
 as tested by Likert scales and a charity ranking.
 
-Owing to evidence that strong relationships portrayed in scatterplots can
+Owing to evidence that stronger relationships portrayed in scatterplots can
 induce belief change in viewers, and that features of data visualisations 
 can have effects on viewers' thoughts and attitudes, we formulate the second hypothesis:
 
@@ -716,7 +716,7 @@ Research Ethics Committee (Reference: 2026-26031-46636).
 ## Modelling {#sec-modelling}
 
 Each experimental trial featured two stimuli. As participants were asked to
-split 100 dollars between the two charities displayed in the infographics, 
+split $\$100$ between the two charities displayed in the infographics, 
 each trial also featured two linked responses. For modelling purposes, 
 each pair of linked responses was reduced to a donation allocation ratio between the
 left and right infographics; a ratio value of 1 corresponds to all money being allocated
@@ -836,13 +836,13 @@ viewers of scatterplots contextualised as part of news items [@strain_2025] when
 compared to traditional plots. To test whether such effects can be extended to
 change behaviours, we use the same technique here. In the alternative scatterplot
 condition, point opacity and size is reduced as a function of residual magnitude 
-using equation 1. To facilitate comparison to previous work also examining
+using Equation 1. To facilitate comparison to previous work also examining
 alternatively designed scatterplots [@strain_2023; @strain_2023a; @strain_2024; @strain_2025],
 we elect to use the same scatterplot
 generation protocol in the present study. This includes the number of scatterplot
 points (n = 128), and the size scaling
 factor and opacity floor used to increase point visibility.
-We chose to use three Pearson's *r* values; 0.2, 0.5, and 0.8. If participants 
+We chose to use three Pearson's *r* values: 0.2, 0.5, and 0.8. If participants 
 are engaging with the visualisations and using them to inform their donation
 decisions, then plots featuring higher *r* values should attract greater 
 proportions of donated money. If the effects on perception and belief change 
@@ -861,7 +861,7 @@ scatterplot visualisation examples can be seen as part of Figure \ref{fig-exampl
 #| label: fig-raw-example-plots
 #| include: true
 #| fig-env: "figure*"
-#| fig-cap: "Scatterplots for each of the three \\textit{r} values. Separate rows are provided for the alternative (top) and standard (bottom) conditions.The data are identical in each column. Only the sizes and opacities of points are altered in the top row."
+#| fig-cap: "Scatterplots for each of the three \\textit{r} values. Separate rows are provided for the alternative (top) and standard (bottom) conditions. The data are identical in each column. Only the sizes and opacities of points are altered in the top row."
 #| fig-asp: 0.7
 
 ## manually prepare slopes for example plots
@@ -919,10 +919,11 @@ unique combinations would result in $\binom{18}{2} = 153$ pairs. To
 decrease the task load on participants, we removed the 45 trials which
 featured the same charity for a final total of 108 experimental trials. 
 Participants viewed all 108 experimental trials, along with 6 attention 
-check trials, in a fully-randomised order. Our dependent variable was the
+check trials, in a fully randomised order. Our dependent variable was the
 amount of money participants assigned to the left and right charity 
 infographics on a per-trial basis, collapsed into a single ratio value.
-The experiment, including all stimuli, materials, and instructions, are hosted on GitLab[^3].
+The experiment, including all stimuli, materials, and instructions, is
+hosted on GitLab[^3].
 
 [^3]: https://pavlovia.org/Strain/donation_behaviour
 
@@ -933,7 +934,7 @@ Pavlovia.org. Participants were instructed to only complete the experiment
 on desktop or laptop computers. Each participant first viewed the participant 
 information sheet and provided consent by checking boxes next to consent 
 statements. Consent was required in order to progress through the experiment.
-They were asked to provide their age in a free text box, followed by their
+They were asked to provide their age in a free-text box, followed by their
 gender identity. Using Likert scales, participants were then asked to
 indicate how important the three chosen charitable concerns were to them
 (Dog Rescue and Re-Housing, Environmental Protection, and Mental Health 
@@ -941,7 +942,7 @@ Helpline). Each Likert scale featured seven points, and was anchored at
 points 1 and 7 with "Not at all important" and "Extremely important" labels. 
 Participants then used a drag-and-drop interface to rank the three 
 charitable concerns. Following the pre-experimental tests, participants
-were then asked to complete eight rounds of the Remote Associated Test 
+were then asked to complete eight rounds of the Remote Associates Test 
 (RAT), which acted as a filler task to prevent carryover effects [@she_2023]. 
 Participants were given 15 seconds for each round of the RAT, and were not 
 required to answer. Participants were given instructions, including the following:
@@ -964,9 +965,9 @@ required to answer. Participants were given instructions, including the followin
 
 Participants were informed that this was a deception following conclusion of the
 experiment. Following instructions, the experiment began. In a series of 108 
-experimental trials, participants were asked to split 100 dollars between two 
+experimental trials, participants were asked to split $\$100$ between two 
 charity infographics. Presentation order was randomised, including 6 attention 
-check trials which explicitly asked participants to assign 100 dollars to either 
+check trials which explicitly asked participants to assign $\$100$ to either 
 the left (n = 3) or the right (n = 3) charity infographic. An example of an
 experimental trial can be seen in @fig-example-trial. After completing all trials, 
 participants were debriefed regarding the deception employed and thanked for their participation.
@@ -996,14 +997,14 @@ were rejected in accordance with our pre-registration[^4]. Data from the
 remaining 164 participants were included in the full analysis 
 (`r printnum(gender$male, digits = 2)` male, `r printnum(gender$female, digits = 2)`
 female, and `r printnum(gender$non_binary, digits = 2)` non-binary). 
-Participants' mean age was `r printnum(age$mean, digits = 1)` (SD =
-`r printnum(age$sd, digits = 1)`). Participants took a mean of 
+Participants' mean age was `r printnum(age$mean, digits = 1)` years (SD =
+`r printnum(age$sd, digits = 1)` years). Participants took a mean of 
 `r printnum(time_taken$mean, digits = 1)` minutes to complete the 
 experiment (SD = `r printnum(time_taken$sd, digits = 1)` minutes).
 
 [^4]: The pre-registration states that 150 participants would be recruited. 
 Additional participants were recruited due to an oversight before the data were 
-inspected, and all analyses are done using the full dataset.
+inspected, and for full transparency all analyses are done using the full dataset.
 
 # Results {#sec-results}
 
@@ -1070,7 +1071,7 @@ package [version 1.0.0, @arel-bundock_2024] with this model to calculate margina
 the full ranges of each fixed effect in Table \ref{tbl-marginal-effects-interactions}.
 All modelling uses a collapsed per-trial ratio 
 of left to right donation amounts. To increase interpretability, however, descriptive
-statistics, including relevant tables and visualisations, use uncollapsed donation
+statistics, including relevant tables and visualisations, use uncollapsed donation allocation
 means. All hypotheses received support and each is provided below prior to the reporting of
 relevant results. 
 
@@ -1104,10 +1105,10 @@ how mean donation amounts change over the three charity rankings.
 ```{r}
 #| label: fig-donation-lines
 #| include: true
-#| fig-cap: "Mean donation amounts plotted by (a) Likert ratings, averaged across each charity rank, and (b) charity rank, averaged across all Likert ratings. 95\\% Confidence Intervals are included as error bars. In line with H\\textsubscript{1}, donation amounts increase with participants' ratings of charity importance and as participants rank charities more highly."
+#| fig-cap: "Mean donation allocation amounts plotted by (a) Likert ratings, averaged across each charity rank, and (b) charity rank, averaged across all Likert ratings. 95\\% Confidence Intervals are included as error bars. In line with H\\textsubscript{1}, donation amounts increase with participants' ratings of charity importance and as participants rank charities more highly."
 #| fig-subcap:
-#|   - "Mean donation amounts plotted by Likert ratings."
-#|   - "Mean donation amounts plotted by charity rank."
+#|   - "Mean donation allocation amounts plotted by Likert ratings."
+#|   - "Mean donation allocation amounts plotted by charity rank."
 #| layout-ncol: 2
 #| fig-env: "figure*"
 
@@ -1199,7 +1200,7 @@ standard deviations of donation amounts for each of the three *r* values used.
 ```{r}
 #| label: tbl-donation-by-r
 #| include: true
-#| tbl-cap: "Means and standard deviations of donation amounts for each \\textit{r} value used."
+#| tbl-cap: "Means and standard deviations of donation allocation amounts for each \\textit{r} value used."
 
 donation_behaviour_tidy_long %>%
   mutate(correlation = factor(correlation)) %>%
@@ -1267,7 +1268,7 @@ to drive behaviour change.
 ```{r}
 #| label: tbl-descriptives-donation-by-plot-type
 #| include: true
-#| tbl-cap: "Means and standard deviations of donation amounts for standard and alternative plot types."
+#| tbl-cap: "Means and standard deviations of donation allocation amounts for standard and alternative plot types."
 
 donation_behaviour_tidy_long %>%
   mutate(plot_type = factor(plot_type)) %>%
@@ -1336,7 +1337,7 @@ interaction further in @fig-likert-rank-interactions.
 ```{r}
 #| label: fig-likert-rank-interactions
 #| include: true
-#| fig-cap: "Mean donation amounts plotted for each charity rank and Likert rating. 95\\% Confidence Intervals are included as error bars. Note the peak in donation amount at charity rank 1 $\\times$ Likert rating 4."
+#| fig-cap: "Mean donation amounts plotted for each charity rank and Likert rating. Error bars show 95\\% Confidence Intervals. Note the peak in donation amount at charity rank 1 $\\times$ Likert rating 4."
 #| fig-env: "figure*"
 #| fig-asp: 0.6
 
@@ -1480,12 +1481,12 @@ x <- kbl(
   caption = paste0(
     "\\label{tbl-marginal-effects-interactions}",
     "Average predicted differences in the share allocated to the ",
-    "left-hand charity in percentage points (pp), over the full theoretical range of",
+    "left-hand charity in percentage points (pp), over the full theoretical range of ",
     "each predictor. These are: ",
     "Likert rating, $-6$ to $+6$; ",
     "rank position, $-2$ to $+2$; ",
     "correlation, $-0.6$ to $+0.6$; ",
-    "and plot type, $-1$ to $+1$. "
+    "and plot type, $-1$ to $+1$."
   )
 ) %>%
   as.character()
@@ -1509,7 +1510,7 @@ cat(x)
 
 # Discussion {#sec-discussions}
 
-All three hypotheses were supported in this experiment. Participants' donation
+All three hypotheses were supported in this experiment. Participants' donation allocation
 decisions were significantly affected by their subjective views of the importance
 of the charitable concerns, by the correlation displayed in each infographic, and
 by the type of scatterplot employed. These results add to evidence that preference
@@ -1567,7 +1568,7 @@ by the vertical distance between the trend lines.
 ```{r}
 #| label: fig-donation-histos
 #| include: true
-#| fig-cap: "Histograms of donation decision counts for each charity rank and Likert rating. Note the distributions in each case, including the very small number of donation decisions for the charity rank 1 $\\times$ Likert rating 4 combination."
+#| fig-cap: "Donation allocation decision counts for each charity rank and Likert rating. Note the distributions in each case, including the very small number of donation decisions for the charity rank 1 $\\times$ Likert rating 4 combination."
 #| fig-env: "figure*"
 #| fig-asp: 0.6
 
@@ -1596,7 +1597,7 @@ donation_behaviour_tidy_long %>%
   ) +
   geom_text(
     data = data.frame(charity_rank = '"1"^"st"'),
-    aes(x = 2.6, y = 2500, label = "n = 360\ndonations"),
+    aes(x = 2.6, y = 2500, label = "n = 360 donation\nallocation decisions"),
     inherit.aes = FALSE, size = 3.5
   ) +
   theme_ggdist() +
@@ -1616,13 +1617,13 @@ donation_behaviour_tidy %>%
   select(c("combo", "trial_RT")) %>%
   group_by(combo) %>%
   summarise(mean = mean(trial_RT), sd = sd(trial_RT)) %>%
-  rename("Mean RT" = "mean",
+  rename("Mean RT (s)" = "mean",
          "Trial Type" = "combo",
          "SD" = "sd") %>%
   mutate("Trial Type" = recode(`Trial Type`,
                                different_plots = "Different Plot Types",
-                               same_alt = "Same Plot: Alternative",
-                               same_standard = "Same Plot: Standard")) %>%
+                               same_alt = "Both Alternative",
+                               same_standard = "Both Standard")) %>%
   kbl(format = "latex",
       booktabs = TRUE,
       digits = c(2,2))
@@ -1648,7 +1649,8 @@ participants' donation decisions. Examining the mean reaction times for differen
 types of trial in @tbl-RT-by-trial, we can see that reaction times are consistent
 across trial types, including when two alternative scatterplots were presented,
 when two standard scatterplots were presented, and when two different types of scatterplot
-were presented. With regards to a dual-processing account [@padilla_2018], similar
+were presented. While we cannot say for certain that participants' processing of 
+stimuli was identical, with regards to a dual-processing account [@padilla_2018], similar
 reaction times suggest that the stimuli are being processed in similar ways by
 participants. Evidence that correlation is perceived rapidly by viewers of
 scatterplots [@rensink_2014] suggests that, in the case of the present experiment,
@@ -1673,7 +1675,7 @@ income for no additional outlay.
 
 ## Limitations
 
-The biggest limitation of the present study lies in whether or not participants
+The main limitation of the present study lies in whether or not participants
 acted as they would when choosing where to donate their own money. While we made efforts to
 lead participants to believe that their choices in the experiment would have 
 real-world consequences (see Section \ref{sec-procedure}), it is impossible to
@@ -1708,7 +1710,7 @@ unfamiliar visualisations are outweighed by feelings of distrust in them.
 
 # Conclusion {#sec-conclusion}
 
-In a fully-reproducible experiment, we investigated the effects of alternative
+In a fully reproducible experiment, we investigated the effects of alternative
 scatterplot design on the propensity to donate money in an online 
 donation experiment. We collected a range of donation-relevant participant characteristics,
 and showed that while charity preference was able to explain most of the variation
