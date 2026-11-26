@@ -7,9 +7,9 @@ format:
         \usepackage{tcolorbox}
     journal:
       name: International Journal of Human-Computer Studies
-      formatting: preprint     # single-column submission layout
+      formatting: preprint     
       model: 3p
-      cite-style: authoryear   # check against IJHCS guide for authors
+      cite-style: authoryear
 params:
   eval_models: true
 
